@@ -9,22 +9,22 @@ const cUser = require('../controllers/users.js')
 
 
 //create user router
-router.post('/user/create', vUser.vUserCraete, cUser.create)
+router.post('/create', vUser.vUserCraete, cUser.create)
 
 //login user router
-router.post('/user/login', vUser.vUserLogin, cUser.login)
+router.post('/login', vUser.vUserLogin, cUser.login)
 
 //update user router
-router.put('/user/update', vUser.vUserUpdate, cUser.update)
+router.put('/update', vUser.vUserUpdate, cUser.update)
 
 //delete user router
-router.delete('/user/delete/:userId', vUser.vUserDelete, cUser.delete)
+router.delete('/delete/:userId', vUser.vUserDelete, cUser.delete)
 
 //get one user router
-router.get('/user/one/:userId', vUser.vGetOne , cUser.getOne)
+router.get('/one/:userId', vUser.vGetOne , cUser.getOne)
 
 //get all user router
-router.get('/users/all', cUser.getAll)
+router.get('/all', cUser.getAll)
 
 
 module.exports = router

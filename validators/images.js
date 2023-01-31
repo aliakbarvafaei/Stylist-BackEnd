@@ -1,7 +1,5 @@
 //config database for send query
-const { PrismaClient } = require('@prisma/client')
 const { add } = require('lodash')
-const db = new PrismaClient()
 require('dotenv').config()
 
 //lodash

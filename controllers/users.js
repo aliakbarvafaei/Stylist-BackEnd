@@ -7,21 +7,21 @@ require("dotenv").config();
 const SECRET = "secret";
 
 exports.create = async (req, res) => {
-  const firstname = req.body.firstName;
+  const firstname = req.body.firstname;
   const lastname = req.body.lastname;
   const address = req.body.address;
   const email = req.body.email;
   const phone = req.body.phone;
   const password = req.body.password;
-  const gender = req.body.gender;
+  const gender = req.body.gender==="زن"? "WOMAN":(req.body.gender==="مرد"? "MAN":undefined);
   const age = req.body.age;
 
   //chech uniqe email
-  let email_check = (email_check = await db.User.findFirst({
+  let email_check = await db.User.findFirst({
     where: {
       email: email,
     },
-  }));
+  });
 
   //chech uniqe phone number
   let phone_check;
@@ -87,39 +87,44 @@ exports.login = async (req, res) => {
 };
 
 exports.update = async (req, res) => {
-  const id = parseInt(req.body.id);
-  const new_username = req.body.username;
-  const new_firstName = req.body.firstName;
-  const new_lastName = req.body.lastName;
+  var id;
+  try {
+    id = jwt.verify(req.header("Authorization"), SECRET).id;
+  } catch(err) {
+    if(err.name==="TokenExpiredError")
+      return res.status(400).send("زمان ورود شما منقضی شده است");
+    else if(err.name==="JsonWebTokenError"){
+      return res.status(400).send("توکن احراز هویت نامعتبر است");
+    }
+  }
+  const new_firstName = req.body.firstname;
+  const new_lastName = req.body.lastname;
   const new_address = req.body.address;
   const new_email = req.body.email;
   const new_phone = req.body.phone;
   const new_password = req.body.password;
+  const new_gender = req.body.gender==="زن"? "WOMAN":(req.body.gender==="مرد"? "MAN":undefined);
+  const new_age = req.body.age;
 
   let updated_user = await db.User.update({
     where: {
       id: id,
     },
     data: {
-      username: new_username,
-      first_name: new_firstName,
+      firstName: new_firstName,
       lastName: new_lastName,
       address: new_address,
       email: new_email,
       phone: new_phone,
       password: new_password,
+      gender: new_gender,
+      age: new_age
     },
   });
   if (updated_user) {
-    return res.json({
-      status: 200,
-      msg: "به‌روز‌رسانی با موفقیت انجام شد",
-    });
+    return res.status(200).send("به‌روز‌رسانی با موفقیت انجام شد");
   } else {
-    return res.json({
-      status: -1,
-      msg: "خطا: به‌روز رسانی انجام نشد",
-    });
+    return res.status(400).send("خطا: به‌روز رسانی انجام نشد");
   }
 };
 
@@ -133,15 +138,9 @@ exports.delete = async (req, res) => {
     },
   });
   if (user) {
-    return res.json({
-      status: 200,
-      msg: "کاربر با موفقیت حذف شد",
-    });
+    return res.status(200).send("کاربر با موفقیت حذف شد");
   } else {
-    return res.json({
-      status: -1,
-      msg: "خطا: حذف کاربر ناموفق انجام شد",
-    });
+    return res.status(400).send("خطا: حذف کاربر ناموفق انجام شد");
   }
 };
 
@@ -153,23 +152,20 @@ exports.getOne = async (req, res) => {
     },
   });
   if (user) {
-    return res.json({
-      status: 200,
+    return res.status(200).send({
       data: {
         id: user.id,
-        username: user.username,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        address: user.address,
         email: user.email,
+        firstname: user.firstName,
+        lastname: user.lastName,
+        address: user.address,
         phone: user.phone,
+        age: user.age,
+        gender: user.gender,
       },
     });
   } else {
-    return res.json({
-      status: -1,
-      msg: "کاربری با این آی‌دی وجود ندارد",
-    });
+    return res.status(404).send("کاربری با این آی‌دی وجود ندارد");
   }
 };
 
@@ -177,16 +173,16 @@ exports.getAll = async (req, res) => {
   let users = await db.User.findMany({
     select: {
       id: true,
-      username: true,
       firstName: true,
       lastName: true,
       address: true,
       email: true,
       phone: true,
+      gender: true,
+      age: true
     },
   });
-  return res.json({
-    staus: 200,
+  return res.status(200).send({
     data: users,
   });
 };

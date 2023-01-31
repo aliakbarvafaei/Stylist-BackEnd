@@ -26,6 +26,12 @@ exports.vUserCraete = (req, res, next) => {
           type: 'نام‌خانوادگی باید به صورت رشته باشد'
         }
       },
+      address: {
+        type: String,
+        message: {
+          type: 'آدرس باید به صورت رشته باشد'
+        }
+      },
       email: {
         type: String,
         required: true,
@@ -35,9 +41,9 @@ exports.vUserCraete = (req, res, next) => {
         }
       },
       phone: {
-        type: Number,
+        type: String,
         message: {
-          type: 'شماره تلفن باید به صورت عددی باشد'
+          type: 'شماره تلفن باید به صورت رشته باشد'
         }
       },
       age: {
@@ -142,6 +148,12 @@ exports.vUserUpdate = async (req, res, next) => {
           type: 'نام‌خانوادگی باید به صورت رشته باشد'
         }
       },
+      address: {
+        type: String,
+        message: {
+          type: 'آدرس باید به صورت رشته باشد'
+        }
+      },
       email: {
         type: String,
         message: {
@@ -149,9 +161,9 @@ exports.vUserUpdate = async (req, res, next) => {
         }
       },
       phone: {
-        type: Number,
+        type: String,
         message: {
-          type: 'شماره تلفن باید به صورت عددی باشد'
+          type: 'شماره تلفن باید به صورت رشته باشد'
         }
       },
       age: {
@@ -187,11 +199,7 @@ exports.vUserUpdate = async (req, res, next) => {
     if (req.body.email && !email_validation.validate(req.body.email)) {
       return res.status(400).send("ساختار ایمیل نادرست است");
     }
-    try {
-      jwt.verify(req.header("Authorization"), SECRET);
-    } catch {
-      return res.status(400).send("توکن احراز هویت نامعتبر است");
-    }
+    next();
   } catch (error) {
     console.log(error);
     return res.status(500).send("عملیات با خطا مواجه شد");
@@ -200,11 +208,6 @@ exports.vUserUpdate = async (req, res, next) => {
 
 exports.vUserDelete = async (req, res, next) => {
   try {
-    try {
-      jwt.verify(req.header("Authorization"), SECRET);
-    } catch {
-      return res.status(400).send("توکن احراز هویت نامعتبر است");
-    }
     next();
   } catch (error) {
     console.log(error);
@@ -214,11 +217,6 @@ exports.vUserDelete = async (req, res, next) => {
 
 exports.vGetOne = (req, res, next) => {
   try {
-    try {
-      jwt.verify(req.header("Authorization"), SECRET);
-    } catch {
-      return res.status(400).send("توکن احراز هویت نامعتبر است");
-    }
     next();
   } catch (error) {
     console.log(error);

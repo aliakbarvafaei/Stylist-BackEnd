@@ -17,35 +17,35 @@ exports.vUserCraete = (req, res, next) => {
       firstname: {
         type: String,
         message: {
-          type: 'نام باید به صورت رشته باشد.'
+          type: 'نام باید به صورت رشته باشد'
         }
       },
       lastname: {
         type: String,
         message: {
-          type: 'نام‌خانوادگی باید به صورت رشته باشد.'
+          type: 'نام‌خانوادگی باید به صورت رشته باشد'
         }
       },
       email: {
         type: String,
         required: true,
         message: {
-          type: 'ایمیل باید به صورت رشته باشد.',
-          required: 'ایمیل اجباری است.'
+          type: 'ایمیل باید به صورت رشته باشد',
+          required: 'ایمیل اجباری است'
         }
       },
       phone: {
         type: Number,
         message: {
-          type: 'شماره تلفن باید به صورت عددی باشد.'
+          type: 'شماره تلفن باید به صورت عددی باشد'
         }
       },
       age: {
         type: Number,
         required: true,
         message: {
-          type: 'سن باید به صورت عددی باشد.',
-          required: 'سن اجباری است.'
+          type: 'سن باید به صورت عددی باشد',
+          required: 'سن اجباری است'
         }
       },
       gender: {
@@ -53,9 +53,9 @@ exports.vUserCraete = (req, res, next) => {
         enum: ["مرد", "زن"],
         required: true,
         message: {
-          type: 'جنسیت باید به صورت رشته باشد.',
-          enum: 'جنسیت باید یکی از مقادیر زن یا مرد باشد.',
-          required: 'جنسیت اجباری است.'
+          type: 'جنسیت باید به صورت رشته باشد',
+          enum: 'جنسیت باید یکی از مقادیر زن یا مرد باشد',
+          required: 'جنسیت اجباری است'
         }
       },
       password: {
@@ -63,9 +63,9 @@ exports.vUserCraete = (req, res, next) => {
         required: true,
         length: { min: 8 },
         message: {
-          type: 'رمزعبور باید به صورت رشته باشد.',
-          required: 'رمزعبور اجباری است.',
-          length: 'رمزعبور باید حداقل 8 حرف باشد.'
+          type: 'رمزعبور باید به صورت رشته باشد',
+          required: 'رمزعبور اجباری است',
+          length: 'رمزعبور باید حداقل 8 حرف باشد'
         }
       },
     });
@@ -77,7 +77,7 @@ exports.vUserCraete = (req, res, next) => {
     if (res_data.length > 0) return res.status(400).send(res_data);
     const email_validation = require("email-validator");
     if (!email_validation.validate(req.body.email)) {
-      return res.status(400).send("ساختار ایمیل نادرست است.");
+      return res.status(400).send("ساختار ایمیل نادرست است");
     }
     // console.log(req.header("Authorization"));
     next();
@@ -94,8 +94,8 @@ exports.vUserLogin = (req, res, next) => {
         type: String,
         required: true,
         message: {
-          type: 'ایمیل باید به صورت رشته باشد.',
-          required: 'ایمیل اجباری است.'
+          type: 'ایمیل باید به صورت رشته باشد',
+          required: 'ایمیل اجباری است'
         }
       },
       password: {
@@ -103,9 +103,9 @@ exports.vUserLogin = (req, res, next) => {
         required: true,
         length: { min: 8 },
         message: {
-          type: 'رمزعبور باید به صورت رشته باشد.',
-          required: 'رمزعبور اجباری است.',
-          length: 'رمزعبور باید حداقل 8 حرف باشد.'
+          type: 'رمزعبور باید به صورت رشته باشد',
+          required: 'رمزعبور اجباری است',
+          length: 'رمزعبور باید حداقل 8 حرف باشد'
         }
       },
     });
@@ -117,7 +117,7 @@ exports.vUserLogin = (req, res, next) => {
     if (res_data.length > 0) return res.status(400).send(res_data);
     const email_validation = require("email-validator");
     if (!email_validation.validate(req.body.email)) {
-      return res.status(400).send("ساختار ایمیل نادرست است.");
+      return res.status(400).send("ساختار ایمیل نادرست است");
     }
 
     next();
@@ -133,47 +133,47 @@ exports.vUserUpdate = async (req, res, next) => {
       firstname: {
         type: String,
         message: {
-          type: 'نام باید به صورت رشته باشد.'
+          type: 'نام باید به صورت رشته باشد'
         }
       },
       lastname: {
         type: String,
         message: {
-          type: 'نام‌خانوادگی باید به صورت رشته باشد.'
+          type: 'نام‌خانوادگی باید به صورت رشته باشد'
         }
       },
       email: {
         type: String,
         message: {
-          type: 'ایمیل باید به صورت رشته باشد.'
+          type: 'ایمیل باید به صورت رشته باشد'
         }
       },
       phone: {
         type: Number,
         message: {
-          type: 'شماره تلفن باید به صورت عددی باشد.'
+          type: 'شماره تلفن باید به صورت عددی باشد'
         }
       },
       age: {
         type: Number,
         message: {
-          type: 'سن باید به صورت عددی باشد.'
+          type: 'سن باید به صورت عددی باشد'
         }
       },
       gender: {
         type: String,
         enum: ["مرد", "زن"],
         message: {
-          type: 'جنسیت باید به صورت رشته باشد.',
-          enum: 'جنسیت باید یکی از مقادیر زن یا مرد باشد.'
+          type: 'جنسیت باید به صورت رشته باشد',
+          enum: 'جنسیت باید یکی از مقادیر زن یا مرد باشد'
         }
       },
       password: {
         type: String,
         length: { min: 8 },
         message: {
-          type: 'رمزعبور باید به صورت رشته باشد.',
-          length: 'رمزعبور باید حداقل 8 حرف باشد.'
+          type: 'رمزعبور باید به صورت رشته باشد',
+          length: 'رمزعبور باید حداقل 8 حرف باشد'
         }
       },
     });
@@ -185,12 +185,12 @@ exports.vUserUpdate = async (req, res, next) => {
     if (res_data.length > 0) return res.status(400).send(res_data);
     const email_validation = require("email-validator");
     if (req.body.email && !email_validation.validate(req.body.email)) {
-      return res.status(400).send("ساختار ایمیل نادرست است.");
+      return res.status(400).send("ساختار ایمیل نادرست است");
     }
     try {
       jwt.verify(req.header("Authorization"), SECRET);
     } catch {
-      return res.status(400).send("توکن احراز هویت نامعتبر است.");
+      return res.status(400).send("توکن احراز هویت نامعتبر است");
     }
   } catch (error) {
     console.log(error);
@@ -203,7 +203,7 @@ exports.vUserDelete = async (req, res, next) => {
     try {
       jwt.verify(req.header("Authorization"), SECRET);
     } catch {
-      return res.status(400).send("توکن احراز هویت نامعتبر است.");
+      return res.status(400).send("توکن احراز هویت نامعتبر است");
     }
     next();
   } catch (error) {
@@ -217,7 +217,7 @@ exports.vGetOne = (req, res, next) => {
     try {
       jwt.verify(req.header("Authorization"), SECRET);
     } catch {
-      return res.status(400).send("توکن احراز هویت نامعتبر است.");
+      return res.status(400).send("توکن احراز هویت نامعتبر است");
     }
     next();
   } catch (error) {

@@ -56,7 +56,7 @@ exports.vUserCraete = (req, res, next) => {
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).send("Internal Server Error");
+    return res.status(500).send("عملیات با خطا مواجه شد");
   }
 };
 
@@ -87,7 +87,7 @@ exports.vUserLogin = (req, res, next) => {
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).send("Internal Server Error");
+    return res.status(500).send("عملیات با خطا مواجه شد");
   }
 };
 
@@ -135,7 +135,7 @@ exports.vUserUpdate = async (req, res, next) => {
     }
   } catch (error) {
     console.log(error);
-    return res.status(500).send("Internal Server Error");
+    return res.status(500).send("عملیات با خطا مواجه شد");
   }
 };
 
@@ -149,7 +149,7 @@ exports.vUserDelete = async (req, res, next) => {
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).send("Internal Server Error");
+    return res.status(500).send("عملیات با خطا مواجه شد");
   }
 };
 
@@ -163,6 +163,6 @@ exports.vGetOne = (req, res, next) => {
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).send("Internal Server Error");
+    return res.status(500).send("عملیات با خطا مواجه شد");
   }
 };

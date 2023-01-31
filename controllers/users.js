@@ -1,11 +1,12 @@
 //config database for send query
 const { PrismaClient } = require("@prisma/client");
 const { add } = require("lodash");
+var jwt = require("jsonwebtoken");
 const db = new PrismaClient();
 require("dotenv").config();
+const SECRET = "secret";
 
 exports.create = async (req, res) => {
-  const username = req.body.username;
   const firstname = req.body.firstName;
   const lastname = req.body.lastname;
   const address = req.body.address;
@@ -14,24 +15,13 @@ exports.create = async (req, res) => {
   const password = req.body.password;
   const gender = req.body.gender;
   const age = req.body.age;
-  //chech uniqe username
-  let username_check = await db.User.findFirst({
-    where: {
-      username: username,
-    },
-  });
 
   //chech uniqe email
-  let email_check;
-  if (!email) {
-    email_check = null;
-  } else {
-    email_check = await db.User.findFirst({
-      where: {
-        email: email,
-      },
-    });
-  }
+  let email_check = (email_check = await db.User.findFirst({
+    where: {
+      email: email,
+    },
+  }));
 
   //chech uniqe phone number
   let phone_check;
@@ -45,12 +35,11 @@ exports.create = async (req, res) => {
     });
   }
 
-  if (!username_check && !email_check && !phone_check) {
+  if (!email_check && !phone_check) {
     let newUser = await db.User.create({
       data: {
-        username: username,
-        firstname: firstname,
-        lastname: lastname,
+        firstName: firstname,
+        lastName: lastname,
         address: address,
         email: email,
         phone: phone,
@@ -59,110 +48,41 @@ exports.create = async (req, res) => {
         age: age,
       },
     });
-    return res.json({
-      staus: 200,
-      msg: "ثبت نام با موفقیت انجام شد",
-      data: newUser,
-    });
-  } else if (username_check) {
-    return res.json({
-      staus: -1,
-      msg: "نام کاربری تکراری می‌باشد",
-    });
+    return res.status(201).send("ثبت نام با موفقیت انجام شد");
   } else if (email_check) {
-    return res.json({
-      staus: -1,
-      msg: "ایمیل تکراری می‌باشد",
-    });
+    return res.status(409).send("ایمیل تکراری می‌باشد");
   } else if (phone_check) {
-    return res.json({
-      staus: -1,
-      msg: "شماره تلفن تکراری می‌باشد",
-    });
+    return res.status(409).send("شماره تلفن تکراری می‌باشد");
   }
 };
 
 exports.login = async (req, res) => {
-  const username = req.body.username;
   const email = req.body.email;
-  const phone = req.body.phone;
   const password = req.body.password;
 
-  //check username exist
-  let user_username = await db.User.findFirst({
+  //check email exist
+  let user_email = await db.User.findFirst({
     where: {
-      username: username,
+      email: email,
     },
   });
-  if (!user_username) {
-    return res.json({
-      status: -1,
-      msg: "شخصی با این نام کاربری موجود نمی‌باشد",
-    });
+  if (!user_email) {
+    return res.status(404).send("شخصی با این ایمیل موجود نمی‌باشد");
   }
 
   //check password exist
   let user_password = await db.User.findFirst({
     where: {
-      username: username,
+      email: email,
       password: password,
     },
   });
   if (!user_password) {
-    return res.json({
-      status: -1,
-      msg: "رمز عبور صحیح نمی‌باشد",
-    });
-  }
-
-  //check user in database by all require information
-  let user_all_option = await db.User.findFirst({
-    where: {
-      username: username,
-      email: email,
-      phone: phone,
-      password: password,
-    },
-  });
-
-  //check user in database without email
-  let user_no_email = await db.User.findFirst({
-    where: {
-      username: username,
-      phone: phone,
-      password: password,
-    },
-  });
-
-  //check user in database without phone number
-  let user_no_phone = await db.User.findFirst({
-    where: {
-      username: username,
-      email: email,
-      password: password,
-    },
-  });
-
-  if (email && phone && !user_all_option) {
-    return res.json({
-      staus: -1,
-      msg: "کاربری با این شماره تلفن یا ایمیل وجود ندارد",
-    });
-  } else if (!email && !user_no_email) {
-    return res.json({
-      staus: -1,
-      msg: "کاربری با این شماره تلفن وجود ندارد",
-    });
-  } else if (!phone && !user_no_phone) {
-    return res.json({
-      staus: -1,
-      msg: "کاربری با این ایمیل وجود ندارد",
-    });
+    return res.status(401).send("رمز عبور صحیح نمی‌باشد");
   } else {
-    return res.json({
-      status: 200,
-      msg: "ورود با موفقیت انجام شد",
-    });
+    return res
+      .status(200)
+      .send(jwt.sign(user_password, SECRET, { expiresIn: "10m" }));
   }
 };
 

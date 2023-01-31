@@ -1,29 +1,286 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
-enum GENDERS{
-    MAN
-    WOMAN
+generator client {
+  provider = "prisma-client-js"
 }
-//user model
-model User{
-    id              Int         @default(autoincrement())   @id
-    username        String      @unique
-    firstName       String?
-    lastName        String?
-    address         String?
-    email           String?     @unique
-    phone           String?     @unique
-    password        String
-    gender          GENDERS     @default(MAN)
 
+enum GENDERS {
+  MAN
+  WOMAN
+}
+
+enum STATUS_COUNSELING {
+  OPEN
+  CLOSED
+  WAITING
+  AWAITING_PAYMENT
+}
+
+enum STATUS_PAYMENT {
+  UNPAID
+  PAID
+  FAILED
+  EXPIRED
+}
+
+enum STATUS_ORDER {
+  CANCELLED
+  OPEN
+  COMPLETED
+  CONFIRMED
+}
+
+enum STATUS_CART {
+  OPEN
+  CLOSED
+  CANCELLED
+}
+
+//user model
+model User {
+  id                Int                 @id @default(autoincrement())
+  email             String              @unique
+  firstName         String?
+  lastName          String?
+  age               Int
+  address           String?
+  phone             String?             @unique
+  password          String
+  gender            GENDERS             @default(MAN)
+  createdAt         DateTime            @default(now())
+  clothing          Clothing[]          @relation("USER_CLOTHING")
+  category_clothing Category_Clothing[] @relation("USER_CATEGORY_CLOTHING")
+  set               Set[]               @relation("USER_SET")
+  category_set      Category_Set[]      @relation("USER_CATEGORY_SET")
+  counseling        Counseling[]        @relation("USER_COUNSELING")
+  transaction       Transaction[]       @relation("USER_TRANSACTION")
+  order             Order[]             @relation("USER_ORDER")
+  cart              Cart[]              @relation("USER_CART")
+}
+
+//clothing model
+model Clothing {
+  id                  Int               @id @default(autoincrement())
+  material            String
+  season              String?
+  size                String?
+  userId              Int
+  user                User              @relation("USER_CLOTHING", fields: [userId], references: [id])
+  category_clothingId Int
+  category_clothing   Category_Clothing @relation("CATEGORY_CLOTHING_CLOTHING", fields: [category_clothingId], references: [id])
+  images_clothing     Image_Clothing[]  @relation("CLOTHING_IMAGE_CLOTHING")
+}
+
+//category_clothing model
+model Category_Clothing {
+  id       Int        @id @default(autoincrement())
+  name     String     @unique
+  userId   Int
+  user     User       @relation("USER_CATEGORY_CLOTHING", fields: [userId], references: [id])
+  clothing Clothing[] @relation("CATEGORY_CLOTHING_CLOTHING")
+}
+
+//image_clothing model
+model Image_Clothing {
+  id         Int      @id @default(autoincrement())
+  url        String   @unique
+  clothingId Int
+  clothing   Clothing @relation("CLOTHING_IMAGE_CLOTHING", fields: [clothingId], references: [id])
+}
+
+//set model
+model Set {
+  id             Int           @id @default(autoincrement())
+  image_set      String        @unique
+  userId         Int
+  user           User          @relation("USER_SET", fields: [userId], references: [id])
+  category_setId Int
+  category_set   Category_Set  @relation("CATEGORY_SET_SET", fields: [category_setId], references: [id])
+  set_product    Set_Product[] @relation("SET_SET_PRODUCT")
+}
+
+//set_product model
+model Set_Product {
+  id        Int     @id @default(autoincrement())
+  setId     Int
+  set       Set     @relation("SET_SET_PRODUCT", fields: [setId], references: [id])
+  productId Int
+  product   Product @relation("PRODUCT_SET_PRODUCT", fields: [productId], references: [id])
+}
+
+//category_set model
+model Category_Set {
+  id     Int    @id @default(autoincrement())
+  name   String @unique
+  userId Int
+  user   User   @relation("USER_CATEGORY_SET", fields: [userId], references: [id])
+  set    Set[]  @relation("CATEGORY_SET_SET")
+}
+
+//counseling model
+model Counseling {
+  id             Int               @id @default(autoincrement())
+  status         STATUS_COUNSELING @default(OPEN)
+  price          Float
+  userId         Int
+  user           User              @relation("USER_COUNSELING", fields: [userId], references: [id])
+  user_stylistId Int
+  user_stylist   User_Stylist      @relation("USER_STYLIST_COUNSELING", fields: [user_stylistId], references: [id])
+  payment        Payment[]         @relation("COUNSELING_PAYMENT")
+}
+
+//user_stylist model
+model User_Stylist {
+  id         Int          @id @default(autoincrement())
+  email      String       @unique
+  firstName  String?
+  lastName   String?
+  address    String?
+  phone      String?      @unique
+  password   String
+  createdAt  DateTime     @default(now())
+  counseling Counseling[] @relation("USER_STYLIST_COUNSELING")
+}
+
+//payment model
+model Payment {
+  id           Int            @id @default(autoincrement())
+  status       STATUS_PAYMENT @default(UNPAID)
+  price        Float
+  date         DateTime       @default(now())
+  counselingId Int
+  counseling   Counseling     @relation("COUNSELING_PAYMENT", fields: [counselingId], references: [id])
+}
+
+//transaction model
+model Transaction {
+  id      Int            @id @default(autoincrement())
+  status  STATUS_PAYMENT @default(UNPAID)
+  price   Float
+  content String?
+  date    DateTime       @default(now())
+  userId  Int
+  user    User           @relation("USER_TRANSACTION", fields: [userId], references: [id])
+  orderId Int
+  order   Order          @relation("ORDER_TRANSACTION", fields: [orderId], references: [id])
+}
+
+//order model
+model Order {
+  id          Int           @id @default(autoincrement())
+  status      STATUS_ORDER  @default(OPEN)
+  firstName   String?
+  lastName    String?
+  address     String
+  phone       String        @unique
+  price       Float
+  content     String?
+  createdAt   DateTime      @default(now())
+  userId      Int
+  user        User          @relation("USER_ORDER", fields: [userId], references: [id])
+  transaction Transaction[] @relation("ORDER_TRANSACTION")
+  order_item  Order_Item[]  @relation("ORDER_ORDER_ITEM")
+}
+
+//order_item model
+model Order_Item {
+  id        Int      @id @default(autoincrement())
+  price     Float
+  discount  Int      @default(0)
+  quantity  Int
+  createdAt DateTime @default(now())
+  updateAt  DateTime @default(now())
+  orderId   Int
+  order     Order    @relation("ORDER_ORDER_ITEM", fields: [orderId], references: [id])
+  productId Int
+  product   Product  @relation("PRODUCT_ORDER_ITEM", fields: [productId], references: [id])
+}
+
+//cart model
+model Cart {
+  id        Int         @id @default(autoincrement())
+  status    STATUS_CART @default(OPEN)
+  firstName String?
+  lastName  String?
+  address   String
+  phone     String      @unique
+  price     Float
+  content   String?
+  createdAt DateTime    @default(now())
+  userId    Int
+  user      User        @relation("USER_CART", fields: [userId], references: [id])
+  cart_item Cart_Item[] @relation("CART_CART_ITEM")
+}
+
+//cart_item model
+model Cart_Item {
+  id        Int      @id @default(autoincrement())
+  price     Float
+  discount  Int?     @default(0)
+  quantity  Int
+  createdAt DateTime @default(now())
+  updateAt  DateTime @default(now())
+  cartId    Int
+  cart      Cart     @relation("CART_CART_ITEM", fields: [cartId], references: [id])
+  productId Int
+  product   Product  @relation("PRODUCT_CART_ITEM", fields: [productId], references: [id])
+}
+
+//product model
+model Product {
+  id               Int                @id @default(autoincrement())
+  title            String             @unique
+  content          String?
+  price            Float
+  discount         Int?               @default(0)
+  quantity         Int
+  createdAt        DateTime           @default(now())
+  updateAt         DateTime           @default(now())
+  order_item       Order_Item[]       @relation("PRODUCT_ORDER_ITEM")
+  cart_item        Cart_Item[]        @relation("PRODUCT_CART_ITEM")
+  set_product      Set_Product[]      @relation("PRODUCT_SET_PRODUCT")
+  image_product    Image_Product[]    @relation("PRODUCT_IMAGE_PRODUCT")
+  product_category Product_Category[] @relation("PRODUCT_PRODUCT_CATEGORY")
+  sellerId         Int
+  Seller           Seller             @relation("SELLER_PRODUCT", fields: [sellerId], references: [id])
+}
+
+//image_product model
+model Image_Product {
+  id        Int     @id @default(autoincrement())
+  url       String  @unique
+  productId Int
+  product   Product @relation("PRODUCT_IMAGE_PRODUCT", fields: [productId], references: [id])
+}
+
+//seller model
+model Seller {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  shopName  String
+  firstName String?
+  lastName  String?
+  address   String?
+  phone     String?   @unique
+  password  String
+  createdAt DateTime  @default(now())
+  product   Product[] @relation("SELLER_PRODUCT")
+}
+
+//product_category model
+model Product_Category {
+  id         Int      @id @default(autoincrement())
+  categoryId Int
+  category   Category @relation("CATEGORY_PRODUCT_CATEGORY", fields: [categoryId], references: [id])
+  productId  Int
+  product    Product  @relation("PRODUCT_PRODUCT_CATEGORY", fields: [productId], references: [id])
+}
+
+//category model
+model Category {
+  id               Int                @id @default(autoincrement())
+  product_category Product_Category[] @relation("CATEGORY_PRODUCT_CATEGORY")
 }

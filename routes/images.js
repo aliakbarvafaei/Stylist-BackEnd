@@ -40,16 +40,32 @@ router.post('/uploadBulkImage',
         //     console.log(data.toString());
         // });
     })
+    res.sendFile(path.resolve(`public/images/bg_${(req.files[0].filename).split('.')[0]}.png`),function(err){
+        if(err){
+            console.log(err)
+        }else{
+            req.files.forEach((item)=>{
+                fs.unlink(`public/images/bg_${item.filename.split('.')[0]}.png`, (err) => {
+                    if (err) {
+                        throw err;
+                    }
+            
+                    console.log("Delete File bg successfully.");
+                });
+            })
+        }
+    })
     req.files.forEach((item)=>{
         fs.unlink(`public/images/${item.filename}`, (err) => {
             if (err) {
                 throw err;
             }
 
-            console.log("Delete File successfully.");
+            console.log("Delete File original successfully.");
         });
     })
-    res.status(200).send({ data: "images recived" })
+    // console.log(`public/images/bg_${(req.files[0].filename).split('.')[0]}.png`)
+    // res.status(200).send({ data: "images recived" })
 }, (error, req, res, next) => {
     res.status(400).send({ error: error.message })
 })

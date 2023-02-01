@@ -2,6 +2,7 @@
 const { PrismaClient } = require("@prisma/client");
 const { add } = require("lodash");
 var jwt = require("jsonwebtoken");
+const sendMail = require("../functions/email").sendMail;
 const db = new PrismaClient();
 require("dotenv").config();
 const SECRET = "secret";
@@ -13,7 +14,12 @@ exports.create = async (req, res) => {
   const email = req.body.email;
   const phone = req.body.phone;
   const password = req.body.password;
-  const gender = req.body.gender==="زن"? "WOMAN":(req.body.gender==="مرد"? "MAN":undefined);
+  const gender =
+    req.body.gender === "زن"
+      ? "WOMAN"
+      : req.body.gender === "مرد"
+      ? "MAN"
+      : undefined;
   const age = req.body.age;
 
   //chech uniqe email
@@ -48,6 +54,7 @@ exports.create = async (req, res) => {
         age: age,
       },
     });
+    sendMail(email, "ثبت نام", "<h3>به استایلیست خوش آمدید</h3>");
     return res.status(201).send("ثبت نام با موفقیت انجام شد");
   } else if (email_check) {
     return res.status(409).send("ایمیل تکراری می‌باشد");
@@ -90,10 +97,10 @@ exports.update = async (req, res) => {
   var id;
   try {
     id = jwt.verify(req.header("Authorization"), SECRET).id;
-  } catch(err) {
-    if(err.name==="TokenExpiredError")
+  } catch (err) {
+    if (err.name === "TokenExpiredError")
       return res.status(400).send("زمان ورود شما منقضی شده است");
-    else if(err.name==="JsonWebTokenError"){
+    else if (err.name === "JsonWebTokenError") {
       return res.status(400).send("توکن احراز هویت نامعتبر است");
     }
   }
@@ -103,7 +110,12 @@ exports.update = async (req, res) => {
   const new_email = req.body.email;
   const new_phone = req.body.phone;
   const new_password = req.body.password;
-  const new_gender = req.body.gender==="زن"? "WOMAN":(req.body.gender==="مرد"? "MAN":undefined);
+  const new_gender =
+    req.body.gender === "زن"
+      ? "WOMAN"
+      : req.body.gender === "مرد"
+      ? "MAN"
+      : undefined;
   const new_age = req.body.age;
 
   let updated_user = await db.User.update({
@@ -118,7 +130,7 @@ exports.update = async (req, res) => {
       phone: new_phone,
       password: new_password,
       gender: new_gender,
-      age: new_age
+      age: new_age,
     },
   });
   if (updated_user) {
@@ -179,7 +191,7 @@ exports.getAll = async (req, res) => {
       email: true,
       phone: true,
       gender: true,
-      age: true
+      age: true,
     },
   });
   return res.status(200).send({

@@ -14,6 +14,12 @@ router.post('/create', vUser.vUserCraete, cUser.create)
 //login user router
 router.post('/login', vUser.vUserLogin, cUser.login)
 
+//password reset user router
+router.post('/password-reset', vUser.vPassReset, cUser.PassReset)
+
+//password change user router
+router.post('/password-change', vUser.vPassChange, cUser.PassChange)
+
 //update user router
 router.put('/update', vUser.vUserUpdate, cUser.update)
 

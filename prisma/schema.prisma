@@ -284,3 +284,9 @@ model Category {
   id               Int                @id @default(autoincrement())
   product_category Product_Category[] @relation("CATEGORY_PRODUCT_CATEGORY")
 }
+
+//passreset model
+model PassReset {
+  email String @unique
+  code  Int
+}

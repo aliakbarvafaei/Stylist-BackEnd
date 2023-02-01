@@ -129,7 +129,7 @@ exports.update = async (req, res) => {
       address: new_address,
       email: new_email,
       phone: new_phone,
-      password: new_password,
+      password: md5(new_password),
       gender: new_gender,
       age: new_age,
     },
@@ -198,4 +198,68 @@ exports.getAll = async (req, res) => {
   return res.status(200).send({
     data: users,
   });
+};
+
+exports.PassReset = async (req, res) => {
+  const email = req.body.email;
+  let user = await db.User.findFirst({
+    where: {
+      email: email,
+    },
+  });
+  if (user) {
+    const code = Math.floor(100000 + Math.random() * 900000);
+    let row = await db.PassReset.findFirst({
+      where: {
+        email: email,
+      },
+    });
+    if (row) {
+      let updated_user = await db.PassReset.update({
+        where: {
+          email: email,
+        },
+        data: {
+          code: code,
+        },
+      });
+    } else {
+      let newRow = await db.PassReset.create({
+        data: {
+          email: email,
+          code: code,
+        },
+      });
+    }
+    sendMail(email, "بازیابی رمزعبور", `کد فراموشی رمز: ${code}`);
+    return res.status(200).send("کد فراموشی رمزعبور ارسال شد");
+  }else{
+    return res.status(404).send("کاربری با این ایمیل وجود ندارد")
+  }
+};
+
+exports.PassChange = async (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  const code = req.body.code;
+  let user = await db.PassReset.findFirst({
+    where: {
+      email: email,
+    },
+  });
+  if (user && user.code === code) {
+    let updated_user = await db.User.update({
+      where: {
+        email: email,
+      },
+      data: {
+        password: md5(password),
+      },
+    });
+    return res.status(200).send("رمزعبور با موفقیت تغییر کرد");
+  } else if (user) {
+    return res.status(401).send("کد فراموشی رمز اشتباه است");
+  } else {
+    return res.status(404).send("ابتدا باید درخواست کد فراموشی ارسال شود");
+  }
 };

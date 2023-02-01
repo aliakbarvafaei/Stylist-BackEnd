@@ -3,6 +3,7 @@ const { PrismaClient } = require("@prisma/client");
 const { add } = require("lodash");
 var jwt = require("jsonwebtoken");
 const sendMail = require("../functions/email").sendMail;
+const md5 = require("md5");
 const db = new PrismaClient();
 require("dotenv").config();
 const SECRET = "secret";
@@ -49,7 +50,7 @@ exports.create = async (req, res) => {
         address: address,
         email: email,
         phone: phone,
-        password: password,
+        password: md5(password),
         gender: gender,
         age: age,
       },
@@ -81,7 +82,7 @@ exports.login = async (req, res) => {
   let user_password = await db.User.findFirst({
     where: {
       email: email,
-      password: password,
+      password: md5(password),
     },
   });
   if (!user_password) {

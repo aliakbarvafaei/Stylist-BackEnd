@@ -9,7 +9,19 @@ const cUser = require('../controllers/users.js')
 
 
 //create user router
-router.post('/create', vUser.vUserCraete, cUser.create)
+router.post('', vUser.vUserCraete, cUser.create)
+
+//get all user router
+router.get('', cUser.getAll)
+
+//update user router
+router.put('', vUser.vUserUpdate, cUser.update)
+
+//delete user router
+router.delete('/:userId', vUser.vUserDelete, cUser.delete)
+
+//get one user router
+router.get('/:userId', vUser.vGetOne , cUser.getOne)
 
 //login user router
 router.post('/login', vUser.vUserLogin, cUser.login)
@@ -19,18 +31,6 @@ router.post('/password-reset', vUser.vPassReset, cUser.PassReset)
 
 //password change user router
 router.post('/password-change', vUser.vPassChange, cUser.PassChange)
-
-//update user router
-router.put('/update', vUser.vUserUpdate, cUser.update)
-
-//delete user router
-router.delete('/delete/:userId', vUser.vUserDelete, cUser.delete)
-
-//get one user router
-router.get('/one/:userId', vUser.vGetOne , cUser.getOne)
-
-//get all user router
-router.get('/all', cUser.getAll)
 
 
 module.exports = router

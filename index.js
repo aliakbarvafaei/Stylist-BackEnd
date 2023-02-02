@@ -1,6 +1,7 @@
 const express = require("express");
 const fs = require("fs");
 const cookie_parser = require("cookie-parser");
+var bodyParser = require('body-parser');
 const cors = require("cors");
 const path = require('path');
 const logger = require("morgan");
@@ -17,8 +18,10 @@ app.use(express.static(path.resolve('./public')));
 app.use(logger("dev"));
 
 //middleeware
-app.use(express.json({ limit: "50mb" }));
-app.use(cookie_parser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false })); 
+app.use(express.json());
+// app.use(cookie_parser());
 
 //route
 fs.readdirSync(`${__dirname}/routes`).map((route) => {

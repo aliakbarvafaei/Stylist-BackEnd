@@ -93,6 +93,8 @@ exports.update = async (req, res) => {
       return res.status(400).send("زمان ورود شما منقضی شده است");
     else if (err.name === "JsonWebTokenError") {
       return res.status(400).send("توکن احراز هویت نامعتبر است");
+    } else {
+      return res.status(400).send("خطای احراز هویت");
     }
   }
   const new_firstName = req.body.firstname;
@@ -210,8 +212,8 @@ exports.PassReset = async (req, res) => {
     }
     sendMail(email, "بازیابی رمزعبور", `کد فراموشی رمز: ${code}`);
     return res.status(200).send("کد فراموشی رمزعبور ارسال شد");
-  }else{
-    return res.status(404).send("کاربری با این ایمیل وجود ندارد")
+  } else {
+    return res.status(404).send("کاربری با این ایمیل وجود ندارد");
   }
 };
 

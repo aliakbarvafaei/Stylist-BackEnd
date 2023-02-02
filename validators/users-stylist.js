@@ -2,7 +2,6 @@
 const Schema = require("validate");
 require("dotenv").config();
 
-
 exports.vUserCraete = (req, res, next) => {
   try {
     const user = new Schema({
@@ -36,24 +35,6 @@ exports.vUserCraete = (req, res, next) => {
         type: String,
         message: {
           type: 'شماره تلفن باید به صورت رشته باشد'
-        }
-      },
-      age: {
-        type: Number,
-        required: true,
-        message: {
-          type: 'سن باید به صورت عددی باشد',
-          required: 'سن اجباری است'
-        }
-      },
-      gender: {
-        type: String,
-        enum: ["مرد", "زن"],
-        required: true,
-        message: {
-          type: 'جنسیت باید به صورت رشته باشد',
-          enum: 'جنسیت باید یکی از مقادیر زن یا مرد باشد',
-          required: 'جنسیت اجباری است'
         }
       },
       password: {
@@ -155,20 +136,6 @@ exports.vUserUpdate = async (req, res, next) => {
         type: String,
         message: {
           type: 'شماره تلفن باید به صورت رشته باشد'
-        }
-      },
-      age: {
-        type: Number,
-        message: {
-          type: 'سن باید به صورت عددی باشد'
-        }
-      },
-      gender: {
-        type: String,
-        enum: ["مرد", "زن"],
-        message: {
-          type: 'جنسیت باید به صورت رشته باشد',
-          enum: 'جنسیت باید یکی از مقادیر زن یا مرد باشد'
         }
       },
       password: {

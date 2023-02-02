@@ -14,16 +14,9 @@ exports.create = async (req, res) => {
   const email = req.body.email;
   const phone = req.body.phone;
   const password = req.body.password;
-  const gender =
-    req.body.gender === "زن"
-      ? "WOMAN"
-      : req.body.gender === "مرد"
-      ? "MAN"
-      : undefined;
-  const age = req.body.age;
 
   //chech uniqe email
-  let email_check = await db.User.findFirst({
+  let email_check = await db.User_Stylist.findFirst({
     where: {
       email: email,
     },
@@ -34,7 +27,7 @@ exports.create = async (req, res) => {
   if (!phone) {
     phone_check = null;
   } else {
-    phone_check = await db.User.findFirst({
+    phone_check = await db.User_Stylist.findFirst({
       where: {
         phone: phone,
       },
@@ -42,7 +35,7 @@ exports.create = async (req, res) => {
   }
 
   if (!email_check && !phone_check) {
-    let newUser = await db.User.create({
+    let newUser = await db.User_Stylist.create({
       data: {
         firstName: firstname,
         lastName: lastname,
@@ -50,8 +43,6 @@ exports.create = async (req, res) => {
         email: email,
         phone: phone,
         password: md5(password),
-        gender: gender,
-        age: age,
       },
     });
     sendMail(email, "ثبت نام", "<h3>به استایلیست خوش آمدید</h3>");
@@ -68,7 +59,7 @@ exports.login = async (req, res) => {
   const password = req.body.password;
 
   //check email exist
-  let user_email = await db.User.findFirst({
+  let user_email = await db.User_Stylist.findFirst({
     where: {
       email: email,
     },
@@ -78,7 +69,7 @@ exports.login = async (req, res) => {
   }
 
   //check password exist
-  let user_password = await db.User.findFirst({
+  let user_password = await db.User_Stylist.findFirst({
     where: {
       email: email,
       password: md5(password),
@@ -110,15 +101,8 @@ exports.update = async (req, res) => {
   const new_email = req.body.email;
   const new_phone = req.body.phone;
   const new_password = req.body.password;
-  const new_gender =
-    req.body.gender === "زن"
-      ? "WOMAN"
-      : req.body.gender === "مرد"
-      ? "MAN"
-      : undefined;
-  const new_age = req.body.age;
 
-  let updated_user = await db.User.update({
+  let updated_user = await db.User_Stylist.update({
     where: {
       id: id,
     },
@@ -129,8 +113,6 @@ exports.update = async (req, res) => {
       email: new_email,
       phone: new_phone,
       password: md5(new_password),
-      gender: new_gender,
-      age: new_age,
     },
   });
   if (updated_user) {
@@ -144,7 +126,7 @@ exports.delete = async (req, res) => {
   id = parseInt(req.params.userId);
 
   //delete user
-  let user = await db.User.delete({
+  let user = await db.User_Stylist.delete({
     where: {
       id: id,
     },
@@ -158,7 +140,7 @@ exports.delete = async (req, res) => {
 
 exports.getOne = async (req, res) => {
   id = parseInt(req.params.userId);
-  let user = await db.User.findFirst({
+  let user = await db.User_Stylist.findFirst({
     where: {
       id: id,
     },
@@ -172,8 +154,6 @@ exports.getOne = async (req, res) => {
         lastname: user.lastName,
         address: user.address,
         phone: user.phone,
-        age: user.age,
-        gender: user.gender,
       },
     });
   } else {
@@ -182,7 +162,7 @@ exports.getOne = async (req, res) => {
 };
 
 exports.getAll = async (req, res) => {
-  let users = await db.User.findMany({
+  let users = await db.User_Stylist.findMany({
     select: {
       id: true,
       firstName: true,
@@ -190,8 +170,6 @@ exports.getAll = async (req, res) => {
       address: true,
       email: true,
       phone: true,
-      gender: true,
-      age: true,
     },
   });
   return res.status(200).send({
@@ -201,7 +179,7 @@ exports.getAll = async (req, res) => {
 
 exports.PassReset = async (req, res) => {
   const email = req.body.email;
-  let user = await db.User.findFirst({
+  let user = await db.User_Stylist.findFirst({
     where: {
       email: email,
     },
@@ -247,7 +225,7 @@ exports.PassChange = async (req, res) => {
     },
   });
   if (user && user.code === code) {
-    let updated_user = await db.User.update({
+    let updated_user = await db.User_Stylist.update({
       where: {
         email: email,
       },

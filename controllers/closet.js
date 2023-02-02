@@ -4,6 +4,8 @@ var jwt = require("jsonwebtoken");
 const sendMail = require("../functions/email").sendMail;
 const md5 = require("md5");
 const db = new PrismaClient();
+const fs = require("fs");
+const path = require("path");
 require("dotenv").config();
 const SECRET = "secret";
 
@@ -150,6 +152,13 @@ exports.ClothesClothingCreate = async (req, res) => {
   try {
     id = jwt.verify(req.header("Authorization"), SECRET).id;
   } catch (err) {
+    req.files.forEach((item) => {
+      fs.unlink(`public/images/${item.filename}`, (err) => {
+        if (err) {
+          throw err;
+        }
+      });
+    });
     if (err.name === "TokenExpiredError")
       return res.status(400).send("زمان ورود شما منقضی شده است");
     else if (err.name === "JsonWebTokenError") {
@@ -200,6 +209,27 @@ exports.ClothesClothingGetAll = async (req, res) => {
       return res.status(400).send("خطای احراز هویت");
     }
   }
+  const categoryId = parseInt(req.params.categoryId);
+  try {
+    let clothes = await db.Category_Clothing.findFirst({
+      where: {
+        id: categoryId,
+        userId: id,
+      },
+      include: {
+        clothing: true,
+      },
+    });
+    if (clothes) {
+      return res.status(200).send(clothes.clothing);
+    } else {
+      return res
+        .status(404)
+        .send("دسته‌بندی یا کاربری با این شناسه وجود ندارد");
+    }
+  } catch {
+    return res.status(500).send("عملیات با خطا مواجه شد");
+  }
 };
 
 exports.ClothesClothingUpdate = async (req, res) => {
@@ -214,6 +244,41 @@ exports.ClothesClothingUpdate = async (req, res) => {
     } else {
       return res.status(400).send("خطای احراز هویت");
     }
+  }
+  const categoryId = parseInt(req.params.categoryId);
+  const clothingId = parseInt(req.params.clothingId);
+  const material = req.body.material;
+  const season = req.body.season;
+  const size = req.body.size;
+  try {
+    let clothing = await db.Clothing.findFirst({
+      where: {
+        id: clothingId,
+        userId: id,
+        category_clothingId: categoryId,
+      },
+    });
+    if (clothing) {
+      await db.Clothing.update({
+        where: {
+          id: clothingId,
+        },
+        data: {
+          material: material,
+          season: season,
+          size: size,
+        },
+      });
+      return res.status(200).send("لباس با موفقیت ویرایش شد");
+    } else {
+      return res
+        .status(404)
+        .send(
+          "لباسی با این شناسه یا شناسه ایجاد کننده یا شناسه دسته‌بندی وجود ندارد"
+        );
+    }
+  } catch {
+    return res.status(500).send("عملیات با خطا مواجه شد");
   }
 };
 
@@ -230,6 +295,59 @@ exports.ClothesClothingDelete = async (req, res) => {
       return res.status(400).send("خطای احراز هویت");
     }
   }
+  const categoryId = parseInt(req.params.categoryId);
+  const clothingId = parseInt(req.params.clothingId);
+  var clothing = null;
+  try {
+    clothing = await db.Clothing.findFirst({
+      where: {
+        id: clothingId,
+        userId: id,
+        category_clothingId: categoryId,
+      },
+      include: {
+        images_clothing: true,
+      },
+    });
+    if (!clothing) {
+      return res
+        .status(404)
+        .send(
+          "لباسی با این شناسه یا شناسه ایجاد کننده یا شناسه دسته‌بندی وجود ندارد"
+        );
+    }
+  } catch {
+    return res.status(500).send("عملیات با خطا مواجه شد");
+  }
+  try {
+    if (clothing) {
+      clothing.images_clothing.forEach(async (item) => {
+        fs.unlink(
+          `public/images/${
+            item.url.split("/")[item.url.split("/").length - 1]
+          }`,
+          (err) => {
+            if (err) {
+              throw err;
+            }
+          }
+        );
+      });
+    }
+  } catch {
+    return res.status(500).send("عملیات با خطا مواجه شد");
+  }
+  try {
+    await db.Clothing.delete({
+      where: {
+        id: clothing.id,
+      },
+    });
+    return res.status(200).send("لباس با موفقیت حذف شد");
+  } catch {
+    console.log("aaa");
+    return res.status(500).send("عملیات با خطا مواجه شد");
+  }
 };
 
 exports.ClothesClothingGetOne = async (req, res) => {
@@ -244,6 +362,29 @@ exports.ClothesClothingGetOne = async (req, res) => {
     } else {
       return res.status(400).send("خطای احراز هویت");
     }
+  }
+  const categoryId = parseInt(req.params.categoryId);
+  const clothingId = parseInt(req.params.clothingId);
+  try {
+    let clothing = await db.Clothing.findFirst({
+      where: {
+        id: clothingId,
+        userId: id,
+        category_clothingId: categoryId,
+      },
+      include: {
+        images_clothing: true,
+      },
+    });
+    if (clothing) {
+      return res.status(200).send(clothing);
+    } else {
+      return res
+        .status(404)
+        .send("لباس یا دسته‌بندی یا کاربری با این شناسه وجود ندارد");
+    }
+  } catch {
+    return res.status(500).send("عملیات با خطا مواجه شد");
   }
 };
 

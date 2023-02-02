@@ -89,7 +89,7 @@ exports.login = async (req, res) => {
   } else {
     return res
       .status(200)
-      .send(jwt.sign(user_password, SECRET, { expiresIn: "10m" }));
+      .send(jwt.sign(user_password, SECRET, { expiresIn: "50m" }));
   }
 };
 

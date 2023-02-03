@@ -125,8 +125,9 @@ router.put(
 //add set to category router
 router.post(
   "/mysets/:categoryId",
-  vCloset.vSetsClothingCreate,
-  cCloset.SetsClothingCreate
+  imageUpload.array("images", 5),
+  (req, res, next) => vCloset.vSetsClothingCreate(req, res, next),
+  (req, res) => cCloset.SetsClothingCreate(req, res)
 );
 
 //get all set in category router
@@ -136,12 +137,12 @@ router.get(
   cCloset.SetsClothingGetAll
 );
 
-//update one set in category router
-router.put(
-  "/mysets/:categoryId/:setId",
-  vCloset.vSetsClothingUpdate,
-  cCloset.SetsClothingUpdate
-);
+// //update one set in category router
+// router.put(
+//   "/mysets/:categoryId/:setId",
+//   vCloset.vSetsClothingUpdate,
+//   cCloset.SetsClothingUpdate
+// );
 
 //delete one set in category router
 router.delete(

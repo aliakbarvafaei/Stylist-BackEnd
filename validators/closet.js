@@ -239,12 +239,12 @@ exports.vSetsCategoryUpdate = (req, res, next) => {
 exports.vSetsClothingCreate = (req, res, next) => {
   try {
     const set = new Schema({
-      images: {
-        required: true,
+      products: [{
+        type: Number,
         message: {
-          required: "عکس اجباری است",
+          type: "شناسه محصول باید به صورت عدد باشد",
         },
-      },
+      }],
     });
     var res_data = [];
     const errors = set.validate(req.body);
@@ -268,14 +268,14 @@ exports.vSetsClothingGetAll = (req, res, next) => {
   }
 };
 
-exports.vSetsClothingUpdate = (req, res, next) => {
-  try {
-    next();
-  } catch (error) {
-    console.log(error);
-    return res.status(500).send("عملیات با خطا مواجه شد");
-  }
-};
+// exports.vSetsClothingUpdate = (req, res, next) => {
+//   try {
+//     next();
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(500).send("عملیات با خطا مواجه شد");
+//   }
+// };
 
 exports.vSetsClothingDelete = (req, res, next) => {
   try {

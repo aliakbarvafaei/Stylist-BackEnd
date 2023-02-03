@@ -104,23 +104,28 @@ exports.update = async (req, res) => {
   const new_phone = req.body.phone;
   const new_password = req.body.password;
 
-  let updated_user = await db.User_Stylist.update({
-    where: {
-      id: id,
-    },
-    data: {
-      firstName: new_firstName,
-      lastName: new_lastName,
-      address: new_address,
-      email: new_email,
-      phone: new_phone,
-      password: md5(new_password),
-    },
-  });
-  if (updated_user) {
+  try {
+    let updated_user = await db.User_Stylist.update({
+      where: {
+        id: id,
+      },
+      data: {
+        firstName: new_firstName,
+        lastName: new_lastName,
+        address: new_address,
+        email: new_email,
+        phone: new_phone,
+        password: md5(new_password),
+      },
+    });
     return res.status(200).send("به‌روز‌رسانی با موفقیت انجام شد");
-  } else {
-    return res.status(400).send("خطا: به‌روز رسانی انجام نشد");
+  } catch (err) {
+    if (err.code && err.code === "P2002") {
+      return res
+        .status(409)
+        .send("کاربری با این ایمیل یا شماره تلفن وجود دارد");
+    }
+    return res.status(400).send("عملیات با خطا مواجه شد");
   }
 };
 
@@ -136,7 +141,7 @@ exports.delete = async (req, res) => {
   if (user) {
     return res.status(200).send("کاربر با موفقیت حذف شد");
   } else {
-    return res.status(400).send("خطا: حذف کاربر ناموفق انجام شد");
+    return res.status(404).send("کاربری با این شناسه وجود ندارد");
   }
 };
 
@@ -159,7 +164,7 @@ exports.getOne = async (req, res) => {
       },
     });
   } else {
-    return res.status(404).send("کاربری با این آی‌دی وجود ندارد");
+    return res.status(404).send("کاربری با این شناسه وجود ندارد");
   }
 };
 

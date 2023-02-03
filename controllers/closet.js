@@ -31,21 +31,10 @@ exports.ClothesCategoryCreate = async (req, res) => {
       },
     });
     return res.status(201).send("دسته‌بندی با موفقیت اضافه شد");
-  } catch {
-    let oldCategory = await db.Category_Clothing.findFirst({
-      where: {
-        name: name,
-      },
-    });
-    if (oldCategory) {
+  } catch (err) {
+    if (err.code && err.code === "P2002") {
       return res.status(409).send("دسته‌بندی با این نام وجود دارد");
-    }
-    let oldUser = await db.User.findFirst({
-      where: {
-        id: id,
-      },
-    });
-    if (!oldUser) {
+    } else if (err.code && err.code === "P2003") {
       return res.status(404).send("کاربری با این شناسه وجود ندارد");
     }
     return res.status(500).send("عملیات با خطا مواجه شد");
@@ -153,7 +142,10 @@ exports.ClothesCategoryUpdate = async (req, res) => {
       });
       return res.status(200).send("دسته‌بندی با موفقیت ویرایش شد");
     }
-  } catch {
+  } catch (err) {
+    if (err.code && err.code === "P2002") {
+      return res.status(409).send("دسته‌بندی با این نام وجود دارد");
+    }
     return res.status(500).send("عملیات با خطا مواجه شد");
   }
 };
@@ -196,7 +188,10 @@ exports.ClothesClothingCreate = async (req, res) => {
         size: size,
       },
     });
-  } catch {
+  } catch (err) {
+    if (err.code && err.code === "P2003") {
+      return res.status(404).send("کاربری با این شناسه وجود ندارد");
+    }
     return res.status(500).send("عملیات با خطا مواجه شد");
   }
   req.files.forEach(async (item) => {
@@ -241,7 +236,10 @@ exports.ClothesClothingGetAll = async (req, res) => {
         .status(404)
         .send("دسته‌بندی یا کاربری با این شناسه وجود ندارد");
     }
-  } catch {
+  } catch (err) {
+    if (err.code && err.code === "P2003") {
+      return res.status(404).send("کاربری با این شناسه وجود ندارد");
+    }
     return res.status(500).send("عملیات با خطا مواجه شد");
   }
 };
@@ -291,7 +289,10 @@ exports.ClothesClothingUpdate = async (req, res) => {
           "لباسی با این شناسه یا شناسه ایجاد کننده یا شناسه دسته‌بندی وجود ندارد"
         );
     }
-  } catch {
+  } catch (err) {
+    if (err.code && err.code === "P2003") {
+      return res.status(404).send("کاربر یا دسته‌بندی با این شناسه وجود ندارد");
+    }
     return res.status(500).send("عملیات با خطا مواجه شد");
   }
 };
@@ -330,7 +331,10 @@ exports.ClothesClothingDelete = async (req, res) => {
           "لباسی با این شناسه یا شناسه ایجاد کننده یا شناسه دسته‌بندی وجود ندارد"
         );
     }
-  } catch {
+  } catch (err) {
+    if (err.code && err.code === "P2003") {
+      return res.status(404).send("کاربر یا دسته‌بندی با این شناسه وجود ندارد");
+    }
     return res.status(500).send("عملیات با خطا مواجه شد");
   }
   try {
@@ -396,7 +400,10 @@ exports.ClothesClothingGetOne = async (req, res) => {
         .status(404)
         .send("لباس یا دسته‌بندی یا کاربری با این شناسه وجود ندارد");
     }
-  } catch {
+  } catch (err) {
+    if (err.code && err.code === "P2003") {
+      return res.status(404).send("کاربر یا دسته‌بندی با این شناسه وجود ندارد");
+    }
     return res.status(500).send("عملیات با خطا مواجه شد");
   }
 };
@@ -425,21 +432,10 @@ exports.SetsCategoryCreate = async (req, res) => {
       },
     });
     return res.status(201).send("دسته‌بندی با موفقیت اضافه شد");
-  } catch {
-    let oldCategory = await db.Category_Set.findFirst({
-      where: {
-        name: name,
-      },
-    });
-    if (oldCategory) {
+  } catch (err) {
+    if (err.code && err.code === "P2002") {
       return res.status(409).send("دسته‌بندی با این نام وجود دارد");
-    }
-    let oldUser = await db.User.findFirst({
-      where: {
-        id: id,
-      },
-    });
-    if (!oldUser) {
+    } else if (err.code && err.code === "P2003") {
       return res.status(404).send("کاربری با این شناسه وجود ندارد");
     }
     return res.status(500).send("عملیات با خطا مواجه شد");
@@ -547,7 +543,10 @@ exports.SetsCategoryUpdate = async (req, res) => {
       });
       return res.status(200).send("دسته‌بندی با موفقیت ویرایش شد");
     }
-  } catch {
+  } catch (err) {
+    if (err.code && err.code === "P2002") {
+      return res.status(409).send("دسته‌بندی با این نام وجود دارد");
+    }
     return res.status(500).send("عملیات با خطا مواجه شد");
   }
 };
@@ -595,20 +594,26 @@ exports.SetsClothingCreate = async (req, res) => {
         image_set: req.get("host") + `/images/${req.files[0].filename}`,
       },
     });
-  } catch {
+  } catch (err) {
+    if (err.code && err.code === "P2003") {
+      return res.status(404).send("کاربری با این شناسه وجود ندارد");
+    } else if (err.code && err.code === "P2002") {
+      return res.status(409).send("عکسی با این آدرس وجود دارد");
+    }
     return res.status(500).send("عملیات با خطا مواجه شد");
   }
-  try{
-    products && JSON.parse(products).forEach(async(item)=>{
-      await db.Set_Product.create({
-        data: {
-          setId: newClothing.id,
-          productId: item,
-        },
+  try {
+    products &&
+      JSON.parse(products).forEach(async (item) => {
+        await db.Set_Product.create({
+          data: {
+            setId: newClothing.id,
+            productId: item,
+          },
+        });
       });
-    })
     return res.status(201).send("ست با موفقیت اضافه شد");
-  }catch{
+  } catch {
     return res.status(404).send("محصولی با این شناسه وجود ندارد");
   }
 };
@@ -644,7 +649,10 @@ exports.SetsClothingGetAll = async (req, res) => {
         .status(404)
         .send("دسته‌بندی یا کاربری با این شناسه وجود ندارد");
     }
-  } catch {
+  } catch (err) {
+    if (err.code && err.code === "P2003") {
+      return res.status(404).send("کاربری با این شناسه وجود ندارد");
+    }
     return res.status(500).send("عملیات با خطا مواجه شد");
   }
 };
@@ -727,7 +735,10 @@ exports.SetsClothingDelete = async (req, res) => {
           "ستی با این شناسه یا شناسه ایجاد کننده یا شناسه دسته‌بندی وجود ندارد"
         );
     }
-  } catch {
+  } catch (err) {
+    if (err.code && err.code === "P2003") {
+      return res.status(404).send("کاربر یا دسته‌بندی با این شناسه وجود ندارد");
+    }
     return res.status(500).send("عملیات با خطا مواجه شد");
   }
   try {
@@ -791,7 +802,10 @@ exports.SetsClothingGetOne = async (req, res) => {
         .status(404)
         .send("ست یا دسته‌بندی یا کاربری با این شناسه وجود ندارد");
     }
-  } catch {
+  } catch (err) {
+    if (err.code && err.code === "P2003") {
+      return res.status(404).send("کاربر یا دسته‌بندی با این شناسه وجود ندارد");
+    }
     return res.status(500).send("عملیات با خطا مواجه شد");
   }
 };

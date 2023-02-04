@@ -88,22 +88,24 @@ exports.ClothesCategoryDelete = async (req, res) => {
   }
   const categoryId = parseInt(req.params.categoryId);
   try {
-    let user = await db.Category_Clothing.findFirst({
+    let category = await db.Category_Clothing.findFirst({
       where: {
         id: categoryId,
       },
     });
-    if (user.userId === id) {
-      let user = await db.Category_Clothing.delete({
+    if (category && category.userId === id) {
+      await db.Category_Clothing.delete({
         where: {
           id: categoryId,
         },
       });
       return res.status(200).send("دسته‌بندی با موفقیت حذف شد");
-    } else {
+    } else if (category) {
       return res
         .status(404)
         .send("‌دسته‌بندی با این شناسه ایجاد کننده وجود ندارد");
+    } else {
+      return res.status(404).send("‌دسته‌بندی با این شناسه وجود ندارد");
     }
   } catch {
     return res.status(500).send("عملیات با خطا مواجه شد");
@@ -126,12 +128,12 @@ exports.ClothesCategoryUpdate = async (req, res) => {
   const categoryId = parseInt(req.params.categoryId);
   const name = req.body.name;
   try {
-    let user = await db.Category_Clothing.findFirst({
+    let category = await db.Category_Clothing.findFirst({
       where: {
         id: categoryId,
       },
     });
-    if (user.userId === id) {
+    if (category && category.userId === id) {
       await db.Category_Clothing.update({
         where: {
           id: categoryId,
@@ -141,6 +143,10 @@ exports.ClothesCategoryUpdate = async (req, res) => {
         },
       });
       return res.status(200).send("دسته‌بندی با موفقیت ویرایش شد");
+    } else if (category) {
+      return res.status(400).send("شناسه ایجاد کننده دسته‌بندی اشتباه است");
+    } else {
+      return res.status(404).send("دسته‌بندی با این شناسه وجود ندارد");
     }
   } catch (err) {
     if (err.code && err.code === "P2002") {
@@ -179,18 +185,29 @@ exports.ClothesClothingCreate = async (req, res) => {
   const size = req.body.size;
   var newClothing;
   try {
-    newClothing = await db.Clothing.create({
-      data: {
-        category_clothingId: categoryId,
-        userId: id,
-        material: material,
-        season: season,
-        size: size,
+    let category = await db.Category_Clothing.findFirst({
+      where: {
+        id: categoryId,
       },
     });
+    if (category && category.userId === id) {
+      newClothing = await db.Clothing.create({
+        data: {
+          category_clothingId: categoryId,
+          userId: id,
+          material: material,
+          season: season,
+          size: size,
+        },
+      });
+    } else if (category) {
+      return res.status(400).send("شناسه ایجاد کننده دسته‌بندی اشتباه است");
+    } else {
+      return res.status(404).send("دسته‌بندی با این شناسه وجود ندارد");
+    }
   } catch (err) {
     if (err.code && err.code === "P2003") {
-      return res.status(404).send("کاربری با این شناسه وجود ندارد");
+      return res.status(404).send("کاربر یا دسته‌بندی با این شناسه وجود ندارد");
     }
     return res.status(500).send("عملیات با خطا مواجه شد");
   }
@@ -220,7 +237,7 @@ exports.ClothesClothingGetAll = async (req, res) => {
   }
   const categoryId = parseInt(req.params.categoryId);
   try {
-    let clothes = await db.Category_Clothing.findFirst({
+    let category = await db.Category_Clothing.findFirst({
       where: {
         id: categoryId,
         userId: id,
@@ -229,8 +246,8 @@ exports.ClothesClothingGetAll = async (req, res) => {
         clothing: true,
       },
     });
-    if (clothes) {
-      return res.status(200).send(clothes.clothing);
+    if (category) {
+      return res.status(200).send(category.clothing);
     } else {
       return res
         .status(404)
@@ -489,22 +506,24 @@ exports.SetsCategoryDelete = async (req, res) => {
   }
   const categoryId = parseInt(req.params.categoryId);
   try {
-    let user = await db.Category_Set.findFirst({
+    let category = await db.Category_Set.findFirst({
       where: {
         id: categoryId,
       },
     });
-    if (user.userId === id) {
-      let user = await db.Category_Set.delete({
+    if (category && category.userId === id) {
+      await db.Category_Set.delete({
         where: {
           id: categoryId,
         },
       });
       return res.status(200).send("دسته‌بندی با موفقیت حذف شد");
-    } else {
+    } else if (category) {
       return res
         .status(404)
         .send("‌دسته‌بندی با این شناسه ایجاد کننده وجود ندارد");
+    } else {
+      return res.status(404).send("‌دسته‌بندی با این شناسه وجود ندارد");
     }
   } catch {
     return res.status(500).send("عملیات با خطا مواجه شد");
@@ -527,12 +546,12 @@ exports.SetsCategoryUpdate = async (req, res) => {
   const categoryId = parseInt(req.params.categoryId);
   const name = req.body.name;
   try {
-    let user = await db.Category_Set.findFirst({
+    let category = await db.Category_Set.findFirst({
       where: {
         id: categoryId,
       },
     });
-    if (user.userId === id) {
+    if (category && category.userId === id) {
       await db.Category_Set.update({
         where: {
           id: categoryId,
@@ -542,6 +561,10 @@ exports.SetsCategoryUpdate = async (req, res) => {
         },
       });
       return res.status(200).send("دسته‌بندی با موفقیت ویرایش شد");
+    } else if (category) {
+      return res.status(400).send("شناسه ایجاد کننده دسته‌بندی اشتباه است");
+    } else {
+      return res.status(404).send("دسته‌بندی با این شناسه وجود ندارد");
     }
   } catch (err) {
     if (err.code && err.code === "P2002") {
@@ -587,13 +610,24 @@ exports.SetsClothingCreate = async (req, res) => {
   const products = req.body.products;
   var newClothing;
   try {
-    newClothing = await db.Set.create({
-      data: {
-        category_setId: categoryId,
-        userId: id,
-        image_set: req.get("host") + `/images/${req.files[0].filename}`,
+    let category = await db.Category_Set.findFirst({
+      where: {
+        id: categoryId,
       },
     });
+    if (category && category.userId === id) {
+      newClothing = await db.Set.create({
+        data: {
+          category_setId: categoryId,
+          userId: id,
+          image_set: req.get("host") + `/images/${req.files[0].filename}`,
+        },
+      });
+    } else if (category) {
+      return res.status(400).send("شناسه ایجاد کننده دسته‌بندی اشتباه است");
+    } else {
+      return res.status(404).send("دسته‌بندی با این شناسه وجود ندارد");
+    }
   } catch (err) {
     if (err.code && err.code === "P2003") {
       return res.status(404).send("کاربری با این شناسه وجود ندارد");
@@ -642,12 +676,12 @@ exports.SetsClothingGetAll = async (req, res) => {
         set_product: true,
       },
     });
-    if (sets) {
+    if (sets.length > 0) {
       return res.status(200).send(sets);
     } else {
       return res
         .status(404)
-        .send("دسته‌بندی یا کاربری با این شناسه وجود ندارد");
+        .send("ستی با این شناسه دسته‌بندی یا ایجادکننده وجود ندارد");
     }
   } catch (err) {
     if (err.code && err.code === "P2003") {

@@ -1,7 +1,8 @@
 //config database for send query
 const { PrismaClient } = require("@prisma/client");
 var jwt = require("jsonwebtoken");
-const sendMail = require("../functions/email").sendMail;
+const mailSignup = require("../functions/email").mailSignup;
+const mailResetPass = require("../functions/email").mailResetPass;
 const md5 = require("md5");
 const db = new PrismaClient();
 require("dotenv").config();
@@ -45,7 +46,7 @@ exports.create = async (req, res) => {
         password: md5(password),
       },
     });
-    sendMail(email, "ثبت نام", "<h3>به استایلیست خوش آمدید</h3>");
+    mailSignup(email, firstname,req.get("host")+"/logo.png");
     return res.status(201).send("ثبت نام با موفقیت انجام شد");
   } else if (email_check) {
     return res.status(409).send("ایمیل تکراری می‌باشد");
@@ -217,7 +218,7 @@ exports.PassReset = async (req, res) => {
         },
       });
     }
-    sendMail(email, "بازیابی رمزعبور", `کد فراموشی رمز: ${code}`);
+    mailResetPass(email, code,req.get("host")+"/logo.png");
     return res.status(200).send("کد فراموشی رمزعبور ارسال شد");
   } else {
     return res.status(404).send("کاربری با این ایمیل وجود ندارد");

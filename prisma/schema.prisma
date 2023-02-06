@@ -282,6 +282,7 @@ model Product_Category {
 //category model
 model Category {
   id               Int                @id @default(autoincrement())
+  title            String             @unique
   product_category Product_Category[] @relation("CATEGORY_PRODUCT_CATEGORY")
 }
 

@@ -36,6 +36,13 @@ const cCloset = require("../controllers/closet.js");
 
 ///////////////// All API for myclothes
 
+// get all categories router
+router.get(
+  "/myclothes/categories/:gender",
+  vCloset.vClothesCategories,
+  cCloset.ClothesCategories
+);
+
 //create category router
 router.post(
   "/myclothes",
@@ -43,7 +50,7 @@ router.post(
   cCloset.ClothesCategoryCreate
 );
 
-//get all category router
+//get all categories of user router
 router.get(
   "/myclothes",
   vCloset.vClothesCategoryGetAll,

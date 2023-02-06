@@ -1,6 +1,16 @@
 //config database for send query
 const Schema = require("validate");
 require("dotenv").config();
+
+exports.vClothesCategories = (req, res, next) => {
+  try {
+    next();
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send("عملیات با خطا مواجه شد");
+  }
+};
+
 ///////////////// All validator for myclothes
 
 exports.vClothesCategoryCraete = (req, res, next) => {
@@ -239,12 +249,14 @@ exports.vSetsCategoryUpdate = (req, res, next) => {
 exports.vSetsClothingCreate = (req, res, next) => {
   try {
     const set = new Schema({
-      products: [{
-        type: Number,
-        message: {
-          type: "شناسه محصول باید به صورت عدد باشد",
+      products: [
+        {
+          type: Number,
+          message: {
+            type: "شناسه محصول باید به صورت عدد باشد",
+          },
         },
-      }],
+      ],
     });
     var res_data = [];
     const errors = set.validate(req.body);

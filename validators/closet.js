@@ -1,5 +1,6 @@
 //config database for send query
 const Schema = require("validate");
+const removeFiles = require("../functions/rmFiles").removeFiles;
 require("dotenv").config();
 
 exports.vClothesCategories = (req, res, next) => {
@@ -108,7 +109,10 @@ exports.vClothesClothingCreate = (req, res, next) => {
     errors.forEach((element) => {
       res_data.push(element.message);
     });
-    if (res_data.length > 0) return res.status(400).send(res_data);
+    if (res_data.length > 0) {
+      removeFiles(req.files);
+      return res.status(400).send(res_data);
+    }
     next();
   } catch (error) {
     console.log(error);
@@ -263,7 +267,10 @@ exports.vSetsClothingCreate = (req, res, next) => {
     errors.forEach((element) => {
       res_data.push(element.message);
     });
-    if (res_data.length > 0) return res.status(400).send(res_data);
+    if (res_data.length > 0) {
+      removeFiles(req.files);
+      return res.status(400).send(res_data);
+    }
     next();
   } catch (error) {
     console.log(error);

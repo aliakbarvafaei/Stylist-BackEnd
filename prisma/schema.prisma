@@ -42,14 +42,14 @@ enum STATUS_CART {
 //user model
 model User {
   id                Int                 @id @default(autoincrement())
-  email             String              @unique
+  phone             String              @unique
+  email             String?             @unique
   firstName         String?
   lastName          String?
-  age               Int
+  age               Int?
   address           String?
-  phone             String?             @unique
-  password          String
-  gender            GENDERS             @default(MAN)
+  password          String?
+  gender            GENDERS?
   createdAt         DateTime            @default(now())
   clothing          Clothing[]          @relation("USER_CLOTHING")
   category_clothing Category_Clothing[] @relation("USER_CATEGORY_CLOTHING")
@@ -135,12 +135,12 @@ model Counseling {
 //user_stylist model
 model User_Stylist {
   id         Int          @id @default(autoincrement())
-  email      String       @unique
+  phone      String       @unique
+  email      String?      @unique
   firstName  String?
   lastName   String?
   address    String?
-  phone      String?      @unique
-  password   String
+  password   String?
   createdAt  DateTime     @default(now())
   counseling Counseling[] @relation("USER_STYLIST_COUNSELING")
 }
@@ -259,13 +259,13 @@ model Image_Product {
 //seller model
 model Seller {
   id        Int       @id @default(autoincrement())
-  email     String    @unique
-  shopName  String
+  phone     String    @unique
+  email     String?   @unique
+  shopName  String?
   firstName String?
   lastName  String?
   address   String?
-  phone     String?   @unique
-  password  String
+  password  String?
   createdAt DateTime  @default(now())
   product   Product[] @relation("SELLER_PRODUCT")
 }
@@ -288,6 +288,12 @@ model Category {
 
 //passreset model
 model PassReset {
-  email String @unique
+  user String @unique
+  code Int
+}
+
+//logincode model
+model LoginCode {
+  phone String @unique
   code  Int
 }

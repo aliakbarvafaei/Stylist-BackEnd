@@ -235,11 +235,11 @@ exports.vPassChange = (req, res, next) => {
       code: {
         type: Number,
         required: true,
-        length: { min: 6 , max: 6},
+        length: { min: 5 , max: 5},
         message: {
           type: 'کد باید به صورت عدد باشد',
           required: 'کد اجباری است',
-          length: 'کد باید 6 حرف باشد'
+          length: 'کد باید 5 حرف باشد'
         }
       },
     });

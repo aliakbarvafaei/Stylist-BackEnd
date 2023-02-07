@@ -195,7 +195,7 @@ exports.PassReset = async (req, res) => {
     },
   });
   if (user) {
-    const code = Math.floor(100000 + Math.random() * 900000);
+    const code = Math.floor(10000 + Math.random() * 90000);
     let row = await db.PassReset.findFirst({
       where: {
         email: email,

@@ -270,24 +270,37 @@ exports.ClothesClothingCreate = async (req, res) => {
         },
       });
     } else if (category) {
+      await removeFiles(req.files);
       return res.status(400).send("شناسه ایجاد کننده دسته‌بندی اشتباه است");
     } else {
+      await removeFiles(req.files);
       return res.status(404).send("دسته‌بندی با این شناسه وجود ندارد");
     }
   } catch (err) {
+    await removeFiles(req.files);
     if (err.code && err.code === "P2003") {
       return res.status(404).send("کاربر یا دسته‌بندی با این شناسه وجود ندارد");
     }
     return res.status(500).send("عملیات با خطا مواجه شد");
   }
-  req.files.forEach(async (item) => {
-    let newImage = await db.Image_Clothing.create({
-      data: {
-        clothingId: newClothing.id,
-        url: req.get("host") + `/images/${item.filename}`,
-      },
+  try {
+    req.files.forEach(async (item) => {
+      let newImage = await db.Image_Clothing.create({
+        data: {
+          clothingId: newClothing.id,
+          url: req.get("host") + `/images/${item.filename}`,
+        },
+      });
     });
-  });
+  } catch (err) {
+    await removeFiles(req.files);
+    if (err.code && err.code === "P2003") {
+      return res.status(404).send("لباسی با این شناسه وجود ندارد");
+    } else if (err.code && err.code === "P2002") {
+      return res.status(404).send("عکسی با این آدرس وجود دارد");
+    }
+    return res.status(500).send("عملیات با خطا مواجه شد");
+  }
   return res.status(201).send("لباس با موفقیت اضافه شد");
 };
 
@@ -681,11 +694,14 @@ exports.SetsClothingCreate = async (req, res) => {
         },
       });
     } else if (category) {
+      await removeFiles(req.files);
       return res.status(400).send("شناسه ایجاد کننده دسته‌بندی اشتباه است");
     } else {
+      await removeFiles(req.files);
       return res.status(404).send("دسته‌بندی با این شناسه وجود ندارد");
     }
   } catch (err) {
+    await removeFiles(req.files);
     if (err.code && err.code === "P2003") {
       return res.status(404).send("کاربری با این شناسه وجود ندارد");
     } else if (err.code && err.code === "P2002") {
@@ -705,6 +721,9 @@ exports.SetsClothingCreate = async (req, res) => {
       });
     return res.status(201).send("ست با موفقیت اضافه شد");
   } catch {
+    if (err.code && err.code === "P2003") {
+      return res.status(404).send("ست یا محصولی با این شناسه وجود ندارد");
+    }
     return res.status(404).send("محصولی با این شناسه وجود ندارد");
   }
 };

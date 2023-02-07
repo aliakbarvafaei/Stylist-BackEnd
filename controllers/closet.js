@@ -4,6 +4,7 @@ var jwt = require("jsonwebtoken");
 const db = new PrismaClient();
 const fs = require("fs");
 const path = require("path");
+const removeFiles = require("../functions/rmFiles").removeFiles;
 require("dotenv").config();
 const SECRET = "secret";
 
@@ -238,13 +239,7 @@ exports.ClothesClothingCreate = async (req, res) => {
   try {
     id = jwt.verify(req.header("Authorization"), SECRET).id;
   } catch (err) {
-    req.files.forEach((item) => {
-      fs.unlink(`public/images/${item.filename}`, (err) => {
-        if (err) {
-          throw err;
-        }
-      });
-    });
+    await removeFiles(req.files);
     if (err.name === "TokenExpiredError")
       return res.status(400).send("زمان ورود شما منقضی شده است");
     else if (err.name === "JsonWebTokenError") {
@@ -652,26 +647,14 @@ exports.SetsClothingCreate = async (req, res) => {
   if (req.files.length == 0) {
     return res.status(400).send("عکس اجباری است");
   } else if (req.files.length > 1) {
-    req.files.forEach((item) => {
-      fs.unlink(`public/images/${item.filename}`, (err) => {
-        if (err) {
-          throw err;
-        }
-      });
-    });
+    await removeFiles(req.files);
     return res.status(400).send("یک عکس مجاز است");
   }
   var id;
   try {
     id = jwt.verify(req.header("Authorization"), SECRET).id;
   } catch (err) {
-    req.files.forEach((item) => {
-      fs.unlink(`public/images/${item.filename}`, (err) => {
-        if (err) {
-          throw err;
-        }
-      });
-    });
+    await removeFiles(req.files);
     if (err.name === "TokenExpiredError")
       return res.status(400).send("زمان ورود شما منقضی شده است");
     else if (err.name === "JsonWebTokenError") {

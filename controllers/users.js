@@ -3,6 +3,7 @@ const { PrismaClient } = require("@prisma/client");
 var jwt = require("jsonwebtoken");
 const mailSignup = require("../functions/email").mailSignup;
 const mailResetPass = require("../functions/email").mailResetPass;
+const sendSms = require("../functions/sms").sendSms;
 const md5 = require("md5");
 const db = new PrismaClient();
 require("dotenv").config();
@@ -229,7 +230,8 @@ exports.login = async (req, res) => {
         },
       });
     }
-    //// send code to phone number
+    //// send sms to phone number
+    // sendSms(phone, code);
     let user = await db.User.findFirst({
       where: {
         phone: phone,
@@ -384,6 +386,7 @@ exports.PassReset = async (req, res) => {
         });
       }
       /////// send sms code
+      // sendSms(phone, code);
       return res.status(200).send("کد فراموشی رمزعبور ارسال شد");
     } else {
       return res.status(404).send("کاربری با این شماره وجود ندارد");

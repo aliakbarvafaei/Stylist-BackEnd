@@ -83,6 +83,7 @@ exports.update = async (req, res) => {
   const new_address = req.body.address;
   const new_email = req.body.email;
   const new_phone = req.body.phone;
+  const old_password = req.body.oldPassword;
   const new_password = req.body.password;
   const new_gender =
     req.body.gender === "زن"
@@ -91,6 +92,22 @@ exports.update = async (req, res) => {
       ? "MAN"
       : undefined;
   const new_age = req.body.age;
+  if (new_password && new_password !== "") {
+    let user = db.User.findFirst({
+      where: {
+        id: id,
+      },
+    });
+    if (user) {
+      if (user.password && user.password !== "") {
+        if (user.password !== md5(old_password)) {
+          return res.status(401).send("رمز قبلی اشتباه است");
+        }
+      }
+    } else {
+      return res.status(404).send("کاربر با این شناسه وجود ندارد");
+    }
+  }
   try {
     let updated_user = await db.User.update({
       where: {

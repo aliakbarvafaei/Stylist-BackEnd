@@ -145,12 +145,12 @@ exports.vGetOne = (req, res, next) => {
 exports.vUserLogin = (req, res, next) => {
   try {
     const user = new Schema({
-      email: {
+      phone: {
         type: String,
         required: true,
         message: {
-          type: "ایمیل باید به صورت رشته باشد",
-          required: "ایمیل اجباری است",
+          type: "شماره باید به صورت رشته باشد",
+          required: "شماره اجباری است",
         },
       },
       password: {
@@ -170,11 +170,6 @@ exports.vUserLogin = (req, res, next) => {
       res_data.push(element.message);
     });
     if (res_data.length > 0) return res.status(400).send(res_data);
-    const email_validation = require("email-validator");
-    if (!email_validation.validate(req.body.email)) {
-      return res.status(400).send("ساختار ایمیل نادرست است");
-    }
-
     next();
   } catch (error) {
     console.log(error);
@@ -185,12 +180,12 @@ exports.vUserLogin = (req, res, next) => {
 exports.vPassReset = (req, res, next) => {
   try {
     const user = new Schema({
-      email: {
+      phone: {
         type: String,
         required: true,
         message: {
-          type: "ایمیل باید به صورت رشته باشد",
-          required: "ایمیل اجباری است",
+          type: "شماره باید به صورت رشته باشد",
+          required: "شماره اجباری است",
         },
       },
     });
@@ -200,10 +195,6 @@ exports.vPassReset = (req, res, next) => {
       res_data.push(element.message);
     });
     if (res_data.length > 0) return res.status(400).send(res_data);
-    const email_validation = require("email-validator");
-    if (!email_validation.validate(req.body.email)) {
-      return res.status(400).send("ساختار ایمیل نادرست است");
-    }
     next();
   } catch (error) {
     console.log(error);
@@ -214,12 +205,12 @@ exports.vPassReset = (req, res, next) => {
 exports.vPassChange = (req, res, next) => {
   try {
     const user = new Schema({
-      email: {
+      phone: {
         type: String,
         required: true,
         message: {
-          type: "ایمیل باید به صورت رشته باشد",
-          required: "ایمیل اجباری است",
+          type: "شماره باید به صورت رشته باشد",
+          required: "شماره اجباری است",
         },
       },
       password: {
@@ -249,10 +240,6 @@ exports.vPassChange = (req, res, next) => {
       res_data.push(element.message);
     });
     if (res_data.length > 0) return res.status(400).send(res_data);
-    const email_validation = require("email-validator");
-    if (!email_validation.validate(req.body.email)) {
-      return res.status(400).send("ساختار ایمیل نادرست است");
-    }
     next();
   } catch (error) {
     console.log(error);

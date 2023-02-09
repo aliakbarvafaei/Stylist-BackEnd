@@ -3,6 +3,7 @@ const { PrismaClient } = require("@prisma/client");
 var jwt = require("jsonwebtoken");
 const mailSignup = require("../functions/email").mailSignup;
 const mailResetPass = require("../functions/email").mailResetPass;
+const sendSms = require("../functions/sms").sendSms;
 const md5 = require("md5");
 const db = new PrismaClient();
 require("dotenv").config();
@@ -135,46 +136,51 @@ const SECRET = "secret";
 // };
 
 exports.getOne = async (req, res) => {
-  id = parseInt(req.params.userId);
+  var id;
+  try {
+    id = jwt.verify(req.header("Authorization"), SECRET).id;
+  } catch (err) {
+    if (err.name === "TokenExpiredError")
+      return res.status(400).send("زمان ورود شما منقضی شده است");
+    else if (err.name === "JsonWebTokenError") {
+      return res.status(400).send("توکن احراز هویت نامعتبر است");
+    } else {
+      return res.status(400).send("خطای احراز هویت");
+    }
+  }
   let user = await db.User_Stylist.findFirst({
     where: {
       id: id,
     },
+    include: {
+      counseling: true,
+    },
   });
   if (user) {
-    return res.status(200).send({
-      data: {
-        id: user.id,
-        email: user.email,
-        firstname: user.firstName,
-        lastname: user.lastName,
-        address: user.address,
-        phone: user.phone,
-      },
-    });
+    return res.status(200).send(exclude(user, ["password"]));
   } else {
     return res.status(404).send("کاربری با این شناسه وجود ندارد");
   }
 };
 
 exports.login = async (req, res) => {
-  const email = req.body.email;
+  const phone = req.body.phone;
   const password = req.body.password;
 
-  //check email exist
-  let user_email = await db.User_Stylist.findFirst({
+  //check phone exist
+  let user_phone = await db.User_Stylist.findFirst({
     where: {
-      email: email,
+      phone: phone,
     },
   });
-  if (!user_email) {
-    return res.status(404).send("شخصی با این ایمیل موجود نمی‌باشد");
+  if (!user_phone) {
+    return res.status(404).send("شخصی با این شماره موجود نمی‌باشد");
   }
 
   //check password exist
   let user_password = await db.User_Stylist.findFirst({
     where: {
-      email: email,
+      phone: phone,
       password: md5(password),
     },
   });
@@ -183,28 +189,28 @@ exports.login = async (req, res) => {
   } else {
     return res
       .status(200)
-      .send(jwt.sign(user_password, SECRET, { expiresIn: "10m" }));
+      .send(jwt.sign(user_password, SECRET, { expiresIn: "60m" }));
   }
 };
 
 exports.PassReset = async (req, res) => {
-  const email = req.body.email;
+  const phone = req.body.phone;
   let user = await db.User_Stylist.findFirst({
     where: {
-      email: email,
+      phone: phone,
     },
   });
   if (user) {
     const code = Math.floor(10000 + Math.random() * 90000);
     let row = await db.PassReset.findFirst({
       where: {
-        email: email,
+        user: phone,
       },
     });
     if (row) {
       let updated_user = await db.PassReset.update({
         where: {
-          email: email,
+          user: phone,
         },
         data: {
           code: code,
@@ -213,31 +219,32 @@ exports.PassReset = async (req, res) => {
     } else {
       let newRow = await db.PassReset.create({
         data: {
-          email: email,
+          user: phone,
           code: code,
         },
       });
     }
-    mailResetPass(email, code,req.get("host")+"/logo.png");
+    //// send sms to phone number
+    // sendSms(phone, code);
     return res.status(200).send("کد فراموشی رمزعبور ارسال شد");
   } else {
-    return res.status(404).send("کاربری با این ایمیل وجود ندارد");
+    return res.status(404).send("کاربری با این شماره وجود ندارد");
   }
 };
 
 exports.PassChange = async (req, res) => {
-  const email = req.body.email;
+  const phone = req.body.phone;
   const password = req.body.password;
   const code = req.body.code;
   let user = await db.PassReset.findFirst({
     where: {
-      email: email,
+      user: phone,
     },
   });
   if (user && user.code === code) {
     let updated_user = await db.User_Stylist.update({
       where: {
-        email: email,
+        phone: phone,
       },
       data: {
         password: md5(password),

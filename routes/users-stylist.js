@@ -21,7 +21,7 @@ const cUser = require('../controllers/users-stylist.js')
 // router.delete('/:userId', vUser.vUserDelete, cUser.delete)
 
 //get one user-stylist router
-router.get('/:userId', vUser.vGetOne , cUser.getOne)
+router.get('', vUser.vGetOne , cUser.getOne)
 
 //login user-stylist router
 router.post('/login', vUser.vUserLogin, cUser.login)

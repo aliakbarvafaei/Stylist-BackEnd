@@ -2,62 +2,139 @@
 const Schema = require("validate");
 require("dotenv").config();
 
-exports.vUserCraete = (req, res, next) => {
+// exports.vUserCraete = (req, res, next) => {
+//   try {
+//     const user = new Schema({
+//       firstname: {
+//         type: String,
+//         message: {
+//           type: "نام باید به صورت رشته باشد",
+//         },
+//       },
+//       lastname: {
+//         type: String,
+//         message: {
+//           type: "نام‌خانوادگی باید به صورت رشته باشد",
+//         },
+//       },
+//       address: {
+//         type: String,
+//         message: {
+//           type: "آدرس باید به صورت رشته باشد",
+//         },
+//       },
+//       email: {
+//         type: String,
+//         required: true,
+//         message: {
+//           type: "ایمیل باید به صورت رشته باشد",
+//           required: "ایمیل اجباری است",
+//         },
+//       },
+//       phone: {
+//         type: String,
+//         message: {
+//           type: "شماره تلفن باید به صورت رشته باشد",
+//         },
+//       },
+//       password: {
+//         type: String,
+//         required: true,
+//         length: { min: 8 },
+//         message: {
+//           type: "رمزعبور باید به صورت رشته باشد",
+//           required: "رمزعبور اجباری است",
+//           length: "رمزعبور باید حداقل 8 حرف باشد",
+//         },
+//       },
+//     });
+//     var res_data = [];
+//     const errors = user.validate(req.body);
+//     errors.forEach((element) => {
+//       res_data.push(element.message);
+//     });
+//     if (res_data.length > 0) return res.status(400).send(res_data);
+//     const email_validation = require("email-validator");
+//     if (!email_validation.validate(req.body.email)) {
+//       return res.status(400).send("ساختار ایمیل نادرست است");
+//     }
+//     next();
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(500).send("عملیات با خطا مواجه شد");
+//   }
+// };
+
+// exports.vUserUpdate = async (req, res, next) => {
+//   try {
+//     const user = new Schema({
+//       firstname: {
+//         type: String,
+//         message: {
+//           type: "نام باید به صورت رشته باشد",
+//         },
+//       },
+//       lastname: {
+//         type: String,
+//         message: {
+//           type: "نام‌خانوادگی باید به صورت رشته باشد",
+//         },
+//       },
+//       address: {
+//         type: String,
+//         message: {
+//           type: "آدرس باید به صورت رشته باشد",
+//         },
+//       },
+//       email: {
+//         type: String,
+//         message: {
+//           type: "ایمیل باید به صورت رشته باشد",
+//         },
+//       },
+//       phone: {
+//         type: String,
+//         message: {
+//           type: "شماره تلفن باید به صورت رشته باشد",
+//         },
+//       },
+//       password: {
+//         type: String,
+//         length: { min: 8 },
+//         message: {
+//           type: "رمزعبور باید به صورت رشته باشد",
+//           length: "رمزعبور باید حداقل 8 حرف باشد",
+//         },
+//       },
+//     });
+//     var res_data = [];
+//     const errors = user.validate(req.body);
+//     errors.forEach((element) => {
+//       res_data.push(element.message);
+//     });
+//     if (res_data.length > 0) return res.status(400).send(res_data);
+//     const email_validation = require("email-validator");
+//     if (req.body.email && !email_validation.validate(req.body.email)) {
+//       return res.status(400).send("ساختار ایمیل نادرست است");
+//     }
+//     next();
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(500).send("عملیات با خطا مواجه شد");
+//   }
+// };
+
+// exports.vUserDelete = async (req, res, next) => {
+//   try {
+//     next();
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(500).send("عملیات با خطا مواجه شد");
+//   }
+// };
+
+exports.vGetOne = (req, res, next) => {
   try {
-    const user = new Schema({
-      firstname: {
-        type: String,
-        message: {
-          type: 'نام باید به صورت رشته باشد'
-        }
-      },
-      lastname: {
-        type: String,
-        message: {
-          type: 'نام‌خانوادگی باید به صورت رشته باشد'
-        }
-      },
-      address: {
-        type: String,
-        message: {
-          type: 'آدرس باید به صورت رشته باشد'
-        }
-      },
-      email: {
-        type: String,
-        required: true,
-        message: {
-          type: 'ایمیل باید به صورت رشته باشد',
-          required: 'ایمیل اجباری است'
-        }
-      },
-      phone: {
-        type: String,
-        message: {
-          type: 'شماره تلفن باید به صورت رشته باشد'
-        }
-      },
-      password: {
-        type: String,
-        required: true,
-        length: { min: 8 },
-        message: {
-          type: 'رمزعبور باید به صورت رشته باشد',
-          required: 'رمزعبور اجباری است',
-          length: 'رمزعبور باید حداقل 8 حرف باشد'
-        }
-      },
-    });
-    var res_data = [];
-    const errors = user.validate(req.body);
-    errors.forEach((element) => {
-      res_data.push(element.message);
-    });
-    if (res_data.length > 0) return res.status(400).send(res_data);
-    const email_validation = require("email-validator");
-    if (!email_validation.validate(req.body.email)) {
-      return res.status(400).send("ساختار ایمیل نادرست است");
-    }
     next();
   } catch (error) {
     console.log(error);
@@ -72,19 +149,19 @@ exports.vUserLogin = (req, res, next) => {
         type: String,
         required: true,
         message: {
-          type: 'ایمیل باید به صورت رشته باشد',
-          required: 'ایمیل اجباری است'
-        }
+          type: "ایمیل باید به صورت رشته باشد",
+          required: "ایمیل اجباری است",
+        },
       },
       password: {
         type: String,
         required: true,
         length: { min: 8 },
         message: {
-          type: 'رمزعبور باید به صورت رشته باشد',
-          required: 'رمزعبور اجباری است',
-          length: 'رمزعبور باید حداقل 8 حرف باشد'
-        }
+          type: "رمزعبور باید به صورت رشته باشد",
+          required: "رمزعبور اجباری است",
+          length: "رمزعبور باید حداقل 8 حرف باشد",
+        },
       },
     });
     var res_data = [];
@@ -105,83 +182,6 @@ exports.vUserLogin = (req, res, next) => {
   }
 };
 
-exports.vUserUpdate = async (req, res, next) => {
-  try {
-    const user = new Schema({
-      firstname: {
-        type: String,
-        message: {
-          type: 'نام باید به صورت رشته باشد'
-        }
-      },
-      lastname: {
-        type: String,
-        message: {
-          type: 'نام‌خانوادگی باید به صورت رشته باشد'
-        }
-      },
-      address: {
-        type: String,
-        message: {
-          type: 'آدرس باید به صورت رشته باشد'
-        }
-      },
-      email: {
-        type: String,
-        message: {
-          type: 'ایمیل باید به صورت رشته باشد'
-        }
-      },
-      phone: {
-        type: String,
-        message: {
-          type: 'شماره تلفن باید به صورت رشته باشد'
-        }
-      },
-      password: {
-        type: String,
-        length: { min: 8 },
-        message: {
-          type: 'رمزعبور باید به صورت رشته باشد',
-          length: 'رمزعبور باید حداقل 8 حرف باشد'
-        }
-      },
-    });
-    var res_data = [];
-    const errors = user.validate(req.body);
-    errors.forEach((element) => {
-      res_data.push(element.message);
-    });
-    if (res_data.length > 0) return res.status(400).send(res_data);
-    const email_validation = require("email-validator");
-    if (req.body.email && !email_validation.validate(req.body.email)) {
-      return res.status(400).send("ساختار ایمیل نادرست است");
-    }
-    next();
-  } catch (error) {
-    console.log(error);
-    return res.status(500).send("عملیات با خطا مواجه شد");
-  }
-};
-
-exports.vUserDelete = async (req, res, next) => {
-  try {
-    next();
-  } catch (error) {
-    console.log(error);
-    return res.status(500).send("عملیات با خطا مواجه شد");
-  }
-};
-
-exports.vGetOne = (req, res, next) => {
-  try {
-    next();
-  } catch (error) {
-    console.log(error);
-    return res.status(500).send("عملیات با خطا مواجه شد");
-  }
-};
-
 exports.vPassReset = (req, res, next) => {
   try {
     const user = new Schema({
@@ -189,9 +189,9 @@ exports.vPassReset = (req, res, next) => {
         type: String,
         required: true,
         message: {
-          type: 'ایمیل باید به صورت رشته باشد',
-          required: 'ایمیل اجباری است'
-        }
+          type: "ایمیل باید به صورت رشته باشد",
+          required: "ایمیل اجباری است",
+        },
       },
     });
     var res_data = [];
@@ -218,29 +218,29 @@ exports.vPassChange = (req, res, next) => {
         type: String,
         required: true,
         message: {
-          type: 'ایمیل باید به صورت رشته باشد',
-          required: 'ایمیل اجباری است'
-        }
+          type: "ایمیل باید به صورت رشته باشد",
+          required: "ایمیل اجباری است",
+        },
       },
       password: {
         type: String,
         required: true,
         length: { min: 8 },
         message: {
-          type: 'رمزعبور باید به صورت رشته باشد',
-          required: 'رمزعبور اجباری است',
-          length: 'رمزعبور باید حداقل 8 حرف باشد'
-        }
+          type: "رمزعبور باید به صورت رشته باشد",
+          required: "رمزعبور اجباری است",
+          length: "رمزعبور باید حداقل 8 حرف باشد",
+        },
       },
       code: {
         type: Number,
         required: true,
-        length: { min: 5 , max: 5},
+        length: { min: 5, max: 5 },
         message: {
-          type: 'کد باید به صورت عدد باشد',
-          required: 'کد اجباری است',
-          length: 'کد باید 5 حرف باشد'
-        }
+          type: "کد باید به صورت عدد باشد",
+          required: "کد اجباری است",
+          length: "کد باید 5 حرف باشد",
+        },
       },
     });
     var res_data = [];

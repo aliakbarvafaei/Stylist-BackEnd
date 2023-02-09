@@ -47,7 +47,6 @@ model User {
   firstName         String?
   lastName          String?
   age               Int?
-  address           String?
   password          String?
   gender            GENDERS?
   createdAt         DateTime            @default(now())
@@ -59,6 +58,15 @@ model User {
   transaction       Transaction[]       @relation("USER_TRANSACTION")
   order             Order[]             @relation("USER_ORDER")
   cart              Cart[]              @relation("USER_CART")
+  address           Address[]           @relation("USER_ADDRESS")
+}
+
+//address model
+model Address {
+  id      Int    @id @default(autoincrement())
+  address String
+  userId  Int
+  User    User   @relation("USER_ADDRESS", fields: [userId], references: [id])
 }
 
 //clothing model
@@ -77,7 +85,7 @@ model Clothing {
 //category_clothing model
 model Category_Clothing {
   id       Int        @id @default(autoincrement())
-  name     String     
+  name     String
   userId   Int
   user     User       @relation("USER_CATEGORY_CLOTHING", fields: [userId], references: [id])
   clothing Clothing[] @relation("CATEGORY_CLOTHING_CLOTHING")
@@ -114,7 +122,7 @@ model Set_Product {
 //category_set model
 model Category_Set {
   id     Int    @id @default(autoincrement())
-  name   String 
+  name   String
   userId Int
   user   User   @relation("USER_CATEGORY_SET", fields: [userId], references: [id])
   set    Set[]  @relation("CATEGORY_SET_SET")
@@ -140,7 +148,7 @@ model User_Stylist {
   firstName  String?
   lastName   String?
   address    String?
-  password   String?
+  password   String
   createdAt  DateTime     @default(now())
   counseling Counseling[] @relation("USER_STYLIST_COUNSELING")
 }
@@ -265,7 +273,7 @@ model Seller {
   firstName String?
   lastName  String?
   address   String?
-  password  String?
+  password  String
   createdAt DateTime  @default(now())
   product   Product[] @relation("SELLER_PRODUCT")
 }

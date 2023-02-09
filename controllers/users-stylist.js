@@ -8,50 +8,152 @@ const db = new PrismaClient();
 require("dotenv").config();
 const SECRET = "secret";
 
-exports.create = async (req, res) => {
-  const firstname = req.body.firstname;
-  const lastname = req.body.lastname;
-  const address = req.body.address;
-  const email = req.body.email;
-  const phone = req.body.phone;
-  const password = req.body.password;
+// exports.create = async (req, res) => {
+//   const firstname = req.body.firstname;
+//   const lastname = req.body.lastname;
+//   const address = req.body.address;
+//   const email = req.body.email;
+//   const phone = req.body.phone;
+//   const password = req.body.password;
 
-  //chech uniqe email
-  let email_check = await db.User_Stylist.findFirst({
+//   //chech uniqe email
+//   let email_check = await db.User_Stylist.findFirst({
+//     where: {
+//       email: email,
+//     },
+//   });
+
+//   //chech uniqe phone number
+//   let phone_check;
+//   if (!phone) {
+//     phone_check = null;
+//   } else {
+//     phone_check = await db.User_Stylist.findFirst({
+//       where: {
+//         phone: phone,
+//       },
+//     });
+//   }
+
+//   if (!email_check && !phone_check) {
+//     let newUser = await db.User_Stylist.create({
+//       data: {
+//         firstName: firstname,
+//         lastName: lastname,
+//         address: address,
+//         email: email,
+//         phone: phone,
+//         password: md5(password),
+//       },
+//     });
+//     mailSignup(email, firstname,req.get("host")+"/logo.png");
+//     return res.status(201).send("ثبت نام با موفقیت انجام شد");
+//   } else if (email_check) {
+//     return res.status(409).send("ایمیل تکراری می‌باشد");
+//   } else if (phone_check) {
+//     return res.status(409).send("شماره تلفن تکراری می‌باشد");
+//   }
+// };
+
+// exports.update = async (req, res) => {
+//   var id;
+//   try {
+//     id = jwt.verify(req.header("Authorization"), SECRET).id;
+//   } catch (err) {
+//     if (err.name === "TokenExpiredError")
+//       return res.status(400).send("زمان ورود شما منقضی شده است");
+//     else if (err.name === "JsonWebTokenError") {
+//       return res.status(400).send("توکن احراز هویت نامعتبر است");
+//     } else {
+//       return res.status(400).send("خطای احراز هویت");
+//     }
+//   }
+//   const new_firstName = req.body.firstname;
+//   const new_lastName = req.body.lastname;
+//   const new_address = req.body.address;
+//   const new_email = req.body.email;
+//   const new_phone = req.body.phone;
+//   const new_password = req.body.password;
+
+//   try {
+//     let updated_user = await db.User_Stylist.update({
+//       where: {
+//         id: id,
+//       },
+//       data: {
+//         firstName: new_firstName,
+//         lastName: new_lastName,
+//         address: new_address,
+//         email: new_email,
+//         phone: new_phone,
+//         password: md5(new_password),
+//       },
+//     });
+//     return res.status(200).send("به‌روز‌رسانی با موفقیت انجام شد");
+//   } catch (err) {
+//     if (err.code && err.code === "P2002") {
+//       return res
+//         .status(409)
+//         .send("کاربری با این ایمیل یا شماره تلفن وجود دارد");
+//     }
+//     if (err.code && err.code === "P2025") {
+//       return res.status(404).send("کاربری با این شناسه وجود ندارد");
+//     }
+//     return res.status(400).send("عملیات با خطا مواجه شد");
+//   }
+// };
+
+// exports.delete = async (req, res) => {
+//   id = parseInt(req.params.userId);
+//   try {
+//     //delete user
+//     let user = await db.User_Stylist.delete({
+//       where: {
+//         id: id,
+//       },
+//     });
+//     return res.status(200).send("کاربر با موفقیت حذف شد");
+//   } catch (err) {
+//     return res.status(404).send("کاربری با این شناسه وجود ندارد");
+//   }
+// };
+
+// exports.getAll = async (req, res) => {
+//   let users = await db.User_Stylist.findMany({
+//     select: {
+//       id: true,
+//       firstName: true,
+//       lastName: true,
+//       address: true,
+//       email: true,
+//       phone: true,
+//     },
+//   });
+//   return res.status(200).send({
+//     data: users,
+//   });
+// };
+
+exports.getOne = async (req, res) => {
+  id = parseInt(req.params.userId);
+  let user = await db.User_Stylist.findFirst({
     where: {
-      email: email,
+      id: id,
     },
   });
-
-  //chech uniqe phone number
-  let phone_check;
-  if (!phone) {
-    phone_check = null;
-  } else {
-    phone_check = await db.User_Stylist.findFirst({
-      where: {
-        phone: phone,
-      },
-    });
-  }
-
-  if (!email_check && !phone_check) {
-    let newUser = await db.User_Stylist.create({
+  if (user) {
+    return res.status(200).send({
       data: {
-        firstName: firstname,
-        lastName: lastname,
-        address: address,
-        email: email,
-        phone: phone,
-        password: md5(password),
+        id: user.id,
+        email: user.email,
+        firstname: user.firstName,
+        lastname: user.lastName,
+        address: user.address,
+        phone: user.phone,
       },
     });
-    mailSignup(email, firstname,req.get("host")+"/logo.png");
-    return res.status(201).send("ثبت نام با موفقیت انجام شد");
-  } else if (email_check) {
-    return res.status(409).send("ایمیل تکراری می‌باشد");
-  } else if (phone_check) {
-    return res.status(409).send("شماره تلفن تکراری می‌باشد");
+  } else {
+    return res.status(404).send("کاربری با این شناسه وجود ندارد");
   }
 };
 
@@ -83,108 +185,6 @@ exports.login = async (req, res) => {
       .status(200)
       .send(jwt.sign(user_password, SECRET, { expiresIn: "10m" }));
   }
-};
-
-exports.update = async (req, res) => {
-  var id;
-  try {
-    id = jwt.verify(req.header("Authorization"), SECRET).id;
-  } catch (err) {
-    if (err.name === "TokenExpiredError")
-      return res.status(400).send("زمان ورود شما منقضی شده است");
-    else if (err.name === "JsonWebTokenError") {
-      return res.status(400).send("توکن احراز هویت نامعتبر است");
-    } else {
-      return res.status(400).send("خطای احراز هویت");
-    }
-  }
-  const new_firstName = req.body.firstname;
-  const new_lastName = req.body.lastname;
-  const new_address = req.body.address;
-  const new_email = req.body.email;
-  const new_phone = req.body.phone;
-  const new_password = req.body.password;
-
-  try {
-    let updated_user = await db.User_Stylist.update({
-      where: {
-        id: id,
-      },
-      data: {
-        firstName: new_firstName,
-        lastName: new_lastName,
-        address: new_address,
-        email: new_email,
-        phone: new_phone,
-        password: md5(new_password),
-      },
-    });
-    return res.status(200).send("به‌روز‌رسانی با موفقیت انجام شد");
-  } catch (err) {
-    if (err.code && err.code === "P2002") {
-      return res
-        .status(409)
-        .send("کاربری با این ایمیل یا شماره تلفن وجود دارد");
-    }
-    if (err.code && err.code === "P2025") {
-      return res.status(404).send("کاربری با این شناسه وجود ندارد");
-    }
-    return res.status(400).send("عملیات با خطا مواجه شد");
-  }
-};
-
-exports.delete = async (req, res) => {
-  id = parseInt(req.params.userId);
-  try {
-    //delete user
-    let user = await db.User_Stylist.delete({
-      where: {
-        id: id,
-      },
-    });
-    return res.status(200).send("کاربر با موفقیت حذف شد");
-  } catch (err) {
-    return res.status(404).send("کاربری با این شناسه وجود ندارد");
-  }
-};
-
-exports.getOne = async (req, res) => {
-  id = parseInt(req.params.userId);
-  let user = await db.User_Stylist.findFirst({
-    where: {
-      id: id,
-    },
-  });
-  if (user) {
-    return res.status(200).send({
-      data: {
-        id: user.id,
-        email: user.email,
-        firstname: user.firstName,
-        lastname: user.lastName,
-        address: user.address,
-        phone: user.phone,
-      },
-    });
-  } else {
-    return res.status(404).send("کاربری با این شناسه وجود ندارد");
-  }
-};
-
-exports.getAll = async (req, res) => {
-  let users = await db.User_Stylist.findMany({
-    select: {
-      id: true,
-      firstName: true,
-      lastName: true,
-      address: true,
-      email: true,
-      phone: true,
-    },
-  });
-  return res.status(200).send({
-    data: users,
-  });
 };
 
 exports.PassReset = async (req, res) => {

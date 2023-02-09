@@ -6,6 +6,7 @@ const mailResetPass = require("../functions/email").mailResetPass;
 const sendSms = require("../functions/sms").sendSms;
 const md5 = require("md5");
 const db = new PrismaClient();
+const exclude = require("../functions/exclude").exclude;
 require("dotenv").config();
 const SECRET = "secret";
 
@@ -109,6 +110,21 @@ exports.update = async (req, res) => {
     }
   }
   try {
+    if (address && address !== "") {
+      let newAddress = db.Address.create({
+        data: {
+          address: new_address,
+          userId: id,
+        },
+      });
+    }
+  } catch (err) {
+    if (err.code && err.code === "P2025") {
+      return res.status(404).send("کاربری با این شناسه وجود ندارد");
+    }
+    return res.status(400).send("عملیات با خطا مواجه شد");
+  }
+  try {
     let updated_user = await db.User.update({
       where: {
         id: id,
@@ -116,7 +132,6 @@ exports.update = async (req, res) => {
       data: {
         firstName: new_firstName,
         lastName: new_lastName,
-        address: new_address,
         email: new_email,
         phone: new_phone,
         password: md5(new_password),
@@ -171,20 +186,20 @@ exports.getOne = async (req, res) => {
     where: {
       id: id,
     },
+    include: {
+      clothing: true,
+      category_clothing: true,
+      set: true,
+      category_set: true,
+      counseling: true,
+      transaction: true,
+      order: true,
+      cart: true,
+      address: true,
+    },
   });
   if (user) {
-    return res.status(200).send({
-      data: {
-        id: user.id,
-        email: user.email,
-        firstname: user.firstName,
-        lastname: user.lastName,
-        address: user.address,
-        phone: user.phone,
-        age: user.age,
-        gender: user.gender,
-      },
-    });
+    return res.status(200).send(exclude(user, ["password"]));
   } else {
     return res.status(404).send("کاربری با این شناسه وجود ندارد");
   }

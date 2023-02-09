@@ -8,17 +8,17 @@ const vUser = require('../validators/users-stylist.js')
 const cUser = require('../controllers/users-stylist.js')
 
 
-//create user-stylist router
-router.post('', vUser.vUserCraete, cUser.create)
+// //create user-stylist router
+// router.post('', vUser.vUserCraete, cUser.create)
 
-//get all user-stylist router
-router.get('', cUser.getAll)
+// //get all user-stylist router
+// router.get('', cUser.getAll)
 
-//update user-stylist router
-router.put('', vUser.vUserUpdate, cUser.update)
+// //update user-stylist router
+// router.put('', vUser.vUserUpdate, cUser.update)
 
-//delete user-stylist router
-router.delete('/:userId', vUser.vUserDelete, cUser.delete)
+// //delete user-stylist router
+// router.delete('/:userId', vUser.vUserDelete, cUser.delete)
 
 //get one user-stylist router
 router.get('/:userId', vUser.vGetOne , cUser.getOne)

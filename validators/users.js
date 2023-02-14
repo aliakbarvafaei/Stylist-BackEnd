@@ -130,6 +130,14 @@ exports.vUserUpdate = async (req, res, next) => {
           enum: "جنسیت باید یکی از مقادیر زن یا مرد باشد",
         },
       },
+      oldPassword: {
+        type: String,
+        length: { min: 8 },
+        message: {
+          type: "رمزعبورقبلی باید به صورت رشته باشد",
+          length: "رمزعبورقبلی باید حداقل 8 حرف باشد",
+        },
+      },
       password: {
         type: String,
         length: { min: 8 },

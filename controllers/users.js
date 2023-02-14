@@ -85,7 +85,7 @@ exports.update = async (req, res) => {
   const new_email = req.body.email;
   const new_phone = req.body.phone;
   const old_password = req.body.oldPassword;
-  const new_password = req.body.password;
+  var new_password = req.body.password;
   const new_gender =
     req.body.gender === "زن"
       ? "WOMAN"
@@ -94,15 +94,19 @@ exports.update = async (req, res) => {
       : undefined;
   const new_age = req.body.age;
   if (new_password && new_password !== "") {
-    let user = db.User.findFirst({
+    let user = await db.User.findFirst({
       where: {
         id: id,
       },
     });
     if (user) {
       if (user.password && user.password !== "") {
-        if (user.password !== md5(old_password)) {
-          return res.status(401).send("رمز قبلی اشتباه است");
+        if (old_password) {
+          if (user.password !== md5(old_password)) {
+            return res.status(401).send("رمز قبلی اشتباه است");
+          }
+        } else {
+          return res.status(400).send("رمز قبلی باید ارسال شود");
         }
       }
     } else {
@@ -110,8 +114,8 @@ exports.update = async (req, res) => {
     }
   }
   try {
-    if (address && address !== "") {
-      let newAddress = db.Address.create({
+    if (new_address && new_address !== "") {
+      let newAddress = await db.Address.create({
         data: {
           address: new_address,
           userId: id,
@@ -125,6 +129,9 @@ exports.update = async (req, res) => {
     return res.status(400).send("عملیات با خطا مواجه شد");
   }
   try {
+    if(new_password){
+      new_password = md5(new_password)
+    }
     let updated_user = await db.User.update({
       where: {
         id: id,
@@ -134,7 +141,7 @@ exports.update = async (req, res) => {
         lastName: new_lastName,
         email: new_email,
         phone: new_phone,
-        password: md5(new_password),
+        password: new_password,
         gender: new_gender,
         age: new_age,
       },
@@ -263,7 +270,7 @@ exports.login = async (req, res) => {
       });
     }
     //// send sms to phone number
-    // sendSms(phone, code);
+    sendSms(phone, code);
     let user = await db.User.findFirst({
       where: {
         phone: phone,
@@ -418,7 +425,7 @@ exports.PassReset = async (req, res) => {
         });
       }
       /////// send sms code
-      // sendSms(phone, code);
+      sendSms(phone, code);
       return res.status(200).send("کد فراموشی رمزعبور ارسال شد");
     } else {
       return res.status(404).send("کاربری با این شماره وجود ندارد");

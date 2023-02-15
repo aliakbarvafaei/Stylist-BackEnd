@@ -6,6 +6,7 @@ const mailResetPass = require("../functions/email").mailResetPass;
 const sendSms = require("../functions/sms").sendSms;
 const md5 = require("md5");
 const db = new PrismaClient();
+const exclude = require("../functions/exclude").exclude;
 require("dotenv").config();
 const SECRET = "secret";
 
@@ -225,7 +226,7 @@ exports.PassReset = async (req, res) => {
       });
     }
     //// send sms to phone number
-    // sendSms(phone, code);
+    sendSms(phone, code);
     return res.status(200).send("کد فراموشی رمزعبور ارسال شد");
   } else {
     return res.status(404).send("کاربری با این شماره وجود ندارد");

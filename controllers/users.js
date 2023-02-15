@@ -270,7 +270,7 @@ exports.login = async (req, res) => {
       });
     }
     //// send sms to phone number
-    // sendSms(phone, code);
+    sendSms(phone, code);
     let user = await db.User.findFirst({
       where: {
         phone: phone,
@@ -425,7 +425,7 @@ exports.PassReset = async (req, res) => {
         });
       }
       /////// send sms code
-      // sendSms(phone, code);
+      sendSms(phone, code);
       return res.status(200).send("کد فراموشی رمزعبور ارسال شد");
     } else {
       return res.status(404).send("کاربری با این شماره وجود ندارد");

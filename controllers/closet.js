@@ -6,7 +6,6 @@ const fs = require("fs");
 const path = require("path");
 const removeFiles = require("../functions/rmFiles").removeFiles;
 require("dotenv").config();
-const SECRET = "secret";
 
 ///////////////// All category for myclothes
 let categories = {
@@ -87,7 +86,7 @@ exports.ClothesCategories = async (req, res) => {
 exports.ClothesCategoryCreate = async (req, res) => {
   var id;
   try {
-    id = jwt.verify(req.header("Authorization"), SECRET).id;
+    id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
@@ -123,7 +122,7 @@ exports.ClothesCategoryCreate = async (req, res) => {
 exports.ClothesCategoryGetAll = async (req, res) => {
   var id;
   try {
-    id = jwt.verify(req.header("Authorization"), SECRET).id;
+    id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
@@ -157,7 +156,7 @@ exports.ClothesCategoryGetAll = async (req, res) => {
 exports.ClothesCategoryDelete = async (req, res) => {
   var id;
   try {
-    id = jwt.verify(req.header("Authorization"), SECRET).id;
+    id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
@@ -198,7 +197,7 @@ exports.ClothesCategoryDelete = async (req, res) => {
 exports.ClothesCategoryUpdate = async (req, res) => {
   var id;
   try {
-    id = jwt.verify(req.header("Authorization"), SECRET).id;
+    id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
@@ -251,7 +250,7 @@ exports.ClothesClothingCreate = async (req, res) => {
   }
   var id;
   try {
-    id = jwt.verify(req.header("Authorization"), SECRET).id;
+    id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
     await removeFiles(req.files);
     if (err.name === "TokenExpiredError")
@@ -327,7 +326,7 @@ exports.ClothesClothingCreate = async (req, res) => {
 exports.ClothesClothingGetAll = async (req, res) => {
   var id;
   try {
-    id = jwt.verify(req.header("Authorization"), SECRET).id;
+    id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
@@ -368,7 +367,7 @@ exports.ClothesClothingGetAll = async (req, res) => {
 exports.ClothesClothingUpdate = async (req, res) => {
   var id;
   try {
-    id = jwt.verify(req.header("Authorization"), SECRET).id;
+    id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
@@ -424,7 +423,7 @@ exports.ClothesClothingUpdate = async (req, res) => {
 exports.ClothesClothingDelete = async (req, res) => {
   var id;
   try {
-    id = jwt.verify(req.header("Authorization"), SECRET).id;
+    id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
@@ -497,7 +496,7 @@ exports.ClothesClothingDelete = async (req, res) => {
 exports.ClothesClothingGetOne = async (req, res) => {
   var id;
   try {
-    id = jwt.verify(req.header("Authorization"), SECRET).id;
+    id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
@@ -542,7 +541,7 @@ exports.ClothesClothingGetOne = async (req, res) => {
 exports.SetsCategoryCreate = async (req, res) => {
   var id;
   try {
-    id = jwt.verify(req.header("Authorization"), SECRET).id;
+    id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
@@ -578,7 +577,7 @@ exports.SetsCategoryCreate = async (req, res) => {
 exports.SetsCategoryGetAll = async (req, res) => {
   var id;
   try {
-    id = jwt.verify(req.header("Authorization"), SECRET).id;
+    id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
@@ -612,7 +611,7 @@ exports.SetsCategoryGetAll = async (req, res) => {
 exports.SetsCategoryDelete = async (req, res) => {
   var id;
   try {
-    id = jwt.verify(req.header("Authorization"), SECRET).id;
+    id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
@@ -653,7 +652,7 @@ exports.SetsCategoryDelete = async (req, res) => {
 exports.SetsCategoryUpdate = async (req, res) => {
   var id;
   try {
-    id = jwt.verify(req.header("Authorization"), SECRET).id;
+    id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
@@ -709,7 +708,7 @@ exports.SetsClothingCreate = async (req, res) => {
   }
   var id;
   try {
-    id = jwt.verify(req.header("Authorization"), SECRET).id;
+    id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
     await removeFiles(req.files);
     if (err.name === "TokenExpiredError")
@@ -783,7 +782,7 @@ exports.SetsClothingCreate = async (req, res) => {
 exports.SetsClothingGetAll = async (req, res) => {
   var id;
   try {
-    id = jwt.verify(req.header("Authorization"), SECRET).id;
+    id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
@@ -824,7 +823,7 @@ exports.SetsClothingGetAll = async (req, res) => {
 // exports.SetsClothingUpdate = async (req, res) => {
 //   var id;
 //   try {
-//     id = jwt.verify(req.header("Authorization"), SECRET).id;
+//     id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
 //   } catch (err) {
 //     if (err.name === "TokenExpiredError")
 //       return res.status(400).json( { message: ("زمان ورود شما منقضی شده است") } );
@@ -871,7 +870,7 @@ exports.SetsClothingGetAll = async (req, res) => {
 exports.SetsClothingDelete = async (req, res) => {
   var id;
   try {
-    id = jwt.verify(req.header("Authorization"), SECRET).id;
+    id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
@@ -939,7 +938,7 @@ exports.SetsClothingDelete = async (req, res) => {
 exports.SetsClothingGetOne = async (req, res) => {
   var id;
   try {
-    id = jwt.verify(req.header("Authorization"), SECRET).id;
+    id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });

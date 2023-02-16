@@ -8,7 +8,6 @@ const md5 = require("md5");
 const db = new PrismaClient();
 const exclude = require("../functions/exclude").exclude;
 require("dotenv").config();
-const SECRET = "secret";
 
 // exports.create = async (req, res) => {
 //   const firstname = req.body.firstname;
@@ -60,7 +59,7 @@ const SECRET = "secret";
 // exports.update = async (req, res) => {
 //   var id;
 //   try {
-//     id = jwt.verify(req.header("Authorization"), SECRET).id;
+//     id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
 //   } catch (err) {
 //     if (err.name === "TokenExpiredError")
 //       return res.status(400).json( { message: ("زمان ورود شما منقضی شده است") } );
@@ -139,7 +138,7 @@ const SECRET = "secret";
 exports.getOne = async (req, res) => {
   var id;
   try {
-    id = jwt.verify(req.header("Authorization"), SECRET).id;
+    id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
@@ -192,7 +191,7 @@ exports.login = async (req, res) => {
   } else {
     return res
       .status(200)
-      .json({ data: jwt.sign(user_password, SECRET, { expiresIn: "60m" }) });
+      .json({ data: jwt.sign(user_password, process.env.SECRET_TOKEN) });
   }
 };
 

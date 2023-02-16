@@ -8,7 +8,6 @@ const md5 = require("md5");
 const db = new PrismaClient();
 const exclude = require("../functions/exclude").exclude;
 require("dotenv").config();
-const SECRET = "secret";
 
 // exports.create = async (req, res) => {
 //   const firstname = req.body.firstname;
@@ -69,7 +68,7 @@ const SECRET = "secret";
 exports.update = async (req, res) => {
   var id;
   try {
-    id = jwt.verify(req.header("Authorization"), SECRET).id;
+    id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
@@ -183,7 +182,7 @@ exports.update = async (req, res) => {
 exports.getOne = async (req, res) => {
   var id;
   try {
-    id = jwt.verify(req.header("Authorization"), SECRET).id;
+    id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
@@ -310,7 +309,7 @@ exports.loginCode = async (req, res) => {
     if (user) {
       return res
         .status(200)
-        .json({ data: jwt.sign(user, SECRET, { expiresIn: "60m" }) });
+        .json({ data: jwt.sign(user, process.env.SECRET_TOKEN) });
     } else {
       let newUser = await db.User.create({
         data: {
@@ -319,7 +318,7 @@ exports.loginCode = async (req, res) => {
       });
       return res
         .status(201)
-        .json({ data: jwt.sign(newUser, SECRET, { expiresIn: "60m" }) });
+        .json({ data: jwt.sign(newUser, process.env.SECRET_TOKEN) });
     }
   } else if (logincode) {
     return res.status(401).json({ message: "کد وارد شده اشتباه است" });
@@ -344,7 +343,7 @@ exports.loginPass = async (req, res) => {
     if (user && user.password === md5(password)) {
       return res
         .status(200)
-        .json({ data: jwt.sign(user, SECRET, { expiresIn: "60m" }) });
+        .json({ data: jwt.sign(user, process.env.SECRET_TOKEN) });
     } else if (user) {
       return res.status(401).json({ message: "رمزعبور اشتباه است" });
     } else {
@@ -359,7 +358,7 @@ exports.loginPass = async (req, res) => {
     if (user && user.password === md5(password)) {
       return res
         .status(200)
-        .json({ data: jwt.sign(user, SECRET, { expiresIn: "60m" }) });
+        .json({ data: jwt.sign(user, process.env.SECRET_TOKEN) });
     } else if (user) {
       return res.status(401).json({ message: "رمزعبور اشتباه است" });
     } else {

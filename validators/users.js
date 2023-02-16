@@ -71,15 +71,15 @@ require("dotenv").config();
 //     errors.forEach((element) => {
 //       res_data.push(element.message);
 //     });
-//     if (res_data.length > 0) return res.status(400).send(res_data);
+//     if (res_data.length > 0) return res.status(400).json( { message: (res_data) } )
 //     const email_validation = require("email-validator");
 //     if (!email_validation.validate(req.body.email)) {
-//       return res.status(400).send("ساختار ایمیل نادرست است");
+//       return res.status(400).json( { message: ("ساختار ایمیل نادرست است") } );
 //     }
 //     next();
 //   } catch (error) {
 //     console.log(error);
-//     return res.status(500).send("عملیات با خطا مواجه شد");
+//     return res.status(500).json( { message: ("عملیات با خطا مواجه شد") } );
 //   }
 // };
 
@@ -152,15 +152,15 @@ exports.vUserUpdate = async (req, res, next) => {
     errors.forEach((element) => {
       res_data.push(element.message);
     });
-    if (res_data.length > 0) return res.status(400).send(res_data);
+    if (res_data.length > 0) return res.status(400).json({ message: res_data });
     const email_validation = require("email-validator");
     if (req.body.email && !email_validation.validate(req.body.email)) {
-      return res.status(400).send("ساختار ایمیل نادرست است");
+      return res.status(400).json({ message: "ساختار ایمیل نادرست است" });
     }
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -169,7 +169,7 @@ exports.vUserUpdate = async (req, res, next) => {
 //     next();
 //   } catch (error) {
 //     console.log(error);
-//     return res.status(500).send("عملیات با خطا مواجه شد");
+//     return res.status(500).json( { message: ("عملیات با خطا مواجه شد") } );
 //   }
 // };
 
@@ -178,7 +178,7 @@ exports.vGetOne = (req, res, next) => {
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -203,16 +203,16 @@ exports.vUserLogin = (req, res, next) => {
     errors.forEach((element) => {
       res_data.push(element.message);
     });
-    if (res_data.length > 0) return res.status(400).send(res_data);
+    if (res_data.length > 0) return res.status(400).json({ message: res_data });
     const email_validation = require("email-validator");
     if (req.body.email && !email_validation.validate(req.body.email)) {
-      return res.status(400).send("ساختار ایمیل نادرست است");
+      return res.status(400).json({ message: "ساختار ایمیل نادرست است" });
     }
 
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -243,11 +243,11 @@ exports.vUserLoginCode = (req, res, next) => {
     errors.forEach((element) => {
       res_data.push(element.message);
     });
-    if (res_data.length > 0) return res.status(400).send(res_data);
+    if (res_data.length > 0) return res.status(400).json({ message: res_data });
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -282,15 +282,15 @@ exports.vUserLoginPass = (req, res, next) => {
     errors.forEach((element) => {
       res_data.push(element.message);
     });
-    if (res_data.length > 0) return res.status(400).send(res_data);
+    if (res_data.length > 0) return res.status(400).json({ message: res_data });
     const email_validation = require("email-validator");
     if (req.body.email && !email_validation.validate(req.body.email)) {
-      return res.status(400).send("ساختار ایمیل نادرست است");
+      return res.status(400).json({ message: "ساختار ایمیل نادرست است" });
     }
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -315,15 +315,15 @@ exports.vPassReset = (req, res, next) => {
     errors.forEach((element) => {
       res_data.push(element.message);
     });
-    if (res_data.length > 0) return res.status(400).send(res_data);
+    if (res_data.length > 0) return res.status(400).json({ message: res_data });
     const email_validation = require("email-validator");
     if (req.body.email && !email_validation.validate(req.body.email)) {
-      return res.status(400).send("ساختار ایمیل نادرست است");
+      return res.status(400).json({ message: "ساختار ایمیل نادرست است" });
     }
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -368,14 +368,14 @@ exports.vPassChange = (req, res, next) => {
     errors.forEach((element) => {
       res_data.push(element.message);
     });
-    if (res_data.length > 0) return res.status(400).send(res_data);
+    if (res_data.length > 0) return res.status(400).json({ message: res_data });
     const email_validation = require("email-validator");
     if (req.body.email && !email_validation.validate(req.body.email)) {
-      return res.status(400).send("ساختار ایمیل نادرست است");
+      return res.status(400).json({ message: "ساختار ایمیل نادرست است" });
     }
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };

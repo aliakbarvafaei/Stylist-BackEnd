@@ -75,11 +75,11 @@ let categories = {
 exports.ClothesCategories = async (req, res) => {
   const gender = req.params.gender;
   if (gender === "زن") {
-    return res.status(200).send(categories.زن);
+    return res.status(200).json({ data: categories.زن });
   } else if (gender === "مرد") {
-    return res.status(200).send(categories.مرد);
+    return res.status(200).json({ data: categories.مرد });
   } else {
-    return res.status(400).send("جنسیت باید زن یا مرد باشد");
+    return res.status(400).json({ message: "جنسیت باید زن یا مرد باشد" });
   }
 };
 ///////////////// All controller for myclothes
@@ -90,11 +90,11 @@ exports.ClothesCategoryCreate = async (req, res) => {
     id = jwt.verify(req.header("Authorization"), SECRET).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
-      return res.status(400).send("زمان ورود شما منقضی شده است");
+      return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
-      return res.status(400).send("توکن احراز هویت نامعتبر است");
+      return res.status(400).json({ message: "توکن احراز هویت نامعتبر است" });
     } else {
-      return res.status(400).send("خطای احراز هویت");
+      return res.status(400).json({ message: "خطای احراز هویت" });
     }
   }
   const name = req.body.name;
@@ -105,14 +105,18 @@ exports.ClothesCategoryCreate = async (req, res) => {
         userId: id,
       },
     });
-    return res.status(201).send("دسته‌بندی با موفقیت اضافه شد");
+    return res.status(201).json({ message: "دسته‌بندی با موفقیت اضافه شد" });
   } catch (err) {
     if (err.code && err.code === "P2002") {
-      return res.status(409).send("دسته‌بندی با این نام وجود دارد");
+      return res
+        .status(409)
+        .json({ message: "دسته‌بندی با این نام وجود دارد" });
     } else if (err.code && err.code === "P2003") {
-      return res.status(404).send("کاربری با این شناسه وجود ندارد");
+      return res
+        .status(404)
+        .json({ message: "کاربری با این شناسه وجود ندارد" });
     }
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -122,11 +126,11 @@ exports.ClothesCategoryGetAll = async (req, res) => {
     id = jwt.verify(req.header("Authorization"), SECRET).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
-      return res.status(400).send("زمان ورود شما منقضی شده است");
+      return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
-      return res.status(400).send("توکن احراز هویت نامعتبر است");
+      return res.status(400).json({ message: "توکن احراز هویت نامعتبر است" });
     } else {
-      return res.status(400).send("خطای احراز هویت");
+      return res.status(400).json({ message: "خطای احراز هویت" });
     }
   }
   try {
@@ -139,12 +143,14 @@ exports.ClothesCategoryGetAll = async (req, res) => {
       },
     });
     if (user) {
-      return res.status(200).send(user.category_clothing);
+      return res.status(200).json({ data: user.category_clothing });
     } else {
-      return res.status(404).send("کاربری با این شناسه وجود ندارد");
+      return res
+        .status(404)
+        .json({ message: "کاربری با این شناسه وجود ندارد" });
     }
   } catch {
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -154,11 +160,11 @@ exports.ClothesCategoryDelete = async (req, res) => {
     id = jwt.verify(req.header("Authorization"), SECRET).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
-      return res.status(400).send("زمان ورود شما منقضی شده است");
+      return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
-      return res.status(400).send("توکن احراز هویت نامعتبر است");
+      return res.status(400).json({ message: "توکن احراز هویت نامعتبر است" });
     } else {
-      return res.status(400).send("خطای احراز هویت");
+      return res.status(400).json({ message: "خطای احراز هویت" });
     }
   }
   const categoryId = parseInt(req.params.categoryId);
@@ -174,16 +180,18 @@ exports.ClothesCategoryDelete = async (req, res) => {
           id: categoryId,
         },
       });
-      return res.status(200).send("دسته‌بندی با موفقیت حذف شد");
+      return res.status(200).json({ message: "دسته‌بندی با موفقیت حذف شد" });
     } else if (category) {
       return res
         .status(404)
-        .send("‌دسته‌بندی با این شناسه ایجاد کننده وجود ندارد");
+        .json({ message: "‌دسته‌بندی با این شناسه ایجاد کننده وجود ندارد" });
     } else {
-      return res.status(404).send("‌دسته‌بندی با این شناسه وجود ندارد");
+      return res
+        .status(404)
+        .json({ message: "‌دسته‌بندی با این شناسه وجود ندارد" });
     }
   } catch {
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -193,11 +201,11 @@ exports.ClothesCategoryUpdate = async (req, res) => {
     id = jwt.verify(req.header("Authorization"), SECRET).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
-      return res.status(400).send("زمان ورود شما منقضی شده است");
+      return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
-      return res.status(400).send("توکن احراز هویت نامعتبر است");
+      return res.status(400).json({ message: "توکن احراز هویت نامعتبر است" });
     } else {
-      return res.status(400).send("خطای احراز هویت");
+      return res.status(400).json({ message: "خطای احراز هویت" });
     }
   }
   const categoryId = parseInt(req.params.categoryId);
@@ -217,23 +225,29 @@ exports.ClothesCategoryUpdate = async (req, res) => {
           name: name,
         },
       });
-      return res.status(200).send("دسته‌بندی با موفقیت ویرایش شد");
+      return res.status(200).json({ message: "دسته‌بندی با موفقیت ویرایش شد" });
     } else if (category) {
-      return res.status(400).send("شناسه ایجاد کننده دسته‌بندی اشتباه است");
+      return res
+        .status(400)
+        .json({ message: "شناسه ایجاد کننده دسته‌بندی اشتباه است" });
     } else {
-      return res.status(404).send("دسته‌بندی با این شناسه وجود ندارد");
+      return res
+        .status(404)
+        .json({ message: "دسته‌بندی با این شناسه وجود ندارد" });
     }
   } catch (err) {
     if (err.code && err.code === "P2002") {
-      return res.status(409).send("دسته‌بندی با این نام وجود دارد");
+      return res
+        .status(409)
+        .json({ message: "دسته‌بندی با این نام وجود دارد" });
     }
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
 exports.ClothesClothingCreate = async (req, res) => {
   if (req.files.length == 0) {
-    return res.status(400).send("عکس اجباری است");
+    return res.status(400).json({ message: "عکس اجباری است" });
   }
   var id;
   try {
@@ -241,11 +255,11 @@ exports.ClothesClothingCreate = async (req, res) => {
   } catch (err) {
     await removeFiles(req.files);
     if (err.name === "TokenExpiredError")
-      return res.status(400).send("زمان ورود شما منقضی شده است");
+      return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
-      return res.status(400).send("توکن احراز هویت نامعتبر است");
+      return res.status(400).json({ message: "توکن احراز هویت نامعتبر است" });
     } else {
-      return res.status(400).send("خطای احراز هویت");
+      return res.status(400).json({ message: "خطای احراز هویت" });
     }
   }
   const categoryId = parseInt(req.params.categoryId);
@@ -271,17 +285,23 @@ exports.ClothesClothingCreate = async (req, res) => {
       });
     } else if (category) {
       await removeFiles(req.files);
-      return res.status(400).send("شناسه ایجاد کننده دسته‌بندی اشتباه است");
+      return res
+        .status(400)
+        .json({ message: "شناسه ایجاد کننده دسته‌بندی اشتباه است" });
     } else {
       await removeFiles(req.files);
-      return res.status(404).send("دسته‌بندی با این شناسه وجود ندارد");
+      return res
+        .status(404)
+        .json({ message: "دسته‌بندی با این شناسه وجود ندارد" });
     }
   } catch (err) {
     await removeFiles(req.files);
     if (err.code && err.code === "P2003") {
-      return res.status(404).send("کاربر یا دسته‌بندی با این شناسه وجود ندارد");
+      return res
+        .status(404)
+        .json({ message: "کاربر یا دسته‌بندی با این شناسه وجود ندارد" });
     }
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
   try {
     req.files.forEach(async (item) => {
@@ -295,13 +315,13 @@ exports.ClothesClothingCreate = async (req, res) => {
   } catch (err) {
     await removeFiles(req.files);
     if (err.code && err.code === "P2003") {
-      return res.status(404).send("لباسی با این شناسه وجود ندارد");
+      return res.status(404).json({ message: "لباسی با این شناسه وجود ندارد" });
     } else if (err.code && err.code === "P2002") {
-      return res.status(404).send("عکسی با این آدرس وجود دارد");
+      return res.status(404).json({ message: "عکسی با این آدرس وجود دارد" });
     }
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
-  return res.status(201).send("لباس با موفقیت اضافه شد");
+  return res.status(201).json({ message: "لباس با موفقیت اضافه شد" });
 };
 
 exports.ClothesClothingGetAll = async (req, res) => {
@@ -310,11 +330,11 @@ exports.ClothesClothingGetAll = async (req, res) => {
     id = jwt.verify(req.header("Authorization"), SECRET).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
-      return res.status(400).send("زمان ورود شما منقضی شده است");
+      return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
-      return res.status(400).send("توکن احراز هویت نامعتبر است");
+      return res.status(400).json({ message: "توکن احراز هویت نامعتبر است" });
     } else {
-      return res.status(400).send("خطای احراز هویت");
+      return res.status(400).json({ message: "خطای احراز هویت" });
     }
   }
   const categoryId = parseInt(req.params.categoryId);
@@ -329,17 +349,19 @@ exports.ClothesClothingGetAll = async (req, res) => {
       },
     });
     if (category) {
-      return res.status(200).send(category.clothing);
+      return res.status(200).json({ data: category.clothing });
     } else {
       return res
         .status(404)
-        .send("دسته‌بندی یا کاربری با این شناسه وجود ندارد");
+        .json({ message: "دسته‌بندی یا کاربری با این شناسه وجود ندارد" });
     }
   } catch (err) {
     if (err.code && err.code === "P2003") {
-      return res.status(404).send("کاربری با این شناسه وجود ندارد");
+      return res
+        .status(404)
+        .json({ message: "کاربری با این شناسه وجود ندارد" });
     }
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -349,11 +371,11 @@ exports.ClothesClothingUpdate = async (req, res) => {
     id = jwt.verify(req.header("Authorization"), SECRET).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
-      return res.status(400).send("زمان ورود شما منقضی شده است");
+      return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
-      return res.status(400).send("توکن احراز هویت نامعتبر است");
+      return res.status(400).json({ message: "توکن احراز هویت نامعتبر است" });
     } else {
-      return res.status(400).send("خطای احراز هویت");
+      return res.status(400).json({ message: "خطای احراز هویت" });
     }
   }
   const categoryId = parseInt(req.params.categoryId);
@@ -380,19 +402,22 @@ exports.ClothesClothingUpdate = async (req, res) => {
           size: size,
         },
       });
-      return res.status(200).send("لباس با موفقیت ویرایش شد");
+      return res.status(200).json({ message: "لباس با موفقیت ویرایش شد" });
     } else {
       return res
         .status(404)
-        .send(
-          "لباسی با این شناسه یا شناسه ایجاد کننده یا شناسه دسته‌بندی وجود ندارد"
-        );
+        .json({
+          message:
+            "لباسی با این شناسه یا شناسه ایجاد کننده یا شناسه دسته‌بندی وجود ندارد",
+        });
     }
   } catch (err) {
     if (err.code && err.code === "P2003") {
-      return res.status(404).send("کاربر یا دسته‌بندی با این شناسه وجود ندارد");
+      return res
+        .status(404)
+        .json({ message: "کاربر یا دسته‌بندی با این شناسه وجود ندارد" });
     }
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -402,11 +427,11 @@ exports.ClothesClothingDelete = async (req, res) => {
     id = jwt.verify(req.header("Authorization"), SECRET).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
-      return res.status(400).send("زمان ورود شما منقضی شده است");
+      return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
-      return res.status(400).send("توکن احراز هویت نامعتبر است");
+      return res.status(400).json({ message: "توکن احراز هویت نامعتبر است" });
     } else {
-      return res.status(400).send("خطای احراز هویت");
+      return res.status(400).json({ message: "خطای احراز هویت" });
     }
   }
   const categoryId = parseInt(req.params.categoryId);
@@ -426,15 +451,18 @@ exports.ClothesClothingDelete = async (req, res) => {
     if (!clothing) {
       return res
         .status(404)
-        .send(
-          "لباسی با این شناسه یا شناسه ایجاد کننده یا شناسه دسته‌بندی وجود ندارد"
-        );
+        .json({
+          message:
+            "لباسی با این شناسه یا شناسه ایجاد کننده یا شناسه دسته‌بندی وجود ندارد",
+        });
     }
   } catch (err) {
     if (err.code && err.code === "P2003") {
-      return res.status(404).send("کاربر یا دسته‌بندی با این شناسه وجود ندارد");
+      return res
+        .status(404)
+        .json({ message: "کاربر یا دسته‌بندی با این شناسه وجود ندارد" });
     }
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
   try {
     if (clothing) {
@@ -452,7 +480,7 @@ exports.ClothesClothingDelete = async (req, res) => {
       });
     }
   } catch {
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
   try {
     await db.Clothing.delete({
@@ -460,9 +488,9 @@ exports.ClothesClothingDelete = async (req, res) => {
         id: clothing.id,
       },
     });
-    return res.status(200).send("لباس با موفقیت حذف شد");
+    return res.status(200).json({ message: "لباس با موفقیت حذف شد" });
   } catch {
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -472,11 +500,11 @@ exports.ClothesClothingGetOne = async (req, res) => {
     id = jwt.verify(req.header("Authorization"), SECRET).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
-      return res.status(400).send("زمان ورود شما منقضی شده است");
+      return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
-      return res.status(400).send("توکن احراز هویت نامعتبر است");
+      return res.status(400).json({ message: "توکن احراز هویت نامعتبر است" });
     } else {
-      return res.status(400).send("خطای احراز هویت");
+      return res.status(400).json({ message: "خطای احراز هویت" });
     }
   }
   const categoryId = parseInt(req.params.categoryId);
@@ -493,17 +521,19 @@ exports.ClothesClothingGetOne = async (req, res) => {
       },
     });
     if (clothing) {
-      return res.status(200).send(clothing);
+      return res.status(200).json({ data: clothing });
     } else {
-      return res
-        .status(404)
-        .send("لباس یا دسته‌بندی یا کاربری با این شناسه وجود ندارد");
+      return res.status(404).json({
+        message: "لباس یا دسته‌بندی یا کاربری با این شناسه وجود ندارد",
+      });
     }
   } catch (err) {
     if (err.code && err.code === "P2003") {
-      return res.status(404).send("کاربر یا دسته‌بندی با این شناسه وجود ندارد");
+      return res
+        .status(404)
+        .json({ message: "کاربر یا دسته‌بندی با این شناسه وجود ندارد" });
     }
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -515,11 +545,11 @@ exports.SetsCategoryCreate = async (req, res) => {
     id = jwt.verify(req.header("Authorization"), SECRET).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
-      return res.status(400).send("زمان ورود شما منقضی شده است");
+      return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
-      return res.status(400).send("توکن احراز هویت نامعتبر است");
+      return res.status(400).json({ message: "توکن احراز هویت نامعتبر است" });
     } else {
-      return res.status(400).send("خطای احراز هویت");
+      return res.status(400).json({ message: "خطای احراز هویت" });
     }
   }
   const name = req.body.name;
@@ -530,14 +560,18 @@ exports.SetsCategoryCreate = async (req, res) => {
         userId: id,
       },
     });
-    return res.status(201).send("دسته‌بندی با موفقیت اضافه شد");
+    return res.status(201).json({ message: "دسته‌بندی با موفقیت اضافه شد" });
   } catch (err) {
     if (err.code && err.code === "P2002") {
-      return res.status(409).send("دسته‌بندی با این نام وجود دارد");
+      return res
+        .status(409)
+        .json({ message: "دسته‌بندی با این نام وجود دارد" });
     } else if (err.code && err.code === "P2003") {
-      return res.status(404).send("کاربری با این شناسه وجود ندارد");
+      return res
+        .status(404)
+        .json({ message: "کاربری با این شناسه وجود ندارد" });
     }
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -547,11 +581,11 @@ exports.SetsCategoryGetAll = async (req, res) => {
     id = jwt.verify(req.header("Authorization"), SECRET).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
-      return res.status(400).send("زمان ورود شما منقضی شده است");
+      return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
-      return res.status(400).send("توکن احراز هویت نامعتبر است");
+      return res.status(400).json({ message: "توکن احراز هویت نامعتبر است" });
     } else {
-      return res.status(400).send("خطای احراز هویت");
+      return res.status(400).json({ message: "خطای احراز هویت" });
     }
   }
   try {
@@ -564,12 +598,14 @@ exports.SetsCategoryGetAll = async (req, res) => {
       },
     });
     if (user) {
-      return res.status(200).send(user.category_set);
+      return res.status(200).json({ data: user.category_set });
     } else {
-      return res.status(404).send("کاربری با این شناسه وجود ندارد");
+      return res
+        .status(404)
+        .json({ message: "کاربری با این شناسه وجود ندارد" });
     }
   } catch {
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -579,11 +615,11 @@ exports.SetsCategoryDelete = async (req, res) => {
     id = jwt.verify(req.header("Authorization"), SECRET).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
-      return res.status(400).send("زمان ورود شما منقضی شده است");
+      return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
-      return res.status(400).send("توکن احراز هویت نامعتبر است");
+      return res.status(400).json({ message: "توکن احراز هویت نامعتبر است" });
     } else {
-      return res.status(400).send("خطای احراز هویت");
+      return res.status(400).json({ message: "خطای احراز هویت" });
     }
   }
   const categoryId = parseInt(req.params.categoryId);
@@ -599,16 +635,18 @@ exports.SetsCategoryDelete = async (req, res) => {
           id: categoryId,
         },
       });
-      return res.status(200).send("دسته‌بندی با موفقیت حذف شد");
+      return res.status(200).json({ message: "دسته‌بندی با موفقیت حذف شد" });
     } else if (category) {
       return res
         .status(404)
-        .send("‌دسته‌بندی با این شناسه ایجاد کننده وجود ندارد");
+        .json({ message: "‌دسته‌بندی با این شناسه ایجاد کننده وجود ندارد" });
     } else {
-      return res.status(404).send("‌دسته‌بندی با این شناسه وجود ندارد");
+      return res
+        .status(404)
+        .json({ message: "‌دسته‌بندی با این شناسه وجود ندارد" });
     }
   } catch {
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -618,11 +656,11 @@ exports.SetsCategoryUpdate = async (req, res) => {
     id = jwt.verify(req.header("Authorization"), SECRET).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
-      return res.status(400).send("زمان ورود شما منقضی شده است");
+      return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
-      return res.status(400).send("توکن احراز هویت نامعتبر است");
+      return res.status(400).json({ message: "توکن احراز هویت نامعتبر است" });
     } else {
-      return res.status(400).send("خطای احراز هویت");
+      return res.status(400).json({ message: "خطای احراز هویت" });
     }
   }
   const categoryId = parseInt(req.params.categoryId);
@@ -642,26 +680,32 @@ exports.SetsCategoryUpdate = async (req, res) => {
           name: name,
         },
       });
-      return res.status(200).send("دسته‌بندی با موفقیت ویرایش شد");
+      return res.status(200).json({ message: "دسته‌بندی با موفقیت ویرایش شد" });
     } else if (category) {
-      return res.status(400).send("شناسه ایجاد کننده دسته‌بندی اشتباه است");
+      return res
+        .status(400)
+        .json({ message: "شناسه ایجاد کننده دسته‌بندی اشتباه است" });
     } else {
-      return res.status(404).send("دسته‌بندی با این شناسه وجود ندارد");
+      return res
+        .status(404)
+        .json({ message: "دسته‌بندی با این شناسه وجود ندارد" });
     }
   } catch (err) {
     if (err.code && err.code === "P2002") {
-      return res.status(409).send("دسته‌بندی با این نام وجود دارد");
+      return res
+        .status(409)
+        .json({ message: "دسته‌بندی با این نام وجود دارد" });
     }
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
 exports.SetsClothingCreate = async (req, res) => {
   if (req.files.length == 0) {
-    return res.status(400).send("عکس اجباری است");
+    return res.status(400).json({ message: "عکس اجباری است" });
   } else if (req.files.length > 1) {
     await removeFiles(req.files);
-    return res.status(400).send("یک عکس مجاز است");
+    return res.status(400).json({ message: "یک عکس مجاز است" });
   }
   var id;
   try {
@@ -669,11 +713,11 @@ exports.SetsClothingCreate = async (req, res) => {
   } catch (err) {
     await removeFiles(req.files);
     if (err.name === "TokenExpiredError")
-      return res.status(400).send("زمان ورود شما منقضی شده است");
+      return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
-      return res.status(400).send("توکن احراز هویت نامعتبر است");
+      return res.status(400).json({ message: "توکن احراز هویت نامعتبر است" });
     } else {
-      return res.status(400).send("خطای احراز هویت");
+      return res.status(400).json({ message: "خطای احراز هویت" });
     }
   }
   const categoryId = parseInt(req.params.categoryId);
@@ -695,19 +739,25 @@ exports.SetsClothingCreate = async (req, res) => {
       });
     } else if (category) {
       await removeFiles(req.files);
-      return res.status(400).send("شناسه ایجاد کننده دسته‌بندی اشتباه است");
+      return res
+        .status(400)
+        .json({ message: "شناسه ایجاد کننده دسته‌بندی اشتباه است" });
     } else {
       await removeFiles(req.files);
-      return res.status(404).send("دسته‌بندی با این شناسه وجود ندارد");
+      return res
+        .status(404)
+        .json({ message: "دسته‌بندی با این شناسه وجود ندارد" });
     }
   } catch (err) {
     await removeFiles(req.files);
     if (err.code && err.code === "P2003") {
-      return res.status(404).send("کاربری با این شناسه وجود ندارد");
+      return res
+        .status(404)
+        .json({ message: "کاربری با این شناسه وجود ندارد" });
     } else if (err.code && err.code === "P2002") {
-      return res.status(409).send("عکسی با این آدرس وجود دارد");
+      return res.status(409).json({ message: "عکسی با این آدرس وجود دارد" });
     }
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
   try {
     products &&
@@ -719,12 +769,14 @@ exports.SetsClothingCreate = async (req, res) => {
           },
         });
       });
-    return res.status(201).send("ست با موفقیت اضافه شد");
+    return res.status(201).json({ message: "ست با موفقیت اضافه شد" });
   } catch {
     if (err.code && err.code === "P2003") {
-      return res.status(404).send("ست یا محصولی با این شناسه وجود ندارد");
+      return res
+        .status(404)
+        .json({ message: "ست یا محصولی با این شناسه وجود ندارد" });
     }
-    return res.status(404).send("محصولی با این شناسه وجود ندارد");
+    return res.status(404).json({ message: "محصولی با این شناسه وجود ندارد" });
   }
 };
 
@@ -734,11 +786,11 @@ exports.SetsClothingGetAll = async (req, res) => {
     id = jwt.verify(req.header("Authorization"), SECRET).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
-      return res.status(400).send("زمان ورود شما منقضی شده است");
+      return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
-      return res.status(400).send("توکن احراز هویت نامعتبر است");
+      return res.status(400).json({ message: "توکن احراز هویت نامعتبر است" });
     } else {
-      return res.status(400).send("خطای احراز هویت");
+      return res.status(400).json({ message: "خطای احراز هویت" });
     }
   }
   const categoryId = parseInt(req.params.categoryId);
@@ -753,17 +805,19 @@ exports.SetsClothingGetAll = async (req, res) => {
       },
     });
     if (sets.length > 0) {
-      return res.status(200).send(sets);
+      return res.status(200).json({ data: sets });
     } else {
-      return res
-        .status(404)
-        .send("ستی با این شناسه دسته‌بندی یا ایجادکننده وجود ندارد");
+      return res.status(404).json({
+        message: "ستی با این شناسه دسته‌بندی یا ایجادکننده وجود ندارد",
+      });
     }
   } catch (err) {
     if (err.code && err.code === "P2003") {
-      return res.status(404).send("کاربری با این شناسه وجود ندارد");
+      return res
+        .status(404)
+        .json({ message: "کاربری با این شناسه وجود ندارد" });
     }
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -773,11 +827,11 @@ exports.SetsClothingGetAll = async (req, res) => {
 //     id = jwt.verify(req.header("Authorization"), SECRET).id;
 //   } catch (err) {
 //     if (err.name === "TokenExpiredError")
-//       return res.status(400).send("زمان ورود شما منقضی شده است");
+//       return res.status(400).json( { message: ("زمان ورود شما منقضی شده است") } );
 //     else if (err.name === "JsonWebTokenError") {
-//       return res.status(400).send("توکن احراز هویت نامعتبر است");
+//       return res.status(400).json( { message: ("توکن احراز هویت نامعتبر است") } );
 //     } else {
-//       return res.status(400).send("خطای احراز هویت");
+//       return res.status(400).json( { message: ("خطای احراز هویت") } );
 //     }
 //   }
 //   const categoryId = parseInt(req.params.categoryId);
@@ -801,16 +855,16 @@ exports.SetsClothingGetAll = async (req, res) => {
 //           size: size,
 //         },
 //       });
-//       return res.status(200).send("لباس با موفقیت ویرایش شد");
+//       return res.status(200).json( { message: ("لباس با موفقیت ویرایش شد") } );
 //     } else {
 //       return res
 //         .status(404)
-//         .send(
+//         .json({ message:
 //           "لباسی با این شناسه یا شناسه ایجاد کننده یا شناسه دسته‌بندی وجود ندارد"
 //         );
 //     }
 //   } catch {
-//     return res.status(500).send("عملیات با خطا مواجه شد");
+//     return res.status(500).json( { message: ("عملیات با خطا مواجه شد") } );
 //   }
 // };
 
@@ -820,11 +874,11 @@ exports.SetsClothingDelete = async (req, res) => {
     id = jwt.verify(req.header("Authorization"), SECRET).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
-      return res.status(400).send("زمان ورود شما منقضی شده است");
+      return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
-      return res.status(400).send("توکن احراز هویت نامعتبر است");
+      return res.status(400).json({ message: "توکن احراز هویت نامعتبر است" });
     } else {
-      return res.status(400).send("خطای احراز هویت");
+      return res.status(400).json({ message: "خطای احراز هویت" });
     }
   }
   const categoryId = parseInt(req.params.categoryId);
@@ -841,15 +895,18 @@ exports.SetsClothingDelete = async (req, res) => {
     if (!set) {
       return res
         .status(404)
-        .send(
-          "ستی با این شناسه یا شناسه ایجاد کننده یا شناسه دسته‌بندی وجود ندارد"
-        );
+        .json({
+          message:
+            "ستی با این شناسه یا شناسه ایجاد کننده یا شناسه دسته‌بندی وجود ندارد",
+        });
     }
   } catch (err) {
     if (err.code && err.code === "P2003") {
-      return res.status(404).send("کاربر یا دسته‌بندی با این شناسه وجود ندارد");
+      return res
+        .status(404)
+        .json({ message: "کاربر یا دسته‌بندی با این شناسه وجود ندارد" });
     }
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
   try {
     if (set) {
@@ -865,7 +922,7 @@ exports.SetsClothingDelete = async (req, res) => {
       );
     }
   } catch {
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
   try {
     await db.Set.delete({
@@ -873,9 +930,9 @@ exports.SetsClothingDelete = async (req, res) => {
         id: set.id,
       },
     });
-    return res.status(200).send("ست با موفقیت حذف شد");
+    return res.status(200).json({ message: "ست با موفقیت حذف شد" });
   } catch {
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -885,11 +942,11 @@ exports.SetsClothingGetOne = async (req, res) => {
     id = jwt.verify(req.header("Authorization"), SECRET).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
-      return res.status(400).send("زمان ورود شما منقضی شده است");
+      return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
-      return res.status(400).send("توکن احراز هویت نامعتبر است");
+      return res.status(400).json({ message: "توکن احراز هویت نامعتبر است" });
     } else {
-      return res.status(400).send("خطای احراز هویت");
+      return res.status(400).json({ message: "خطای احراز هویت" });
     }
   }
   const categoryId = parseInt(req.params.categoryId);
@@ -906,16 +963,18 @@ exports.SetsClothingGetOne = async (req, res) => {
       },
     });
     if (set) {
-      return res.status(200).send(set);
+      return res.status(200).json({ data: set });
     } else {
       return res
         .status(404)
-        .send("ست یا دسته‌بندی یا کاربری با این شناسه وجود ندارد");
+        .json({ message: "ست یا دسته‌بندی یا کاربری با این شناسه وجود ندارد" });
     }
   } catch (err) {
     if (err.code && err.code === "P2003") {
-      return res.status(404).send("کاربر یا دسته‌بندی با این شناسه وجود ندارد");
+      return res
+        .status(404)
+        .json({ message: "کاربر یا دسته‌بندی با این شناسه وجود ندارد" });
     }
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };

@@ -58,11 +58,11 @@ const SECRET = "secret";
 //       },
 //     });
 //     mailSignup(email, firstname, req.get("host") + "/logo.png");
-//     return res.status(201).send("ثبت نام با موفقیت انجام شد");
+//     return res.status(201).json( { message: ("ثبت نام با موفقیت انجام شد") } );
 //   } else if (email_check) {
-//     return res.status(409).send("ایمیل تکراری می‌باشد");
+//     return res.status(409).json( { message: ("ایمیل تکراری می‌باشد") } );
 //   } else if (phone_check) {
-//     return res.status(409).send("شماره تلفن تکراری می‌باشد");
+//     return res.status(409).json( { message: ("شماره تلفن تکراری می‌باشد") } );
 //   }
 // };
 
@@ -72,11 +72,11 @@ exports.update = async (req, res) => {
     id = jwt.verify(req.header("Authorization"), SECRET).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
-      return res.status(400).send("زمان ورود شما منقضی شده است");
+      return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
-      return res.status(400).send("توکن احراز هویت نامعتبر است");
+      return res.status(400).json({ message: "توکن احراز هویت نامعتبر است" });
     } else {
-      return res.status(400).send("خطای احراز هویت");
+      return res.status(400).json({ message: "خطای احراز هویت" });
     }
   }
   const new_firstName = req.body.firstname;
@@ -103,14 +103,14 @@ exports.update = async (req, res) => {
       if (user.password && user.password !== "") {
         if (old_password) {
           if (user.password !== md5(old_password)) {
-            return res.status(401).send("رمز قبلی اشتباه است");
+            return res.status(401).json({ message: "رمز قبلی اشتباه است" });
           }
         } else {
-          return res.status(400).send("رمز قبلی باید ارسال شود");
+          return res.status(400).json({ message: "رمز قبلی باید ارسال شود" });
         }
       }
     } else {
-      return res.status(404).send("کاربر با این شناسه وجود ندارد");
+      return res.status(404).json({ message: "کاربر با این شناسه وجود ندارد" });
     }
   }
   try {
@@ -124,13 +124,15 @@ exports.update = async (req, res) => {
     }
   } catch (err) {
     if (err.code && err.code === "P2025") {
-      return res.status(404).send("کاربری با این شناسه وجود ندارد");
+      return res
+        .status(404)
+        .json({ message: "کاربری با این شناسه وجود ندارد" });
     }
-    return res.status(400).send("عملیات با خطا مواجه شد");
+    return res.status(400).json({ message: "عملیات با خطا مواجه شد" });
   }
   try {
-    if(new_password){
-      new_password = md5(new_password)
+    if (new_password) {
+      new_password = md5(new_password);
     }
     let updated_user = await db.User.update({
       where: {
@@ -146,17 +148,19 @@ exports.update = async (req, res) => {
         age: new_age,
       },
     });
-    return res.status(200).send("به‌روز‌رسانی با موفقیت انجام شد");
+    return res.status(200).json({ message: "به‌روز‌رسانی با موفقیت انجام شد" });
   } catch (err) {
     if (err.code && err.code === "P2002") {
       return res
         .status(409)
-        .send("کاربری با این ایمیل یا شماره تلفن وجود دارد");
+        .json({ message: "کاربری با این ایمیل یا شماره تلفن وجود دارد" });
     }
     if (err.code && err.code === "P2025") {
-      return res.status(404).send("کاربری با این شناسه وجود ندارد");
+      return res
+        .status(404)
+        .json({ message: "کاربری با این شناسه وجود ندارد" });
     }
-    return res.status(400).send("عملیات با خطا مواجه شد");
+    return res.status(400).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -170,9 +174,9 @@ exports.update = async (req, res) => {
 //         id: id,
 //       },
 //     });
-//     return res.status(200).send("کاربر با موفقیت حذف شد");
+//     return res.status(200).json( { message: ("کاربر با موفقیت حذف شد") } );
 //   } catch (err) {
-//     return res.status(404).send("کاربری با این شناسه وجود ندارد");
+//     return res.status(404).json( { message: ("کاربری با این شناسه وجود ندارد") } );
 //   }
 // };
 
@@ -182,11 +186,11 @@ exports.getOne = async (req, res) => {
     id = jwt.verify(req.header("Authorization"), SECRET).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
-      return res.status(400).send("زمان ورود شما منقضی شده است");
+      return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
-      return res.status(400).send("توکن احراز هویت نامعتبر است");
+      return res.status(400).json({ message: "توکن احراز هویت نامعتبر است" });
     } else {
-      return res.status(400).send("خطای احراز هویت");
+      return res.status(400).json({ message: "خطای احراز هویت" });
     }
   }
   let user = await db.User.findFirst({
@@ -206,9 +210,9 @@ exports.getOne = async (req, res) => {
     },
   });
   if (user) {
-    return res.status(200).send(exclude(user, ["password"]));
+    return res.status(200).json({ data: exclude(user, ["password"]) });
   } else {
-    return res.status(404).send("کاربری با این شناسه وجود ندارد");
+    return res.status(404).json({ message: "کاربری با این شناسه وجود ندارد" });
   }
 };
 
@@ -225,7 +229,7 @@ exports.getOne = async (req, res) => {
 //       age: true,
 //     },
 //   });
-//   return res.status(200).send({
+//   return res.status(200).json({
 //     data: users,
 //   });
 // };
@@ -241,9 +245,9 @@ exports.login = async (req, res) => {
       },
     });
     if (user) {
-      return res.status(200).send("کاربر وجود دارد");
+      return res.status(200).json({ message: "کاربر وجود دارد" });
     } else {
-      return res.status(404).send("کاربر وجود ندارد");
+      return res.status(404).json({ message: "کاربر وجود ندارد" });
     }
   } else if (phone && phone !== "") {
     const code = Math.floor(10000 + Math.random() * 90000);
@@ -277,12 +281,14 @@ exports.login = async (req, res) => {
       },
     });
     if (user) {
-      return res.status(200).send("کاربر وجود دارد");
+      return res.status(200).json({ message: "کاربر وجود دارد" });
     } else {
-      return res.status(404).send("کاربر وجود ندارد");
+      return res.status(404).json({ message: "کاربر وجود ندارد" });
     }
   } else {
-    return res.status(400).send("ارسال ایمیل یا شماره تلفن اجباری است");
+    return res
+      .status(400)
+      .json({ message: "ارسال ایمیل یا شماره تلفن اجباری است" });
   }
 };
 
@@ -302,7 +308,9 @@ exports.loginCode = async (req, res) => {
       },
     });
     if (user) {
-      return res.status(200).send(jwt.sign(user, SECRET, { expiresIn: "60m" }));
+      return res
+        .status(200)
+        .json({ data: jwt.sign(user, SECRET, { expiresIn: "60m" }) });
     } else {
       let newUser = await db.User.create({
         data: {
@@ -311,12 +319,14 @@ exports.loginCode = async (req, res) => {
       });
       return res
         .status(201)
-        .send(jwt.sign(newUser, SECRET, { expiresIn: "60m" }));
+        .json({ data: jwt.sign(newUser, SECRET, { expiresIn: "60m" }) });
     }
   } else if (logincode) {
-    return res.status(401).send("کد وارد شده اشتباه است");
+    return res.status(401).json({ message: "کد وارد شده اشتباه است" });
   } else {
-    return res.status(404).send("ابتدا باید درخواست کد فراموشی ارسال شود");
+    return res
+      .status(404)
+      .json({ message: "ابتدا باید درخواست کد فراموشی ارسال شود" });
   }
 };
 
@@ -332,11 +342,13 @@ exports.loginPass = async (req, res) => {
       },
     });
     if (user && user.password === md5(password)) {
-      return res.status(200).send(jwt.sign(user, SECRET, { expiresIn: "60m" }));
+      return res
+        .status(200)
+        .json({ data: jwt.sign(user, SECRET, { expiresIn: "60m" }) });
     } else if (user) {
-      return res.status(401).send("رمزعبور اشتباه است");
+      return res.status(401).json({ message: "رمزعبور اشتباه است" });
     } else {
-      return res.status(404).send("کاربر وجود ندارد");
+      return res.status(404).json({ message: "کاربر وجود ندارد" });
     }
   } else if (phone && phone !== "") {
     let user = await db.User.findFirst({
@@ -345,14 +357,18 @@ exports.loginPass = async (req, res) => {
       },
     });
     if (user && user.password === md5(password)) {
-      return res.status(200).send(jwt.sign(user, SECRET, { expiresIn: "60m" }));
+      return res
+        .status(200)
+        .json({ data: jwt.sign(user, SECRET, { expiresIn: "60m" }) });
     } else if (user) {
-      return res.status(401).send("رمزعبور اشتباه است");
+      return res.status(401).json({ message: "رمزعبور اشتباه است" });
     } else {
-      return res.status(404).send("کاربر وجود ندارد");
+      return res.status(404).json({ message: "کاربر وجود ندارد" });
     }
   } else {
-    return res.status(400).send("ارسال ایمیل یا شماره تلفن اجباری است");
+    return res
+      .status(400)
+      .json({ message: "ارسال ایمیل یا شماره تلفن اجباری است" });
   }
 };
 
@@ -390,9 +406,11 @@ exports.PassReset = async (req, res) => {
         });
       }
       mailResetPass(email, code, req.get("host") + "/logo.png");
-      return res.status(200).send("کد فراموشی رمزعبور ارسال شد");
+      return res.status(200).json({ message: "کد فراموشی رمزعبور ارسال شد" });
     } else {
-      return res.status(404).send("کاربری با این ایمیل وجود ندارد");
+      return res
+        .status(404)
+        .json({ message: "کاربری با این ایمیل وجود ندارد" });
     }
   } else if (phone && phone !== "") {
     let user = await db.User.findFirst({
@@ -426,12 +444,16 @@ exports.PassReset = async (req, res) => {
       }
       /////// send sms code
       sendSms(phone, code);
-      return res.status(200).send("کد فراموشی رمزعبور ارسال شد");
+      return res.status(200).json({ message: "کد فراموشی رمزعبور ارسال شد" });
     } else {
-      return res.status(404).send("کاربری با این شماره وجود ندارد");
+      return res
+        .status(404)
+        .json({ message: "کاربری با این شماره وجود ندارد" });
     }
   } else {
-    return res.status(400).send("ارسال ایمیل یا شماره تلفن اجباری است");
+    return res
+      .status(400)
+      .json({ message: "ارسال ایمیل یا شماره تلفن اجباری است" });
   }
 };
 
@@ -455,11 +477,13 @@ exports.PassChange = async (req, res) => {
           password: md5(password),
         },
       });
-      return res.status(200).send("رمزعبور با موفقیت تغییر کرد");
+      return res.status(200).json({ message: "رمزعبور با موفقیت تغییر کرد" });
     } else if (user) {
-      return res.status(401).send("کد فراموشی رمز اشتباه است");
+      return res.status(401).json({ message: "کد فراموشی رمز اشتباه است" });
     } else {
-      return res.status(404).send("ابتدا باید درخواست کد فراموشی ارسال شود");
+      return res
+        .status(404)
+        .json({ message: "ابتدا باید درخواست کد فراموشی ارسال شود" });
     }
   } else if (phone && phone !== "") {
     let user = await db.PassReset.findFirst({
@@ -476,13 +500,17 @@ exports.PassChange = async (req, res) => {
           password: md5(password),
         },
       });
-      return res.status(200).send("رمزعبور با موفقیت تغییر کرد");
+      return res.status(200).json({ message: "رمزعبور با موفقیت تغییر کرد" });
     } else if (user) {
-      return res.status(401).send("کد فراموشی رمز اشتباه است");
+      return res.status(401).json({ message: "کد فراموشی رمز اشتباه است" });
     } else {
-      return res.status(404).send("ابتدا باید درخواست کد فراموشی ارسال شود");
+      return res
+        .status(404)
+        .json({ message: "ابتدا باید درخواست کد فراموشی ارسال شود" });
     }
   } else {
-    return res.status(400).send("ارسال ایمیل یا شماره تلفن اجباری است");
+    return res
+      .status(400)
+      .json({ message: "ارسال ایمیل یا شماره تلفن اجباری است" });
   }
 };

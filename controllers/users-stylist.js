@@ -49,11 +49,11 @@ const SECRET = "secret";
 //       },
 //     });
 //     mailSignup(email, firstname,req.get("host")+"/logo.png");
-//     return res.status(201).send("ثبت نام با موفقیت انجام شد");
+//     return res.status(201).json( { message: ("ثبت نام با موفقیت انجام شد") } );
 //   } else if (email_check) {
-//     return res.status(409).send("ایمیل تکراری می‌باشد");
+//     return res.status(409).json( { message: ("ایمیل تکراری می‌باشد") } );
 //   } else if (phone_check) {
-//     return res.status(409).send("شماره تلفن تکراری می‌باشد");
+//     return res.status(409).json( { message: ("شماره تلفن تکراری می‌باشد") } );
 //   }
 // };
 
@@ -63,11 +63,11 @@ const SECRET = "secret";
 //     id = jwt.verify(req.header("Authorization"), SECRET).id;
 //   } catch (err) {
 //     if (err.name === "TokenExpiredError")
-//       return res.status(400).send("زمان ورود شما منقضی شده است");
+//       return res.status(400).json( { message: ("زمان ورود شما منقضی شده است") } );
 //     else if (err.name === "JsonWebTokenError") {
-//       return res.status(400).send("توکن احراز هویت نامعتبر است");
+//       return res.status(400).json( { message: ("توکن احراز هویت نامعتبر است") } );
 //     } else {
-//       return res.status(400).send("خطای احراز هویت");
+//       return res.status(400).json( { message: ("خطای احراز هویت") } );
 //     }
 //   }
 //   const new_firstName = req.body.firstname;
@@ -91,17 +91,17 @@ const SECRET = "secret";
 //         password: md5(new_password),
 //       },
 //     });
-//     return res.status(200).send("به‌روز‌رسانی با موفقیت انجام شد");
+//     return res.status(200).json( { message: ("به‌روز‌رسانی با موفقیت انجام شد") } );
 //   } catch (err) {
 //     if (err.code && err.code === "P2002") {
 //       return res
 //         .status(409)
-//         .send("کاربری با این ایمیل یا شماره تلفن وجود دارد");
+//         .json( { message: ("کاربری با این ایمیل یا شماره تلفن وجود دارد") } );
 //     }
 //     if (err.code && err.code === "P2025") {
-//       return res.status(404).send("کاربری با این شناسه وجود ندارد");
+//       return res.status(404).json( { message: ("کاربری با این شناسه وجود ندارد") } );
 //     }
-//     return res.status(400).send("عملیات با خطا مواجه شد");
+//     return res.status(400).json( { message: ("عملیات با خطا مواجه شد") } );
 //   }
 // };
 
@@ -114,9 +114,9 @@ const SECRET = "secret";
 //         id: id,
 //       },
 //     });
-//     return res.status(200).send("کاربر با موفقیت حذف شد");
+//     return res.status(200).json( { message: ("کاربر با موفقیت حذف شد") } );
 //   } catch (err) {
-//     return res.status(404).send("کاربری با این شناسه وجود ندارد");
+//     return res.status(404).json( { message: ("کاربری با این شناسه وجود ندارد") } );
 //   }
 // };
 
@@ -131,7 +131,7 @@ const SECRET = "secret";
 //       phone: true,
 //     },
 //   });
-//   return res.status(200).send({
+//   return res.status(200).json({
 //     data: users,
 //   });
 // };
@@ -142,11 +142,11 @@ exports.getOne = async (req, res) => {
     id = jwt.verify(req.header("Authorization"), SECRET).id;
   } catch (err) {
     if (err.name === "TokenExpiredError")
-      return res.status(400).send("زمان ورود شما منقضی شده است");
+      return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
-      return res.status(400).send("توکن احراز هویت نامعتبر است");
+      return res.status(400).json({ message: "توکن احراز هویت نامعتبر است" });
     } else {
-      return res.status(400).send("خطای احراز هویت");
+      return res.status(400).json({ message: "خطای احراز هویت" });
     }
   }
   let user = await db.User_Stylist.findFirst({
@@ -158,9 +158,9 @@ exports.getOne = async (req, res) => {
     },
   });
   if (user) {
-    return res.status(200).send(exclude(user, ["password"]));
+    return res.status(200).json({ data: exclude(user, ["password"]) });
   } else {
-    return res.status(404).send("کاربری با این شناسه وجود ندارد");
+    return res.status(404).json({ message: "کاربری با این شناسه وجود ندارد" });
   }
 };
 
@@ -175,7 +175,9 @@ exports.login = async (req, res) => {
     },
   });
   if (!user_phone) {
-    return res.status(404).send("شخصی با این شماره موجود نمی‌باشد");
+    return res
+      .status(404)
+      .json({ message: "شخصی با این شماره موجود نمی‌باشد" });
   }
 
   //check password exist
@@ -186,11 +188,11 @@ exports.login = async (req, res) => {
     },
   });
   if (!user_password) {
-    return res.status(401).send("رمز عبور صحیح نمی‌باشد");
+    return res.status(401).json({ message: "رمز عبور صحیح نمی‌باشد" });
   } else {
     return res
       .status(200)
-      .send(jwt.sign(user_password, SECRET, { expiresIn: "60m" }));
+      .json({ data: jwt.sign(user_password, SECRET, { expiresIn: "60m" }) });
   }
 };
 
@@ -227,9 +229,9 @@ exports.PassReset = async (req, res) => {
     }
     //// send sms to phone number
     sendSms(phone, code);
-    return res.status(200).send("کد فراموشی رمزعبور ارسال شد");
+    return res.status(200).json({ message: "کد فراموشی رمزعبور ارسال شد" });
   } else {
-    return res.status(404).send("کاربری با این شماره وجود ندارد");
+    return res.status(404).json({ message: "کاربری با این شماره وجود ندارد" });
   }
 };
 
@@ -251,10 +253,12 @@ exports.PassChange = async (req, res) => {
         password: md5(password),
       },
     });
-    return res.status(200).send("رمزعبور با موفقیت تغییر کرد");
+    return res.status(200).json({ message: "رمزعبور با موفقیت تغییر کرد" });
   } else if (user) {
-    return res.status(401).send("کد فراموشی رمز اشتباه است");
+    return res.status(401).json({ message: "کد فراموشی رمز اشتباه است" });
   } else {
-    return res.status(404).send("ابتدا باید درخواست کد فراموشی ارسال شود");
+    return res
+      .status(404)
+      .json({ message: "ابتدا باید درخواست کد فراموشی ارسال شود" });
   }
 };

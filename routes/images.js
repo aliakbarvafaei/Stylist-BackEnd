@@ -39,13 +39,9 @@ router.post(
   imageUpload.array("images", 1),
   (req, res) => {
     var spawn = require("child_process").spawnSync;
-    const pipInstall = spawn(
-      "pip",
-      ["install", "rembg"],
-      {
-        encoding: "utf-8",
-      }
-    );
+    const pipInstall = spawn("pip", ["install", "rembg"], {
+      encoding: "utf-8",
+    });
     console.log(`pip install output: ${pipInstall.stdout}`);
     if (pipInstall.stderr)
       console.log(`pip install error: ${pipInstall.stderr}`);
@@ -63,7 +59,9 @@ router.post(
       );
       if (process.stderr) {
         console.log(`python run error: ${process.stderr}`);
-        res.status(500).send(`python run error: ${process.stderr}`);
+        res
+          .status(500)
+          .json({ message: `python run error: ${process.stderr}` });
       } else {
         res.sendFile(
           path.resolve(
@@ -88,7 +86,7 @@ router.post(
         );
       }
     } else {
-      res.status(500).send("can not pip install package");
+      res.status(500).json({ message: "can not pip install package" });
     }
     fs.unlink(`public/images/${req.files[0].filename}`, (err) => {
       if (err) {
@@ -99,7 +97,7 @@ router.post(
     });
   },
   (error, req, res, next) => {
-    res.status(400).send({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
 );
 

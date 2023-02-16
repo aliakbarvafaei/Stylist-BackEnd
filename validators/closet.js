@@ -8,7 +8,7 @@ exports.vClothesCategories = (req, res, next) => {
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -31,11 +31,11 @@ exports.vClothesCategoryCraete = (req, res, next) => {
     errors.forEach((element) => {
       res_data.push(element.message);
     });
-    if (res_data.length > 0) return res.status(400).send(res_data);
+    if (res_data.length > 0) return res.status(400).json({ message: res_data });
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -44,7 +44,7 @@ exports.vClothesCategoryGetAll = (req, res, next) => {
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -53,7 +53,7 @@ exports.vClothesCategoryDelete = (req, res, next) => {
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -72,11 +72,11 @@ exports.vClothesCategoryUpdate = (req, res, next) => {
     errors.forEach((element) => {
       res_data.push(element.message);
     });
-    if (res_data.length > 0) return res.status(400).send(res_data);
+    if (res_data.length > 0) return res.status(400).json({ message: res_data });
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -111,12 +111,12 @@ exports.vClothesClothingCreate = (req, res, next) => {
     });
     if (res_data.length > 0) {
       removeFiles(req.files);
-      return res.status(400).send(res_data);
+      return res.status(400).json({ message: res_data });
     }
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -125,7 +125,7 @@ exports.vClothesClothingGetAll = (req, res, next) => {
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -156,11 +156,11 @@ exports.vClothesClothingUpdate = (req, res, next) => {
     errors.forEach((element) => {
       res_data.push(element.message);
     });
-    if (res_data.length > 0) return res.status(400).send(res_data);
+    if (res_data.length > 0) return res.status(400).json({ message: res_data });
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -169,7 +169,7 @@ exports.vClothesClothingDelete = (req, res, next) => {
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -178,7 +178,7 @@ exports.vClothesClothingGetOne = (req, res, next) => {
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -201,11 +201,11 @@ exports.vSetsCategoryCraete = (req, res, next) => {
     errors.forEach((element) => {
       res_data.push(element.message);
     });
-    if (res_data.length > 0) return res.status(400).send(res_data);
+    if (res_data.length > 0) return res.status(400).json({ message: res_data });
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -214,7 +214,7 @@ exports.vSetsCategoryGetAll = (req, res, next) => {
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -223,7 +223,7 @@ exports.vSetsCategoryDelete = (req, res, next) => {
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -242,11 +242,11 @@ exports.vSetsCategoryUpdate = (req, res, next) => {
     errors.forEach((element) => {
       res_data.push(element.message);
     });
-    if (res_data.length > 0) return res.status(400).send(res_data);
+    if (res_data.length > 0) return res.status(400).json({ message: res_data });
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -269,12 +269,12 @@ exports.vSetsClothingCreate = (req, res, next) => {
     });
     if (res_data.length > 0) {
       removeFiles(req.files);
-      return res.status(400).send(res_data);
+      return res.status(400).json({ message: res_data });
     }
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -283,7 +283,7 @@ exports.vSetsClothingGetAll = (req, res, next) => {
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -292,7 +292,7 @@ exports.vSetsClothingGetAll = (req, res, next) => {
 //     next();
 //   } catch (error) {
 //     console.log(error);
-//     return res.status(500).send("عملیات با خطا مواجه شد");
+//     return res.status(500).json( { message: ("عملیات با خطا مواجه شد") } );
 //   }
 // };
 
@@ -301,7 +301,7 @@ exports.vSetsClothingDelete = (req, res, next) => {
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
 
@@ -310,6 +310,6 @@ exports.vSetsClothingGetOne = (req, res, next) => {
     next();
   } catch (error) {
     console.log(error);
-    return res.status(500).send("عملیات با خطا مواجه شد");
+    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };

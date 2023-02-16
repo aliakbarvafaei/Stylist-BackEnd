@@ -69,7 +69,7 @@ model Address {
   id      Int     @id @default(autoincrement())
   address String
   userId  Int
-  User    User    @relation("USER_ADDRESS", fields: [userId], references: [id])
+  User    User    @relation("USER_ADDRESS", fields: [userId], references: [id], onDelete: Cascade)
   Order   Order[] @relation("ORDER_ADDRESS")
 }
 
@@ -80,9 +80,9 @@ model Clothing {
   season              String?
   size                String?
   userId              Int
-  user                User              @relation("USER_CLOTHING", fields: [userId], references: [id])
+  user                User              @relation("USER_CLOTHING", fields: [userId], references: [id], onDelete: Cascade)
   category_clothingId Int
-  category_clothing   Category_Clothing @relation("CATEGORY_CLOTHING_CLOTHING", fields: [category_clothingId], references: [id])
+  category_clothing   Category_Clothing @relation("CATEGORY_CLOTHING_CLOTHING", fields: [category_clothingId], references: [id], onDelete: Cascade)
   images_clothing     Image_Clothing[]  @relation("CLOTHING_IMAGE_CLOTHING")
 }
 
@@ -91,7 +91,7 @@ model Category_Clothing {
   id       Int        @id @default(autoincrement())
   name     String
   userId   Int
-  user     User       @relation("USER_CATEGORY_CLOTHING", fields: [userId], references: [id])
+  user     User       @relation("USER_CATEGORY_CLOTHING", fields: [userId], references: [id], onDelete: Cascade)
   clothing Clothing[] @relation("CATEGORY_CLOTHING_CLOTHING")
 }
 
@@ -100,7 +100,7 @@ model Image_Clothing {
   id         Int      @id @default(autoincrement())
   url        String   @unique
   clothingId Int
-  clothing   Clothing @relation("CLOTHING_IMAGE_CLOTHING", fields: [clothingId], references: [id])
+  clothing   Clothing @relation("CLOTHING_IMAGE_CLOTHING", fields: [clothingId], references: [id], onDelete: Cascade)
 }
 
 //set model
@@ -108,19 +108,19 @@ model Set {
   id             Int           @id @default(autoincrement())
   image_set      String        @unique
   userId         Int
-  user           User          @relation("USER_SET", fields: [userId], references: [id])
+  user           User          @relation("USER_SET", fields: [userId], references: [id], onDelete: Cascade)
   category_setId Int
-  category_set   Category_Set  @relation("CATEGORY_SET_SET", fields: [category_setId], references: [id])
+  category_set   Category_Set  @relation("CATEGORY_SET_SET", fields: [category_setId], references: [id], onDelete: Cascade)
   set_product    Set_Product[] @relation("SET_SET_PRODUCT")
 }
 
 //set_product model
 model Set_Product {
-  id        Int     @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   setId     Int
-  set       Set     @relation("SET_SET_PRODUCT", fields: [setId], references: [id])
-  productId Int
-  product   Product @relation("PRODUCT_SET_PRODUCT", fields: [productId], references: [id])
+  set       Set      @relation("SET_SET_PRODUCT", fields: [setId], references: [id], onDelete: Cascade)
+  productId Int?
+  product   Product? @relation("PRODUCT_SET_PRODUCT", fields: [productId], references: [id], onDelete: SetNull)
 }
 
 //category_set model
@@ -128,7 +128,7 @@ model Category_Set {
   id     Int    @id @default(autoincrement())
   name   String
   userId Int
-  user   User   @relation("USER_CATEGORY_SET", fields: [userId], references: [id])
+  user   User   @relation("USER_CATEGORY_SET", fields: [userId], references: [id], onDelete: Cascade)
   set    Set[]  @relation("CATEGORY_SET_SET")
 }
 
@@ -138,9 +138,9 @@ model Counseling {
   status         STATUS_COUNSELING @default(OPEN)
   price          Float
   userId         Int
-  user           User              @relation("USER_COUNSELING", fields: [userId], references: [id])
-  user_stylistId Int
-  user_stylist   User_Stylist      @relation("USER_STYLIST_COUNSELING", fields: [user_stylistId], references: [id])
+  user           User              @relation("USER_COUNSELING", fields: [userId], references: [id], onDelete: Cascade)
+  user_stylistId Int?
+  user_stylist   User_Stylist?     @relation("USER_STYLIST_COUNSELING", fields: [user_stylistId], references: [id], onDelete: SetNull)
   payment        Payment[]         @relation("COUNSELING_PAYMENT")
 }
 
@@ -163,10 +163,10 @@ model Payment {
   status       STATUS_PAYMENT @default(UNPAID)
   price        Float
   date         DateTime       @default(now())
-  counselingId Int
-  counseling   Counseling     @relation("COUNSELING_PAYMENT", fields: [counselingId], references: [id])
+  counselingId Int?
+  counseling   Counseling?    @relation("COUNSELING_PAYMENT", fields: [counselingId], references: [id], onDelete: SetNull)
   userId       Int
-  User         User           @relation("USER_PAYMENT", fields: [userId], references: [id])
+  User         User           @relation("USER_PAYMENT", fields: [userId], references: [id], onDelete: Cascade)
 }
 
 //transaction model
@@ -176,9 +176,9 @@ model Transaction {
   price   Float
   date    DateTime       @default(now())
   userId  Int
-  user    User           @relation("USER_TRANSACTION", fields: [userId], references: [id])
-  orderId Int
-  order   Order          @relation("ORDER_TRANSACTION", fields: [orderId], references: [id])
+  user    User           @relation("USER_TRANSACTION", fields: [userId], references: [id], onDelete: Cascade)
+  orderId Int?
+  order   Order?         @relation("ORDER_TRANSACTION", fields: [orderId], references: [id], onDelete: SetNull)
 }
 
 //order model
@@ -193,11 +193,11 @@ model Order {
   createdAt    DateTime      @default(now())
   deliveryTime DateTime
   userId       Int
-  user         User          @relation("USER_ORDER", fields: [userId], references: [id])
+  user         User          @relation("USER_ORDER", fields: [userId], references: [id], onDelete: Cascade)
   transaction  Transaction[] @relation("ORDER_TRANSACTION")
   order_item   Order_Item[]  @relation("ORDER_ORDER_ITEM")
-  addressId    Int
-  address      Address       @relation("ORDER_ADDRESS", fields: [addressId], references: [id])
+  addressId    Int?
+  address      Address?      @relation("ORDER_ADDRESS", fields: [addressId], references: [id], onDelete: SetNull)
 }
 
 //order_item model
@@ -209,9 +209,9 @@ model Order_Item {
   createdAt DateTime @default(now())
   updateAt  DateTime @default(now())
   orderId   Int
-  order     Order    @relation("ORDER_ORDER_ITEM", fields: [orderId], references: [id])
-  productId Int
-  product   Product  @relation("PRODUCT_ORDER_ITEM", fields: [productId], references: [id])
+  order     Order    @relation("ORDER_ORDER_ITEM", fields: [orderId], references: [id], onDelete: Cascade)
+  productId Int?
+  product   Product? @relation("PRODUCT_ORDER_ITEM", fields: [productId], references: [id], onDelete: SetNull)
 }
 
 //cart model
@@ -220,7 +220,7 @@ model Cart {
   status    STATUS_CART @default(OPEN)
   price     Float
   userId    Int
-  user      User        @relation("USER_CART", fields: [userId], references: [id])
+  user      User        @relation("USER_CART", fields: [userId], references: [id], onDelete: Cascade)
   cart_item Cart_Item[] @relation("CART_CART_ITEM")
 }
 
@@ -231,9 +231,9 @@ model Cart_Item {
   createdAt DateTime @default(now())
   updateAt  DateTime @default(now())
   cartId    Int
-  cart      Cart     @relation("CART_CART_ITEM", fields: [cartId], references: [id])
+  cart      Cart     @relation("CART_CART_ITEM", fields: [cartId], references: [id], onDelete: Cascade)
   productId Int
-  product   Product  @relation("PRODUCT_CART_ITEM", fields: [productId], references: [id])
+  product   Product  @relation("PRODUCT_CART_ITEM", fields: [productId], references: [id], onDelete: Cascade)
 }
 
 //product model
@@ -252,7 +252,7 @@ model Product {
   image_product    Image_Product[]    @relation("PRODUCT_IMAGE_PRODUCT")
   product_category Product_Category[] @relation("PRODUCT_PRODUCT_CATEGORY")
   sellerId         Int
-  Seller           Seller             @relation("SELLER_PRODUCT", fields: [sellerId], references: [id])
+  Seller           Seller             @relation("SELLER_PRODUCT", fields: [sellerId], references: [id], onDelete: Cascade)
 }
 
 //image_product model
@@ -260,7 +260,7 @@ model Image_Product {
   id        Int     @id @default(autoincrement())
   url       String  @unique
   productId Int
-  product   Product @relation("PRODUCT_IMAGE_PRODUCT", fields: [productId], references: [id])
+  product   Product @relation("PRODUCT_IMAGE_PRODUCT", fields: [productId], references: [id], onDelete: Cascade)
 }
 
 //seller model
@@ -281,9 +281,9 @@ model Seller {
 model Product_Category {
   id         Int      @id @default(autoincrement())
   categoryId Int
-  category   Category @relation("CATEGORY_PRODUCT_CATEGORY", fields: [categoryId], references: [id])
+  category   Category @relation("CATEGORY_PRODUCT_CATEGORY", fields: [categoryId], references: [id], onDelete: Cascade)
   productId  Int
-  product    Product  @relation("PRODUCT_PRODUCT_CATEGORY", fields: [productId], references: [id])
+  product    Product  @relation("PRODUCT_PRODUCT_CATEGORY", fields: [productId], references: [id], onDelete: Cascade)
 }
 
 //category model

@@ -27,10 +27,12 @@ enum STATUS_PAYMENT {
 }
 
 enum STATUS_ORDER {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
   CANCELLED
-  OPEN
-  COMPLETED
-  CONFIRMED
+  REFUNDED
 }
 
 enum STATUS_CART {
@@ -55,6 +57,7 @@ model User {
   set               Set[]               @relation("USER_SET")
   category_set      Category_Set[]      @relation("USER_CATEGORY_SET")
   counseling        Counseling[]        @relation("USER_COUNSELING")
+  payment           Payment[]           @relation("USER_PAYMENT")
   transaction       Transaction[]       @relation("USER_TRANSACTION")
   order             Order[]             @relation("USER_ORDER")
   cart              Cart[]              @relation("USER_CART")
@@ -63,10 +66,11 @@ model User {
 
 //address model
 model Address {
-  id      Int    @id @default(autoincrement())
+  id      Int     @id @default(autoincrement())
   address String
   userId  Int
-  User    User   @relation("USER_ADDRESS", fields: [userId], references: [id])
+  User    User    @relation("USER_ADDRESS", fields: [userId], references: [id])
+  Order   Order[] @relation("ORDER_ADDRESS")
 }
 
 //clothing model
@@ -161,6 +165,8 @@ model Payment {
   date         DateTime       @default(now())
   counselingId Int
   counseling   Counseling     @relation("COUNSELING_PAYMENT", fields: [counselingId], references: [id])
+  userId       Int
+  User         User           @relation("USER_PAYMENT", fields: [userId], references: [id])
 }
 
 //transaction model
@@ -168,7 +174,6 @@ model Transaction {
   id      Int            @id @default(autoincrement())
   status  STATUS_PAYMENT @default(UNPAID)
   price   Float
-  content String?
   date    DateTime       @default(now())
   userId  Int
   user    User           @relation("USER_TRANSACTION", fields: [userId], references: [id])
@@ -178,19 +183,21 @@ model Transaction {
 
 //order model
 model Order {
-  id          Int           @id @default(autoincrement())
-  status      STATUS_ORDER  @default(OPEN)
-  firstName   String?
-  lastName    String?
-  address     String
-  phone       String        @unique
-  price       Float
-  content     String?
-  createdAt   DateTime      @default(now())
-  userId      Int
-  user        User          @relation("USER_ORDER", fields: [userId], references: [id])
-  transaction Transaction[] @relation("ORDER_TRANSACTION")
-  order_item  Order_Item[]  @relation("ORDER_ORDER_ITEM")
+  id           Int           @id @default(autoincrement())
+  status       STATUS_ORDER  @default(PENDING)
+  firstName    String?
+  lastName     String?
+  phone        String        @unique
+  price        Float
+  content      String?
+  createdAt    DateTime      @default(now())
+  deliveryTime DateTime
+  userId       Int
+  user         User          @relation("USER_ORDER", fields: [userId], references: [id])
+  transaction  Transaction[] @relation("ORDER_TRANSACTION")
+  order_item   Order_Item[]  @relation("ORDER_ORDER_ITEM")
+  addressId    Int
+  address      Address       @relation("ORDER_ADDRESS", fields: [addressId], references: [id])
 }
 
 //order_item model
@@ -211,13 +218,7 @@ model Order_Item {
 model Cart {
   id        Int         @id @default(autoincrement())
   status    STATUS_CART @default(OPEN)
-  firstName String?
-  lastName  String?
-  address   String
-  phone     String      @unique
   price     Float
-  content   String?
-  createdAt DateTime    @default(now())
   userId    Int
   user      User        @relation("USER_CART", fields: [userId], references: [id])
   cart_item Cart_Item[] @relation("CART_CART_ITEM")
@@ -226,8 +227,6 @@ model Cart {
 //cart_item model
 model Cart_Item {
   id        Int      @id @default(autoincrement())
-  price     Float
-  discount  Int?     @default(0)
   quantity  Int
   createdAt DateTime @default(now())
   updateAt  DateTime @default(now())

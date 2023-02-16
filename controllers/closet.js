@@ -3,7 +3,6 @@ const { PrismaClient } = require("@prisma/client");
 var jwt = require("jsonwebtoken");
 const db = new PrismaClient();
 const fs = require("fs");
-const path = require("path");
 const removeFiles = require("../functions/rmFiles").removeFiles;
 require("dotenv").config();
 

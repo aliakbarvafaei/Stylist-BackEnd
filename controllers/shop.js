@@ -9,6 +9,8 @@ exports.getAll = async (req, res) => {};
 
 exports.getOne = async (req, res) => {};
 
+exports.getMyProduct = async (req, res) => {};
+
 exports.create = async (req, res) => {};
 
 exports.update = async (req, res) => {};

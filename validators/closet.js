@@ -50,6 +50,8 @@ exports.vClothesCategoryGetAll = (req, res, next) => {
 
 exports.vClothesCategoryDelete = (req, res, next) => {
   try {
+    if (!(req.params.categoryId == parseInt(req.params.categoryId)))
+      return res.status(400).json({ message: "شناسه دسته‌بندی باید عدد باشد" });
     next();
   } catch (error) {
     console.log(error);
@@ -59,6 +61,8 @@ exports.vClothesCategoryDelete = (req, res, next) => {
 
 exports.vClothesCategoryUpdate = (req, res, next) => {
   try {
+    if (!(req.params.categoryId == parseInt(req.params.categoryId)))
+      return res.status(400).json({ message: "شناسه دسته‌بندی باید عدد باشد" });
     const category = new Schema({
       name: {
         type: String,
@@ -82,6 +86,10 @@ exports.vClothesCategoryUpdate = (req, res, next) => {
 
 exports.vClothesClothingCreate = (req, res, next) => {
   try {
+    if (!(req.params.categoryId == parseInt(req.params.categoryId))) {
+      removeFiles(req.files);
+      return res.status(400).json({ message: "شناسه دسته‌بندی باید عدد باشد" });
+    }
     const clothing = new Schema({
       material: {
         type: String,
@@ -122,6 +130,8 @@ exports.vClothesClothingCreate = (req, res, next) => {
 
 exports.vClothesClothingGetAll = (req, res, next) => {
   try {
+    if (!(req.params.categoryId == parseInt(req.params.categoryId)))
+      return res.status(400).json({ message: "شناسه دسته‌بندی باید عدد باشد" });
     next();
   } catch (error) {
     console.log(error);
@@ -131,6 +141,10 @@ exports.vClothesClothingGetAll = (req, res, next) => {
 
 exports.vClothesClothingUpdate = (req, res, next) => {
   try {
+    if (!(req.params.categoryId == parseInt(req.params.categoryId)))
+      return res.status(400).json({ message: "شناسه دسته‌بندی باید عدد باشد" });
+    if (!(req.params.clothingId == parseInt(req.params.clothingId)))
+      return res.status(400).json({ message: "شناسه لباس باید عدد باشد" });
     const clothing = new Schema({
       material: {
         type: String,
@@ -166,6 +180,10 @@ exports.vClothesClothingUpdate = (req, res, next) => {
 
 exports.vClothesClothingDelete = (req, res, next) => {
   try {
+    if (!(req.params.categoryId == parseInt(req.params.categoryId)))
+      return res.status(400).json({ message: "شناسه دسته‌بندی باید عدد باشد" });
+    if (!(req.params.clothingId == parseInt(req.params.clothingId)))
+      return res.status(400).json({ message: "شناسه لباس باید عدد باشد" });
     next();
   } catch (error) {
     console.log(error);
@@ -175,6 +193,10 @@ exports.vClothesClothingDelete = (req, res, next) => {
 
 exports.vClothesClothingGetOne = (req, res, next) => {
   try {
+    if (!(req.params.categoryId == parseInt(req.params.categoryId)))
+      return res.status(400).json({ message: "شناسه دسته‌بندی باید عدد باشد" });
+    if (!(req.params.clothingId == parseInt(req.params.clothingId)))
+      return res.status(400).json({ message: "شناسه لباس باید عدد باشد" });
     next();
   } catch (error) {
     console.log(error);
@@ -220,6 +242,8 @@ exports.vSetsCategoryGetAll = (req, res, next) => {
 
 exports.vSetsCategoryDelete = (req, res, next) => {
   try {
+    if (!(req.params.categoryId == parseInt(req.params.categoryId)))
+      return res.status(400).json({ message: "شناسه دسته‌بندی باید عدد باشد" });
     next();
   } catch (error) {
     console.log(error);
@@ -229,6 +253,8 @@ exports.vSetsCategoryDelete = (req, res, next) => {
 
 exports.vSetsCategoryUpdate = (req, res, next) => {
   try {
+    if (!(req.params.categoryId == parseInt(req.params.categoryId)))
+      return res.status(400).json({ message: "شناسه دسته‌بندی باید عدد باشد" });
     const category = new Schema({
       name: {
         type: String,
@@ -252,6 +278,10 @@ exports.vSetsCategoryUpdate = (req, res, next) => {
 
 exports.vSetsClothingCreate = (req, res, next) => {
   try {
+    if (!(req.params.categoryId == parseInt(req.params.categoryId))) {
+      removeFiles(req.files);
+      return res.status(400).json({ message: "شناسه دسته‌بندی باید عدد باشد" });
+    }
     const set = new Schema({
       products: [
         {
@@ -280,6 +310,8 @@ exports.vSetsClothingCreate = (req, res, next) => {
 
 exports.vSetsClothingGetAll = (req, res, next) => {
   try {
+    if (!(req.params.categoryId == parseInt(req.params.categoryId)))
+      return res.status(400).json({ message: "شناسه دسته‌بندی باید عدد باشد" });
     next();
   } catch (error) {
     console.log(error);
@@ -298,6 +330,10 @@ exports.vSetsClothingGetAll = (req, res, next) => {
 
 exports.vSetsClothingDelete = (req, res, next) => {
   try {
+    if (!(req.params.categoryId == parseInt(req.params.categoryId)))
+      return res.status(400).json({ message: "شناسه دسته‌بندی باید عدد باشد" });
+    if (!(req.params.setId == parseInt(req.params.setId)))
+      return res.status(400).json({ message: "شناسه ست باید عدد باشد" });
     next();
   } catch (error) {
     console.log(error);
@@ -307,6 +343,10 @@ exports.vSetsClothingDelete = (req, res, next) => {
 
 exports.vSetsClothingGetOne = (req, res, next) => {
   try {
+    if (!(req.params.categoryId == parseInt(req.params.categoryId)))
+      return res.status(400).json({ message: "شناسه دسته‌بندی باید عدد باشد" });
+    if (!(req.params.setId == parseInt(req.params.setId)))
+      return res.status(400).json({ message: "شناسه ست باید عدد باشد" });
     next();
   } catch (error) {
     console.log(error);

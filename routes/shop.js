@@ -10,15 +10,18 @@ const cShop = require("../controllers/shop.js");
 router.get("/products", vShop.vGetAll, cShop.getAll);
 
 // get one product
-router.get("/products/:idProduct", vShop.vGetOne, cShop.getOne);
+router.get("/products/:productId", vShop.vGetOne, cShop.getOne);
+
+// get my products for sellers
+router.get("/myproducts", vShop.vGetMyProduct, cShop.getMyProduct);
 
 // add new product
 router.post("/products", vShop.vCreate, cShop.create);
 
 // update one product
-router.put("/products/:idProduct", vShop.vUpdate, cShop.update);
+router.put("/products/:productId", vShop.vUpdate, cShop.update);
 
 // delete one product
-router.delete("/products/:idProduct", vShop.vDelete, cShop.delete);
+router.delete("/products/:productId", vShop.vDelete, cShop.delete);
 
 module.exports = router;

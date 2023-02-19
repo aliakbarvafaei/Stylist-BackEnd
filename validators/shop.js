@@ -1,5 +1,4 @@
 //config database for send query
-const { type } = require("os");
 const Schema = require("validate");
 require("dotenv").config();
 

@@ -149,6 +149,7 @@ exports.mailSignup = async (reciver, name, urlLogo) => {
     .catch(console.error);
 };
 exports.mailResetPass = async (reciver, code, urlLogo) => {
+  console.log("email code: " + code);
   transporter
     .sendMail({
       from: '"Stylist Support" <stylist.team.info@gmail.com>', // sender address

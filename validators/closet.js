@@ -6,8 +6,8 @@ require("dotenv").config();
 exports.vClothesCategories = (req, res, next) => {
   try {
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -33,8 +33,8 @@ exports.vClothesCategoryCraete = (req, res, next) => {
     });
     if (res_data.length > 0) return res.status(400).json({ message: res_data });
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -42,8 +42,8 @@ exports.vClothesCategoryCraete = (req, res, next) => {
 exports.vClothesCategoryGetAll = (req, res, next) => {
   try {
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -53,8 +53,8 @@ exports.vClothesCategoryDelete = (req, res, next) => {
     if (!(req.params.categoryId == parseInt(req.params.categoryId)))
       return res.status(400).json({ message: "شناسه دسته‌بندی باید عدد باشد" });
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -78,8 +78,8 @@ exports.vClothesCategoryUpdate = (req, res, next) => {
     });
     if (res_data.length > 0) return res.status(400).json({ message: res_data });
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -122,8 +122,8 @@ exports.vClothesClothingCreate = (req, res, next) => {
       return res.status(400).json({ message: res_data });
     }
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -133,8 +133,8 @@ exports.vClothesClothingGetAll = (req, res, next) => {
     if (!(req.params.categoryId == parseInt(req.params.categoryId)))
       return res.status(400).json({ message: "شناسه دسته‌بندی باید عدد باشد" });
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -172,8 +172,8 @@ exports.vClothesClothingUpdate = (req, res, next) => {
     });
     if (res_data.length > 0) return res.status(400).json({ message: res_data });
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -185,8 +185,8 @@ exports.vClothesClothingDelete = (req, res, next) => {
     if (!(req.params.clothingId == parseInt(req.params.clothingId)))
       return res.status(400).json({ message: "شناسه لباس باید عدد باشد" });
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -198,8 +198,8 @@ exports.vClothesClothingGetOne = (req, res, next) => {
     if (!(req.params.clothingId == parseInt(req.params.clothingId)))
       return res.status(400).json({ message: "شناسه لباس باید عدد باشد" });
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -225,8 +225,8 @@ exports.vSetsCategoryCraete = (req, res, next) => {
     });
     if (res_data.length > 0) return res.status(400).json({ message: res_data });
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -234,8 +234,8 @@ exports.vSetsCategoryCraete = (req, res, next) => {
 exports.vSetsCategoryGetAll = (req, res, next) => {
   try {
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -245,8 +245,8 @@ exports.vSetsCategoryDelete = (req, res, next) => {
     if (!(req.params.categoryId == parseInt(req.params.categoryId)))
       return res.status(400).json({ message: "شناسه دسته‌بندی باید عدد باشد" });
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -270,8 +270,8 @@ exports.vSetsCategoryUpdate = (req, res, next) => {
     });
     if (res_data.length > 0) return res.status(400).json({ message: res_data });
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -302,8 +302,8 @@ exports.vSetsClothingCreate = (req, res, next) => {
       return res.status(400).json({ message: res_data });
     }
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -313,8 +313,8 @@ exports.vSetsClothingGetAll = (req, res, next) => {
     if (!(req.params.categoryId == parseInt(req.params.categoryId)))
       return res.status(400).json({ message: "شناسه دسته‌بندی باید عدد باشد" });
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -322,8 +322,8 @@ exports.vSetsClothingGetAll = (req, res, next) => {
 // exports.vSetsClothingUpdate = (req, res, next) => {
 //   try {
 //     next();
-//   } catch (error) {
-//     console.log(error);
+//   } catch (err) {
+//     console.log(err);
 //     return res.status(500).json( { message: ("عملیات با خطا مواجه شد") } );
 //   }
 // };
@@ -335,8 +335,8 @@ exports.vSetsClothingDelete = (req, res, next) => {
     if (!(req.params.setId == parseInt(req.params.setId)))
       return res.status(400).json({ message: "شناسه ست باید عدد باشد" });
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -348,8 +348,8 @@ exports.vSetsClothingGetOne = (req, res, next) => {
     if (!(req.params.setId == parseInt(req.params.setId)))
       return res.status(400).json({ message: "شناسه ست باید عدد باشد" });
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };

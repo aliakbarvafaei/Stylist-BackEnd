@@ -59,8 +59,8 @@ require("dotenv").config();
 //       return res.status(400).json( { message: ("ساختار ایمیل نادرست است") } );
 //     }
 //     next();
-//   } catch (error) {
-//     console.log(error);
+//   } catch (err) {
+//     console.log(err);
 //     return res.status(500).json( { message: ("عملیات با خطا مواجه شد") } );
 //   }
 // };
@@ -118,8 +118,8 @@ require("dotenv").config();
 //       return res.status(400).json( { message: ("ساختار ایمیل نادرست است") } );
 //     }
 //     next();
-//   } catch (error) {
-//     console.log(error);
+//   } catch (err) {
+//     console.log(err);
 //     return res.status(500).json( { message: ("عملیات با خطا مواجه شد") } );
 //   }
 // };
@@ -127,8 +127,8 @@ require("dotenv").config();
 // exports.vUserDelete = async (req, res, next) => {
 //   try {
 //     next();
-//   } catch (error) {
-//     console.log(error);
+//   } catch (err) {
+//     console.log(err);
 //     return res.status(500).json( { message: ("عملیات با خطا مواجه شد") } );
 //   }
 // };
@@ -136,8 +136,8 @@ require("dotenv").config();
 exports.vGetOne = (req, res, next) => {
   try {
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -171,8 +171,8 @@ exports.vUserLogin = (req, res, next) => {
     });
     if (res_data.length > 0) return res.status(400).json({ message: res_data });
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -196,8 +196,8 @@ exports.vPassReset = (req, res, next) => {
     });
     if (res_data.length > 0) return res.status(400).json({ message: res_data });
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -241,8 +241,8 @@ exports.vPassChange = (req, res, next) => {
     });
     if (res_data.length > 0) return res.status(400).json({ message: res_data });
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };

@@ -87,6 +87,7 @@ exports.ClothesCategoryCreate = async (req, res) => {
   try {
     id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
+    console.log(err);
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
@@ -105,6 +106,7 @@ exports.ClothesCategoryCreate = async (req, res) => {
     });
     return res.status(201).json({ message: "دسته‌بندی با موفقیت اضافه شد" });
   } catch (err) {
+    console.log(err);
     if (err.code && err.code === "P2002") {
       return res
         .status(409)
@@ -123,6 +125,7 @@ exports.ClothesCategoryGetAll = async (req, res) => {
   try {
     id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
+    console.log(err);
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
@@ -147,7 +150,8 @@ exports.ClothesCategoryGetAll = async (req, res) => {
         .status(404)
         .json({ message: "کاربری با این شناسه وجود ندارد" });
     }
-  } catch {
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -157,6 +161,7 @@ exports.ClothesCategoryDelete = async (req, res) => {
   try {
     id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
+    console.log(err);
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
@@ -188,7 +193,8 @@ exports.ClothesCategoryDelete = async (req, res) => {
         .status(404)
         .json({ message: "‌دسته‌بندی با این شناسه وجود ندارد" });
     }
-  } catch {
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -198,6 +204,7 @@ exports.ClothesCategoryUpdate = async (req, res) => {
   try {
     id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
+    console.log(err);
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
@@ -234,6 +241,7 @@ exports.ClothesCategoryUpdate = async (req, res) => {
         .json({ message: "دسته‌بندی با این شناسه وجود ندارد" });
     }
   } catch (err) {
+    console.log(err);
     if (err.code && err.code === "P2002") {
       return res
         .status(409)
@@ -251,6 +259,7 @@ exports.ClothesClothingCreate = async (req, res) => {
   try {
     id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
+    console.log(err);
     await removeFiles(req.files);
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
@@ -293,6 +302,7 @@ exports.ClothesClothingCreate = async (req, res) => {
         .json({ message: "دسته‌بندی با این شناسه وجود ندارد" });
     }
   } catch (err) {
+    console.log(err);
     await removeFiles(req.files);
     if (err.code && err.code === "P2003") {
       return res
@@ -311,6 +321,7 @@ exports.ClothesClothingCreate = async (req, res) => {
       });
     });
   } catch (err) {
+    console.log(err);
     await removeFiles(req.files);
     if (err.code && err.code === "P2003") {
       return res.status(404).json({ message: "لباسی با این شناسه وجود ندارد" });
@@ -327,6 +338,7 @@ exports.ClothesClothingGetAll = async (req, res) => {
   try {
     id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
+    console.log(err);
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
@@ -354,6 +366,7 @@ exports.ClothesClothingGetAll = async (req, res) => {
         .json({ message: "دسته‌بندی یا کاربری با این شناسه وجود ندارد" });
     }
   } catch (err) {
+    console.log(err);
     if (err.code && err.code === "P2003") {
       return res
         .status(404)
@@ -368,6 +381,7 @@ exports.ClothesClothingUpdate = async (req, res) => {
   try {
     id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
+    console.log(err);
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
@@ -402,14 +416,13 @@ exports.ClothesClothingUpdate = async (req, res) => {
       });
       return res.status(200).json({ message: "لباس با موفقیت ویرایش شد" });
     } else {
-      return res
-        .status(404)
-        .json({
-          message:
-            "لباسی با این شناسه یا شناسه ایجاد کننده یا شناسه دسته‌بندی وجود ندارد",
-        });
+      return res.status(404).json({
+        message:
+          "لباسی با این شناسه یا شناسه ایجاد کننده یا شناسه دسته‌بندی وجود ندارد",
+      });
     }
   } catch (err) {
+    console.log(err);
     if (err.code && err.code === "P2003") {
       return res
         .status(404)
@@ -424,6 +437,7 @@ exports.ClothesClothingDelete = async (req, res) => {
   try {
     id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
+    console.log(err);
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
@@ -447,14 +461,13 @@ exports.ClothesClothingDelete = async (req, res) => {
       },
     });
     if (!clothing) {
-      return res
-        .status(404)
-        .json({
-          message:
-            "لباسی با این شناسه یا شناسه ایجاد کننده یا شناسه دسته‌بندی وجود ندارد",
-        });
+      return res.status(404).json({
+        message:
+          "لباسی با این شناسه یا شناسه ایجاد کننده یا شناسه دسته‌بندی وجود ندارد",
+      });
     }
   } catch (err) {
+    console.log(err);
     if (err.code && err.code === "P2003") {
       return res
         .status(404)
@@ -477,7 +490,8 @@ exports.ClothesClothingDelete = async (req, res) => {
         );
       });
     }
-  } catch {
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
   try {
@@ -487,7 +501,8 @@ exports.ClothesClothingDelete = async (req, res) => {
       },
     });
     return res.status(200).json({ message: "لباس با موفقیت حذف شد" });
-  } catch {
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -497,6 +512,7 @@ exports.ClothesClothingGetOne = async (req, res) => {
   try {
     id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
+    console.log(err);
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
@@ -526,6 +542,7 @@ exports.ClothesClothingGetOne = async (req, res) => {
       });
     }
   } catch (err) {
+    console.log(err);
     if (err.code && err.code === "P2003") {
       return res
         .status(404)
@@ -542,6 +559,7 @@ exports.SetsCategoryCreate = async (req, res) => {
   try {
     id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
+    console.log(err);
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
@@ -560,6 +578,7 @@ exports.SetsCategoryCreate = async (req, res) => {
     });
     return res.status(201).json({ message: "دسته‌بندی با موفقیت اضافه شد" });
   } catch (err) {
+    console.log(err);
     if (err.code && err.code === "P2002") {
       return res
         .status(409)
@@ -578,6 +597,7 @@ exports.SetsCategoryGetAll = async (req, res) => {
   try {
     id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
+    console.log(err);
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
@@ -602,7 +622,8 @@ exports.SetsCategoryGetAll = async (req, res) => {
         .status(404)
         .json({ message: "کاربری با این شناسه وجود ندارد" });
     }
-  } catch {
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -612,6 +633,7 @@ exports.SetsCategoryDelete = async (req, res) => {
   try {
     id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
+    console.log(err);
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
@@ -643,7 +665,8 @@ exports.SetsCategoryDelete = async (req, res) => {
         .status(404)
         .json({ message: "‌دسته‌بندی با این شناسه وجود ندارد" });
     }
-  } catch {
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -653,6 +676,7 @@ exports.SetsCategoryUpdate = async (req, res) => {
   try {
     id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
+    console.log(err);
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
@@ -689,6 +713,7 @@ exports.SetsCategoryUpdate = async (req, res) => {
         .json({ message: "دسته‌بندی با این شناسه وجود ندارد" });
     }
   } catch (err) {
+    console.log(err);
     if (err.code && err.code === "P2002") {
       return res
         .status(409)
@@ -709,6 +734,7 @@ exports.SetsClothingCreate = async (req, res) => {
   try {
     id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
+    console.log(err);
     await removeFiles(req.files);
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
@@ -747,6 +773,7 @@ exports.SetsClothingCreate = async (req, res) => {
         .json({ message: "دسته‌بندی با این شناسه وجود ندارد" });
     }
   } catch (err) {
+    console.log(err);
     await removeFiles(req.files);
     if (err.code && err.code === "P2003") {
       return res
@@ -768,7 +795,8 @@ exports.SetsClothingCreate = async (req, res) => {
         });
       });
     return res.status(201).json({ message: "ست با موفقیت اضافه شد" });
-  } catch {
+  } catch (err) {
+    console.log(err);
     if (err.code && err.code === "P2003") {
       return res
         .status(404)
@@ -783,6 +811,7 @@ exports.SetsClothingGetAll = async (req, res) => {
   try {
     id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
+    console.log(err);
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
@@ -810,6 +839,7 @@ exports.SetsClothingGetAll = async (req, res) => {
       });
     }
   } catch (err) {
+    console.log(err);
     if (err.code && err.code === "P2003") {
       return res
         .status(404)
@@ -823,7 +853,8 @@ exports.SetsClothingGetAll = async (req, res) => {
 //   var id;
 //   try {
 //     id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
-//   } catch (err) {
+//   } catch (err) { 
+//     console.log(err);
 //     if (err.name === "TokenExpiredError")
 //       return res.status(400).json( { message: ("زمان ورود شما منقضی شده است") } );
 //     else if (err.name === "JsonWebTokenError") {
@@ -861,7 +892,8 @@ exports.SetsClothingGetAll = async (req, res) => {
 //           "لباسی با این شناسه یا شناسه ایجاد کننده یا شناسه دسته‌بندی وجود ندارد"
 //         );
 //     }
-//   } catch {
+//   } catch (err) { 
+//     console.log(err);
 //     return res.status(500).json( { message: ("عملیات با خطا مواجه شد") } );
 //   }
 // };
@@ -871,6 +903,7 @@ exports.SetsClothingDelete = async (req, res) => {
   try {
     id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
+    console.log(err);
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
@@ -891,14 +924,13 @@ exports.SetsClothingDelete = async (req, res) => {
       },
     });
     if (!set) {
-      return res
-        .status(404)
-        .json({
-          message:
-            "ستی با این شناسه یا شناسه ایجاد کننده یا شناسه دسته‌بندی وجود ندارد",
-        });
+      return res.status(404).json({
+        message:
+          "ستی با این شناسه یا شناسه ایجاد کننده یا شناسه دسته‌بندی وجود ندارد",
+      });
     }
   } catch (err) {
+    console.log(err);
     if (err.code && err.code === "P2003") {
       return res
         .status(404)
@@ -919,7 +951,8 @@ exports.SetsClothingDelete = async (req, res) => {
         }
       );
     }
-  } catch {
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
   try {
@@ -929,7 +962,8 @@ exports.SetsClothingDelete = async (req, res) => {
       },
     });
     return res.status(200).json({ message: "ست با موفقیت حذف شد" });
-  } catch {
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -939,6 +973,7 @@ exports.SetsClothingGetOne = async (req, res) => {
   try {
     id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
+    console.log(err);
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
@@ -968,6 +1003,7 @@ exports.SetsClothingGetOne = async (req, res) => {
         .json({ message: "ست یا دسته‌بندی یا کاربری با این شناسه وجود ندارد" });
     }
   } catch (err) {
+    console.log(err);
     if (err.code && err.code === "P2003") {
       return res
         .status(404)

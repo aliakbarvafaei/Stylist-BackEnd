@@ -77,8 +77,8 @@ require("dotenv").config();
 //       return res.status(400).json( { message: ("ساختار ایمیل نادرست است") } );
 //     }
 //     next();
-//   } catch (error) {
-//     console.log(error);
+//   } catch (err) {
+//     console.log(err);
 //     return res.status(500).json( { message: ("عملیات با خطا مواجه شد") } );
 //   }
 // };
@@ -158,8 +158,8 @@ exports.vUserUpdate = async (req, res, next) => {
       return res.status(400).json({ message: "ساختار ایمیل نادرست است" });
     }
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -167,8 +167,8 @@ exports.vUserUpdate = async (req, res, next) => {
 // exports.vUserDelete = async (req, res, next) => {
 //   try {
 //     next();
-//   } catch (error) {
-//     console.log(error);
+//   } catch (err) {
+//     console.log(err);
 //     return res.status(500).json( { message: ("عملیات با خطا مواجه شد") } );
 //   }
 // };
@@ -176,8 +176,8 @@ exports.vUserUpdate = async (req, res, next) => {
 exports.vGetOne = (req, res, next) => {
   try {
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -210,8 +210,8 @@ exports.vUserLogin = (req, res, next) => {
     }
 
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -245,8 +245,8 @@ exports.vUserLoginCode = (req, res, next) => {
     });
     if (res_data.length > 0) return res.status(400).json({ message: res_data });
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -288,8 +288,8 @@ exports.vUserLoginPass = (req, res, next) => {
       return res.status(400).json({ message: "ساختار ایمیل نادرست است" });
     }
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -321,8 +321,8 @@ exports.vPassReset = (req, res, next) => {
       return res.status(400).json({ message: "ساختار ایمیل نادرست است" });
     }
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -374,8 +374,8 @@ exports.vPassChange = (req, res, next) => {
       return res.status(400).json({ message: "ساختار ایمیل نادرست است" });
     }
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };

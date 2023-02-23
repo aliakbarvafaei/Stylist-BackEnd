@@ -20,6 +20,7 @@ exports.getAll = async (req, res) => {
     });
     return res.status(200).json({ data: products });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -39,6 +40,7 @@ exports.getOne = async (req, res) => {
     else
       return res.status(404).json({ message: "محصولی با این شناسه یافت نشد" });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -48,6 +50,7 @@ exports.getMyProduct = async (req, res) => {
   try {
     id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
+    console.log(err);
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
@@ -75,6 +78,7 @@ exports.getMyProduct = async (req, res) => {
         .status(404)
         .json({ message: "فروشنده‌ای با این شناسه یافت نشد" });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };
@@ -84,6 +88,7 @@ exports.create = async (req, res) => {
   try {
     id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
+    console.log(err);
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
@@ -99,6 +104,7 @@ exports.update = async (req, res) => {
   try {
     id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
+    console.log(err);
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
@@ -114,6 +120,7 @@ exports.delete = async (req, res) => {
   try {
     id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
+    console.log(err);
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {
@@ -130,10 +137,12 @@ exports.delete = async (req, res) => {
         sellerId: id,
       },
     });
-    if (product) return res.status(200).json({ message: "محصول با موفقیت حذف شد" });
+    if (product)
+      return res.status(200).json({ message: "محصول با موفقیت حذف شد" });
     else
       return res.status(404).json({ message: "محصولی با این شناسه یافت نشد" });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
   }
 };

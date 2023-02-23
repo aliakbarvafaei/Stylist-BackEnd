@@ -62,7 +62,7 @@ require("dotenv").config();
 //   var id;
 //   try {
 //     id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
-//   } catch (err) {
+//   } catch (err) { console.log(err);
 //     if (err.name === "TokenExpiredError")
 //       return res.status(400).json( { message: ("زمان ورود شما منقضی شده است") } );
 //     else if (err.name === "JsonWebTokenError") {
@@ -95,7 +95,7 @@ require("dotenv").config();
 //       },
 //     });
 //     return res.status(200).json( { message: ("به‌روز‌رسانی با موفقیت انجام شد") } );
-//   } catch (err) {
+//   } catch (err) { console.log(err);
 //     if (err.code && err.code === "P2002") {
 //       return res
 //         .status(409)
@@ -118,7 +118,7 @@ require("dotenv").config();
 //       },
 //     });
 //     return res.status(200).json( { message: ("کاربر با موفقیت حذف شد") } );
-//   } catch (err) {
+//   } catch (err) { console.log(err);
 //     return res.status(404).json( { message: ("کاربری با این شناسه وجود ندارد") } );
 //   }
 // };
@@ -145,6 +145,7 @@ exports.getOne = async (req, res) => {
   try {
     id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
   } catch (err) {
+    console.log(err);
     if (err.name === "TokenExpiredError")
       return res.status(400).json({ message: "زمان ورود شما منقضی شده است" });
     else if (err.name === "JsonWebTokenError") {

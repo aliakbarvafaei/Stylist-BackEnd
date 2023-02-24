@@ -165,8 +165,8 @@ exports.getOne = async (req, res) => {
   if (user) {
     return res.status(200).json({
       data: {
-        ...user,
-        password: user.password && user.password != "" ? true : false,
+        ...exclude(user, ["password"]),
+        hasPassword: user.password && user.password != "" ? true : false,
       },
     });
   } else {

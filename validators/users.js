@@ -273,7 +273,7 @@ exports.vUserLoginPass = (req, res, next) => {
         message: {
           type: "رمزعبور باید به صورت رشته باشد",
           required: "رمزعبور اجباری است",
-          length: "کد باید حداقل 8 حرف باشد",
+          length: "رمزعبور باید حداقل 8 حرف باشد",
         },
       },
     });

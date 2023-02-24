@@ -213,7 +213,14 @@ exports.getOne = async (req, res) => {
     },
   });
   if (user) {
-    return res.status(200).json({ data: exclude(user, ["password"]) });
+    return res
+      .status(200)
+      .json({
+        data: {
+          ...user,
+          password: user.password && user.password != "" ? true : false,
+        },
+      });
   } else {
     return res.status(404).json({ message: "کاربری با این شناسه وجود ندارد" });
   }

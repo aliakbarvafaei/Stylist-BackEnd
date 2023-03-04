@@ -60,7 +60,7 @@ model User {
   payment           Payment[]           @relation("USER_PAYMENT")
   transaction       Transaction[]       @relation("USER_TRANSACTION")
   order             Order[]             @relation("USER_ORDER")
-  cart              Cart[]              @relation("USER_CART")
+  cart_items        Cart_Item[]         @relation("USER_CART_ITEM")
   address           Address[]           @relation("USER_ADDRESS")
 }
 
@@ -215,25 +215,24 @@ model Order_Item {
 }
 
 //cart model
-model Cart {
-  id        Int         @id @default(autoincrement())
-  status    STATUS_CART @default(OPEN)
-  price     Float
-  userId    Int
-  user      User        @relation("USER_CART", fields: [userId], references: [id], onDelete: Cascade)
-  cart_item Cart_Item[] @relation("CART_CART_ITEM")
-}
+// model Cart {
+//   id        Int         @id @default(autoincrement())
+//   status    STATUS_CART @default(OPEN)
+//   price     Float
+//   cart_item Cart_Item[] @relation("CART_CART_ITEM")
+// }
 
 //cart_item model
 model Cart_Item {
-  id        Int      @id @default(autoincrement())
   quantity  Int
   createdAt DateTime @default(now())
   updateAt  DateTime @default(now())
-  cartId    Int
-  cart      Cart     @relation("CART_CART_ITEM", fields: [cartId], references: [id], onDelete: Cascade)
+  userId    Int
+  user      User     @relation("USER_CART_ITEM", fields: [userId], references: [id], onDelete: Cascade)
   productId Int
   product   Product  @relation("PRODUCT_CART_ITEM", fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id([userId, productId])
 }
 
 //product model
@@ -268,6 +267,8 @@ model Seller {
   id        Int       @id @default(autoincrement())
   phone     String    @unique
   email     String?   @unique
+  typeShop  Json
+  logoUrl   String
   shopName  String?
   firstName String?
   lastName  String?

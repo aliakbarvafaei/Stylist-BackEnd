@@ -70,6 +70,7 @@ let categories = {
     "دست بند و گردن بند ودیگر ملحقات",
   ],
 };
+
 exports.ClothesCategories = async (req, res) => {
   const gender = req.params.gender;
   if (gender === "زن") {

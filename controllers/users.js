@@ -3,67 +3,11 @@ const { PrismaClient } = require("@prisma/client");
 var jwt = require("jsonwebtoken");
 const mailSignup = require("../functions/email").mailSignup;
 const mailResetPass = require("../functions/email").mailResetPass;
-const sendSms = require("../functions/sms").sendSms;
+const { sendSmsLogin, sendSmsForget } = require("../functions/sms");
 const md5 = require("md5");
 const db = new PrismaClient();
 const exclude = require("../functions/exclude").exclude;
 require("dotenv").config();
-
-// exports.create = async (req, res) => {
-//   const firstname = req.body.firstname;
-//   const lastname = req.body.lastname;
-//   const address = req.body.address;
-//   const email = req.body.email;
-//   const phone = req.body.phone;
-//   const password = req.body.password;
-//   const gender =
-//     req.body.gender === "زن"
-//       ? "WOMAN"
-//       : req.body.gender === "مرد"
-//       ? "MAN"
-//       : undefined;
-//   const age = req.body.age;
-
-//   //chech uniqe email
-//   let email_check = await db.User.findFirst({
-//     where: {
-//       email: email,
-//     },
-//   });
-
-//   //chech uniqe phone number
-//   let phone_check;
-//   if (!phone) {
-//     phone_check = null;
-//   } else {
-//     phone_check = await db.User.findFirst({
-//       where: {
-//         phone: phone,
-//       },
-//     });
-//   }
-
-//   if (!email_check && !phone_check) {
-//     let newUser = await db.User.create({
-//       data: {
-//         firstName: firstname,
-//         lastName: lastname,
-//         address: address,
-//         email: email,
-//         phone: phone,
-//         password: md5(password),
-//         gender: gender,
-//         age: age,
-//       },
-//     });
-//     mailSignup(email, firstname, req.get("host") + "/logo.png");
-//     return res.status(201).json( { message: ("ثبت نام با موفقیت انجام شد") } );
-//   } else if (email_check) {
-//     return res.status(409).json( { message: ("ایمیل تکراری می‌باشد") } );
-//   } else if (phone_check) {
-//     return res.status(409).json( { message: ("شماره تلفن تکراری می‌باشد") } );
-//   }
-// };
 
 exports.update = async (req, res) => {
   var id;
@@ -166,22 +110,6 @@ exports.update = async (req, res) => {
   }
 };
 
-// exports.delete = async (req, res) => {
-//   id = parseInt(req.params.userId);
-
-//   try {
-//     //delete user
-//     let user = await db.User.delete({
-//       where: {
-//         id: id,
-//       },
-//     });
-//     return res.status(200).json( { message: ("کاربر با موفقیت حذف شد") } );
-//   } catch (err) { console.log(err);
-//     return res.status(404).json( { message: ("کاربری با این شناسه وجود ندارد") } );
-//   }
-// };
-
 exports.getOne = async (req, res) => {
   var id;
   try {
@@ -213,36 +141,16 @@ exports.getOne = async (req, res) => {
     },
   });
   if (user) {
-    return res
-      .status(200)
-      .json({
-        data: {
-          ...exclude(user, ["password"]),
-          hasPassword: user.password && user.password != "" ? true : false,
-        },
-      });
+    return res.status(200).json({
+      data: {
+        ...exclude(user, ["password"]),
+        hasPassword: user.password && user.password != "" ? true : false,
+      },
+    });
   } else {
     return res.status(404).json({ message: "کاربری با این شناسه وجود ندارد" });
   }
 };
-
-// exports.getAll = async (req, res) => {
-//   let users = await db.User.findMany({
-//     select: {
-//       id: true,
-//       firstName: true,
-//       lastName: true,
-//       address: true,
-//       email: true,
-//       phone: true,
-//       gender: true,
-//       age: true,
-//     },
-//   });
-//   return res.status(200).json({
-//     data: users,
-//   });
-// };
 
 exports.login = async (req, res) => {
   const email = req.body.email;
@@ -284,7 +192,7 @@ exports.login = async (req, res) => {
       });
     }
     //// send sms to phone number
-    sendSms(phone, code);
+    sendSmsLogin(phone, code);
     let user = await db.User.findFirst({
       where: {
         phone: phone,
@@ -453,7 +361,7 @@ exports.PassReset = async (req, res) => {
         });
       }
       /////// send sms code
-      sendSms(phone, code);
+      sendSmsForget(phone, code);
       return res.status(200).json({ message: "کد فراموشی رمزعبور ارسال شد" });
     } else {
       return res

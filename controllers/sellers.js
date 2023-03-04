@@ -3,7 +3,7 @@ const { PrismaClient } = require("@prisma/client");
 var jwt = require("jsonwebtoken");
 const mailSignup = require("../functions/email").mailSignup;
 const mailResetPass = require("../functions/email").mailResetPass;
-const sendSms = require("../functions/sms").sendSms;
+const sendSmsForget = require("../functions/sms").sendSmsForget;
 const md5 = require("md5");
 const db = new PrismaClient();
 const exclude = require("../functions/exclude").exclude;
@@ -240,7 +240,7 @@ exports.PassReset = async (req, res) => {
       });
     }
     //// send sms to phone number
-    sendSms(phone, code);
+    sendSmsForget(phone, code);
     return res.status(200).json({ message: "کد فراموشی رمزعبور ارسال شد" });
   } else {
     return res

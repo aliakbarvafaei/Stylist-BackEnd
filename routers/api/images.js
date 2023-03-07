@@ -30,12 +30,16 @@ const imageUpload = multer({
   },
 });
 //create images validation
-const vImages = require("../validators/images.js");
+const Images = require("../../controllers/images.controller.js");
+const {
+  BadRequestError,
+  InternalServerError,
+} = require("../../utils/errors.js");
 
 //create images router
 router.post(
   "/uploadBulkImage",
-  (req, res, next) => vImages.vImagesCraete(req, res, next),
+  (req, res, next) => Images.ImagesCraete(req, res, next),
   imageUpload.array("images", 1),
   (req, res) => {
     var spawn = require("child_process").spawnSync;
@@ -59,9 +63,7 @@ router.post(
       );
       if (process.stderr) {
         console.log(`python run error: ${process.stderr}`);
-        res
-          .status(500)
-          .json({ message: `python run error: ${process.stderr}` });
+        throw new InternalServerError(`python run error: ${process.stderr}`);
       } else {
         res.sendFile(
           path.resolve(
@@ -69,7 +71,7 @@ router.post(
           ),
           function (err) {
             if (err) {
-              console.log(err);
+              throw new InternalServerError("عملیات با خطا مواجه شد")
             } else {
               fs.unlink(
                 `public/images/bg_${req.files[0].filename.split(".")[0]}.png`,
@@ -86,7 +88,7 @@ router.post(
         );
       }
     } else {
-      res.status(500).json({ message: "can not pip install package" });
+      throw new InternalServerError("can not pip install package");
     }
     fs.unlink(`public/images/${req.files[0].filename}`, (err) => {
       if (err) {
@@ -97,7 +99,7 @@ router.post(
     });
   },
   (error, req, res, next) => {
-    res.status(400).json({ message: error.message });
+    next(error);
   }
 );
 

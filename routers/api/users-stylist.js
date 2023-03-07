@@ -1,11 +1,8 @@
 const express = require('express')
 const router = express.Router()
 
-
-//create user-stylist validation
-const vUser = require('../validators/users-stylist.js')
 //create user-stylist controller
-const cUser = require('../controllers/users-stylist.js')
+const User = require('../../controllers/users-stylist.controller.js')
 
 
 // //create user-stylist router
@@ -21,16 +18,16 @@ const cUser = require('../controllers/users-stylist.js')
 // router.delete('/:userId', vUser.vUserDelete, cUser.delete)
 
 //get one user-stylist router
-router.get('', vUser.vGetOne , cUser.getOne)
+router.get('', User.GetOne)
 
 //login user-stylist router
-router.post('/login', vUser.vUserLogin, cUser.login)
+router.post('/login', User.Login)
 
 //password reset user-stylist router
-router.post('/password-reset', vUser.vPassReset, cUser.PassReset)
+router.post('/password-reset', User.PassReset)
 
 //password change user-stylist router
-router.post('/password-change', vUser.vPassChange, cUser.PassChange)
+router.post('/password-change', User.PassChange)
 
 
 module.exports = router

@@ -1,10 +1,10 @@
 const express = require("express");
 const fs = require("fs");
-const cookie_parser = require("cookie-parser");
 var bodyParser = require('body-parser');
 const cors = require("cors");
 const path = require('path');
 const logger = require("morgan");
+const { errorHandler } = require("./utils/errors");
 
 
 //config database
@@ -24,9 +24,9 @@ app.use(express.json());
 // app.use(cookie_parser());
 
 //route
-fs.readdirSync(`${__dirname}/routes`).map((route) => {
-  app.use(`/${route.split('.')[0]}`, require(`./routes/${route}`));
-});
+app.use(require("./routers/index"))
+
+app.use(errorHandler)
 
 //create server
 const port = process.env.PORT || 8070;

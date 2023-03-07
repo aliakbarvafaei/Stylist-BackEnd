@@ -2,10 +2,8 @@ const express = require('express')
 const router = express.Router()
 
 
-//create sellers validation
-const vUser = require('../validators/sellers.js')
 //create sellers controller
-const cUser = require('../controllers/sellers.js')
+const Seller = require('../../controllers/sellers.controller.js')
 
 
 // //create sellers router
@@ -21,16 +19,16 @@ const cUser = require('../controllers/sellers.js')
 // router.delete('/:userId', vUser.vUserDelete, cUser.delete)
 
 //get one sellers router
-router.get('', vUser.vGetOne , cUser.getOne)
+router.get('', Seller.GetOne)
 
 //login sellers router
-router.post('/login', vUser.vUserLogin, cUser.login)
+router.post('/login', Seller.Login)
 
 //password reset sellers router
-router.post('/password-reset', vUser.vPassReset, cUser.PassReset)
+router.post('/password-reset', Seller.PassReset)
 
 //password change sellers router
-router.post('/password-change', vUser.vPassChange, cUser.PassChange)
+router.post('/password-change', Seller.PassChange)
 
 
 module.exports = router

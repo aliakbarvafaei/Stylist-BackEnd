@@ -1,89 +1,9 @@
-//config database for send query
 const Schema = require("validate");
 require("dotenv").config();
+const User = require("../services/users");
+const { BadRequestError, InternalServerError } = require("../utils/errors");
 
-// exports.vUserCraete = (req, res, next) => {
-//   try {
-//     const user = new Schema({
-//       firstname: {
-//         type: String,
-//         message: {
-//           type: "نام باید به صورت رشته باشد",
-//         },
-//       },
-//       lastname: {
-//         type: String,
-//         message: {
-//           type: "نام‌خانوادگی باید به صورت رشته باشد",
-//         },
-//       },
-//       address: {
-//         type: String,
-//         message: {
-//           type: "آدرس باید به صورت رشته باشد",
-//         },
-//       },
-//       email: {
-//         type: String,
-//         required: true,
-//         message: {
-//           type: "ایمیل باید به صورت رشته باشد",
-//           required: "ایمیل اجباری است",
-//         },
-//       },
-//       phone: {
-//         type: String,
-//         message: {
-//           type: "شماره تلفن باید به صورت رشته باشد",
-//         },
-//       },
-//       age: {
-//         type: Number,
-//         required: true,
-//         message: {
-//           type: "سن باید به صورت عددی باشد",
-//           required: "سن اجباری است",
-//         },
-//       },
-//       gender: {
-//         type: String,
-//         enum: ["مرد", "زن"],
-//         required: true,
-//         message: {
-//           type: "جنسیت باید به صورت رشته باشد",
-//           enum: "جنسیت باید یکی از مقادیر زن یا مرد باشد",
-//           required: "جنسیت اجباری است",
-//         },
-//       },
-//       password: {
-//         type: String,
-//         required: true,
-//         length: { min: 8 },
-//         message: {
-//           type: "رمزعبور باید به صورت رشته باشد",
-//           required: "رمزعبور اجباری است",
-//           length: "رمزعبور باید حداقل 8 حرف باشد",
-//         },
-//       },
-//     });
-//     var res_data = [];
-//     const errors = user.validate(req.body);
-//     errors.forEach((element) => {
-//       res_data.push(element.message);
-//     });
-//     if (res_data.length > 0) return res.status(400).json( { message: (res_data) } )
-//     const email_validation = require("email-validator");
-//     if (!email_validation.validate(req.body.email)) {
-//       return res.status(400).json( { message: ("ساختار ایمیل نادرست است") } );
-//     }
-//     next();
-//   } catch (err) {
-//     console.log(err);
-//     return res.status(500).json( { message: ("عملیات با خطا مواجه شد") } );
-//   }
-// };
-
-exports.vUserUpdate = async (req, res, next) => {
+exports.Update = async (req, res, next) => {
   try {
     const user = new Schema({
       firstname: {
@@ -106,8 +26,10 @@ exports.vUserUpdate = async (req, res, next) => {
       },
       email: {
         type: String,
+        match: /^$|^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
         message: {
           type: "ایمیل باید به صورت رشته باشد",
+          match: "ساختار ایمیل نادرست است",
         },
       },
       phone: {
@@ -152,43 +74,30 @@ exports.vUserUpdate = async (req, res, next) => {
     errors.forEach((element) => {
       res_data.push(element.message);
     });
-    if (res_data.length > 0) return res.status(400).json({ message: res_data });
-    const email_validation = require("email-validator");
-    if (req.body.email && !email_validation.validate(req.body.email)) {
-      return res.status(400).json({ message: "ساختار ایمیل نادرست است" });
-    }
-    next();
+    if (res_data.length > 0) throw new BadRequestError(res_data);
+    await User.update(req, res);
   } catch (err) {
-    console.log(err);
-    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
+    return next(err);
   }
 };
 
-// exports.vUserDelete = async (req, res, next) => {
-//   try {
-//     next();
-//   } catch (err) {
-//     console.log(err);
-//     return res.status(500).json( { message: ("عملیات با خطا مواجه شد") } );
-//   }
-// };
-
-exports.vGetOne = (req, res, next) => {
+exports.GetOne = async (req, res, next) => {
   try {
-    next();
+    await User.getOne(req, res);
   } catch (err) {
-    console.log(err);
-    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
+    return next(err);
   }
 };
 
-exports.vUserLogin = (req, res, next) => {
+exports.Login = async (req, res, next) => {
   try {
     const user = new Schema({
       email: {
         type: String,
+        match: /^$|^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
         message: {
           type: "ایمیل باید به صورت رشته باشد",
+          match: "ساختار ایمیل نادرست است",
         },
       },
       phone: {
@@ -203,20 +112,14 @@ exports.vUserLogin = (req, res, next) => {
     errors.forEach((element) => {
       res_data.push(element.message);
     });
-    if (res_data.length > 0) return res.status(400).json({ message: res_data });
-    const email_validation = require("email-validator");
-    if (req.body.email && !email_validation.validate(req.body.email)) {
-      return res.status(400).json({ message: "ساختار ایمیل نادرست است" });
-    }
-
-    next();
+    if (res_data.length > 0) throw new BadRequestError(res_data);
+    await User.login(req, res);
   } catch (err) {
-    console.log(err);
-    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
+    return next(err);
   }
 };
 
-exports.vUserLoginCode = (req, res, next) => {
+exports.LoginCode = async (req, res, next) => {
   try {
     const user = new Schema({
       phone: {
@@ -243,21 +146,22 @@ exports.vUserLoginCode = (req, res, next) => {
     errors.forEach((element) => {
       res_data.push(element.message);
     });
-    if (res_data.length > 0) return res.status(400).json({ message: res_data });
-    next();
+    if (res_data.length > 0) throw new BadRequestError(res_data);
+    await User.loginCode(req, res);
   } catch (err) {
-    console.log(err);
-    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
+    return next(err);
   }
 };
 
-exports.vUserLoginPass = (req, res, next) => {
+exports.LoginPass = async (req, res, next) => {
   try {
     const user = new Schema({
       email: {
         type: String,
+        match: /^$|^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
         message: {
           type: "ایمیل باید به صورت رشته باشد",
+          match: "ساختار ایمیل نادرست است",
         },
       },
       phone: {
@@ -282,25 +186,22 @@ exports.vUserLoginPass = (req, res, next) => {
     errors.forEach((element) => {
       res_data.push(element.message);
     });
-    if (res_data.length > 0) return res.status(400).json({ message: res_data });
-    const email_validation = require("email-validator");
-    if (req.body.email && !email_validation.validate(req.body.email)) {
-      return res.status(400).json({ message: "ساختار ایمیل نادرست است" });
-    }
-    next();
+    if (res_data.length > 0) throw new BadRequestError(res_data);
+    await User.loginPass(req, res);
   } catch (err) {
-    console.log(err);
-    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
+    return next(err);
   }
 };
 
-exports.vPassReset = (req, res, next) => {
+exports.PassReset = async (req, res, next) => {
   try {
     const user = new Schema({
       email: {
         type: String,
+        match: /^$|^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
         message: {
           type: "ایمیل باید به صورت رشته باشد",
+          match: "ساختار ایمیل نادرست است",
         },
       },
       phone: {
@@ -315,25 +216,22 @@ exports.vPassReset = (req, res, next) => {
     errors.forEach((element) => {
       res_data.push(element.message);
     });
-    if (res_data.length > 0) return res.status(400).json({ message: res_data });
-    const email_validation = require("email-validator");
-    if (req.body.email && !email_validation.validate(req.body.email)) {
-      return res.status(400).json({ message: "ساختار ایمیل نادرست است" });
-    }
-    next();
+    if (res_data.length > 0) throw new BadRequestError(res_data);
+    await User.PassReset(req, res);
   } catch (err) {
-    console.log(err);
-    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
+    return next(err);
   }
 };
 
-exports.vPassChange = (req, res, next) => {
+exports.PassChange = async (req, res, next) => {
   try {
     const user = new Schema({
       email: {
         type: String,
+        match: /^$|^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
         message: {
           type: "ایمیل باید به صورت رشته باشد",
+          match: "ساختار ایمیل نادرست است",
         },
       },
       phone: {
@@ -368,14 +266,9 @@ exports.vPassChange = (req, res, next) => {
     errors.forEach((element) => {
       res_data.push(element.message);
     });
-    if (res_data.length > 0) return res.status(400).json({ message: res_data });
-    const email_validation = require("email-validator");
-    if (req.body.email && !email_validation.validate(req.body.email)) {
-      return res.status(400).json({ message: "ساختار ایمیل نادرست است" });
-    }
-    next();
+    if (res_data.length > 0) throw new BadRequestError(res_data);
+    await User.PassChange(req, res);
   } catch (err) {
-    console.log(err);
-    return res.status(500).json({ message: "عملیات با خطا مواجه شد" });
+    return next(err);
   }
 };

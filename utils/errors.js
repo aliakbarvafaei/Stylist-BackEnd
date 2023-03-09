@@ -87,7 +87,7 @@ const errorHandler = (err, req, res, next) => {
   } else if (err instanceof multer.MulterError) {
     if (err.code === "LIMIT_UNEXPECTED_FILE") {
       statusCode = 400;
-      message = "یک عکس مجاز است";
+      message = "تعداد عکس‌های ارسالی بیش از حد مجاز است";
     } else {
       statusCode = 400;
       message = err.message;

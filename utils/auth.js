@@ -9,10 +9,14 @@ function getJwtToken(req) {
   return null;
 }
 
-const isAuthunticated = (req, res) => {
-  var id;
+const isAuthunticated = async(req, res) => {
+  var id, type;
   try {
     id = jwt.verify(req.header("Authorization"), process.env.SECRET_TOKEN).id;
+    type = jwt.verify(
+      req.header("Authorization"),
+      process.env.SECRET_TOKEN
+    ).type;
   } catch (err) {
     if (err.name === "TokenExpiredError")
       throw new UnauthorizedError("زمان ورود شما منقضی شده است");
@@ -22,7 +26,7 @@ const isAuthunticated = (req, res) => {
       throw new UnauthorizedError("خطای احراز هویت");
     }
   }
-  return id;
+  return { id: id, type: type };
 };
 
 module.exports = {

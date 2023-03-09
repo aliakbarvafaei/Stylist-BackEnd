@@ -46,10 +46,12 @@ exports.GetOne = async (req, res) => {
 };
 
 exports.AddToCart = async (req, res) => {
-  var id = await isAuthunticated(req, res);
+  var { id, type } = await isAuthunticated(req, res);
+  if (type != "user") {
+    throw new ForbiddenError("دسترسی این کار را ندارید");
+  }
 
-  const quantity = req.body.quantity;
-  const productId = req.body.productId;
+  const { quantity, productId } = req.body;
 
   try {
     const cart_item = await db.Cart_Item.create({
@@ -95,7 +97,10 @@ exports.AddToCart = async (req, res) => {
 };
 
 exports.GetCart = async (req, res) => {
-  var id = await isAuthunticated(req, res);
+  var { id, type } = await isAuthunticated(req, res);
+  if (type != "user") {
+    throw new ForbiddenError("دسترسی این کار را ندارید");
+  }
 
   try {
     const user = await db.User.findFirst({
@@ -124,7 +129,10 @@ exports.GetCart = async (req, res) => {
 // for sellers
 
 exports.GetMyProduct = async (req, res) => {
-  var id = await isAuthunticated(req, res);
+  var { id, type } = await isAuthunticated(req, res);
+  if (type != "seller") {
+    throw new ForbiddenError("دسترسی این کار را ندارید");
+  }
 
   try {
     let seller = await db.Seller.findFirst({
@@ -148,15 +156,61 @@ exports.GetMyProduct = async (req, res) => {
 };
 
 exports.CreateProduct = async (req, res) => {
-  var id = await isAuthunticated(req, res);
+  var { id, type } = await isAuthunticated(req, res);
+  if (type != "seller") {
+    throw new ForbiddenError("دسترسی این کار را ندارید");
+  }
+
+  const { title, detail, quantity, discount, price } = req.body;
+
+  try {
+    const product = await db.Product.create({
+      data: {
+        title: title,
+        detail: detail,
+        discount: Number(discount),
+        price: Number(price),
+        quantity: Number(quantity),
+        sellerId: id,
+        image_product: {
+          create: req.files.map((element) => {
+            return {
+              url: req.get("host") + `/images/${element.filename}`,
+            };
+          }),
+        },
+      },
+      include: {
+        image_product: true,
+      },
+    });
+
+    return res
+      .status(201)
+      .json({ data: product, message: "محصول با موفقیت اضافه شد" });
+  } catch (err) {
+    if (err.code && err.code === "P2002") {
+      throw new ConflictError("محصولی با این عنوان وجود دارد");
+    } else if (err.code && err.code === "P2003") {
+      throw new NotFoundError("فروشنده‌ای با این شناسه وجود ندارد");
+    }
+
+    throw new InternalServerError("عملیات با خطا مواجه شد");
+  }
 };
 
 exports.UpdateProduct = async (req, res) => {
-  var id = await isAuthunticated(req, res);
+  var { id, type } = await isAuthunticated(req, res);
+  if (type != "seller") {
+    throw new ForbiddenError("دسترسی این کار را ندارید");
+  }
 };
 
 exports.DeleteProduct = async (req, res) => {
-  var id = await isAuthunticated(req, res);
+  var { id, type } = await isAuthunticated(req, res);
+  if (type != "seller") {
+    throw new ForbiddenError("دسترسی این کار را ندارید");
+  }
 
   const productId = parseInt(req.params.productId);
 

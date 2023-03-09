@@ -3,6 +3,7 @@ const router = express.Router();
 
 //create shop controller
 const Shop = require("../../controllers/shop.controller.js");
+const { imageUpload } = require("../../utils/multer.js");
 
 /// for users
 
@@ -24,7 +25,9 @@ router.get("/cart", Shop.GetCart);
 router.get("/myproducts", Shop.GetMyProduct);
 
 // add new product
-router.post("/products", Shop.CreateProduct);
+router.post("/products", imageUpload.array("images", 5), (req, res, next) => {
+  Shop.CreateProduct(req, res, next);
+});
 
 // update one product
 router.put("/products/:productId", Shop.UpdateProduct);

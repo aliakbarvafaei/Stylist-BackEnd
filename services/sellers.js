@@ -17,16 +17,19 @@ const exclude = require("../utils/exclude").exclude;
 require("dotenv").config();
 
 exports.CreateSeller = async (req, res) => {
-  const firstname = req.body.firstname;
-  const lastname = req.body.lastname;
-  const typeShop = req.body.typeShop;
-  const shopname = req.body.shopname;
-  const province = req.body.province;
-  const city = req.body.city;
-  const address = req.body.address;
-  const email = req.body.email;
-  const phone = req.body.phone;
-  const password = req.body.password;
+  const {
+    firstname,
+    lastname,
+    typeShop,
+    shopname,
+    province,
+    city,
+    address,
+    email,
+    phone,
+    password,
+  } = req.body;
+
   try {
     const seller = await db.Seller.create({
       data: {
@@ -51,15 +54,17 @@ exports.CreateSeller = async (req, res) => {
   } catch (err) {
     if (err.code && err.code === "P2002") {
       throw new ConflictError("فروشنده‌ای با این شماره تلفن وجود دارد");
-    } else if (err.code && err.code === "P2003") {
-      throw new NotFoundError("محصولی با این شناسه وجود ندارد");
     }
+    
     throw new InternalServerError("عملیات با خطا مواجه شد");
   }
 };
 
 exports.UpdateSeller = async (req, res) => {
-  var id = await isAuthunticated(req, res);
+  var { id, type } = await isAuthunticated(req, res);
+  if (type != "seller") {
+    throw new ForbiddenError("دسترسی این کار را ندارید");
+  }
 
   const firstname = req.body.firstname === "" ? undefined : req.body.firstname;
   const lastname = req.body.lastname === "" ? undefined : req.body.lastname;
@@ -159,7 +164,10 @@ exports.UpdateSeller = async (req, res) => {
 };
 
 exports.GetOne = async (req, res) => {
-  var id = await isAuthunticated(req, res);
+  var { id, type } = await isAuthunticated(req, res);
+  if (type != "seller") {
+    throw new ForbiddenError("دسترسی این کار را ندارید");
+  }
 
   let user = await db.Seller.findFirst({
     where: {
@@ -180,8 +188,7 @@ exports.GetOne = async (req, res) => {
 };
 
 exports.Login = async (req, res) => {
-  const phone = req.body.phone;
-  const password = req.body.password;
+  const { phone, password } = req.body;
 
   //check phone exist
   let user_phone = await db.Seller.findFirst({
@@ -204,9 +211,12 @@ exports.Login = async (req, res) => {
     throw new UnauthorizedError("رمز عبور صحیح نمی‌باشد");
   } else {
     if (user_password.active)
-      return res
-        .status(200)
-        .json({ data: jwt.sign(user_password, process.env.SECRET_TOKEN) });
+      return res.status(200).json({
+        data: jwt.sign(
+          { ...user_password, type: "seller" },
+          process.env.SECRET_TOKEN
+        ),
+      });
     else throw new UnauthorizedError("حساب شما تایید نشده است");
   }
 };
@@ -255,9 +265,7 @@ exports.PassReset = async (req, res) => {
 };
 
 exports.PassChange = async (req, res) => {
-  const phone = req.body.phone;
-  const password = req.body.password;
-  const code = req.body.code;
+  const { phone, password, code } = req.body;
 
   let user = await db.PassReset.findFirst({
     where: {

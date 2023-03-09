@@ -18,22 +18,27 @@ const exclude = require("../utils/exclude").exclude;
 require("dotenv").config();
 
 exports.Update = async (req, res) => {
-  var id = await isAuthunticated(req, res);
+  var { id, type } = await isAuthunticated(req, res);
+  if (type != "user") {
+    throw new ForbiddenError("دسترسی این کار را ندارید");
+  }
 
-  const new_firstName = req.body.firstname;
-  const new_lastName = req.body.lastname;
-  const new_address = req.body.address;
-  const new_email = req.body.email;
-  const new_phone = req.body.phone;
-  const old_password = req.body.oldPassword;
-  var new_password = req.body.password;
+  const {
+    new_firstName,
+    new_lastName,
+    new_address,
+    new_email,
+    new_phone,
+    old_password,
+    new_password,
+    new_age,
+  } = req.body;
   const new_gender =
     req.body.gender === "زن"
       ? "WOMAN"
       : req.body.gender === "مرد"
       ? "MAN"
       : undefined;
-  const new_age = req.body.age;
 
   if (new_password && new_password !== "") {
     let user = await db.User.findFirst({
@@ -106,7 +111,10 @@ exports.Update = async (req, res) => {
 };
 
 exports.GetOne = async (req, res) => {
-  var id = await isAuthunticated(req, res);
+  var { id, type } = await isAuthunticated(req, res);
+  if (type != "user") {
+    throw new ForbiddenError("دسترسی این کار را ندارید");
+  }
 
   let user = await db.User.findFirst({
     where: {
@@ -138,8 +146,7 @@ exports.GetOne = async (req, res) => {
 };
 
 exports.Login = async (req, res) => {
-  const email = req.body.email;
-  const phone = req.body.phone;
+  const { email, phone } = req.body;
 
   if (email && email !== "") {
     let user = await db.User.findFirst({
@@ -199,8 +206,7 @@ exports.Login = async (req, res) => {
 };
 
 exports.LoginCode = async (req, res) => {
-  const code = req.body.code;
-  const phone = req.body.phone;
+  const { code, phone } = req.body;
 
   let logincode = await db.LoginCode.findFirst({
     where: {
@@ -216,9 +222,9 @@ exports.LoginCode = async (req, res) => {
     });
 
     if (user) {
-      return res
-        .status(200)
-        .json({ data: jwt.sign(user, process.env.SECRET_TOKEN) });
+      return res.status(200).json({
+        data: jwt.sign({ ...user, type: "user" }, process.env.SECRET_TOKEN),
+      });
     } else {
       let newUser = await db.User.create({
         data: {
@@ -226,9 +232,9 @@ exports.LoginCode = async (req, res) => {
         },
       });
 
-      return res
-        .status(201)
-        .json({ data: jwt.sign(newUser, process.env.SECRET_TOKEN) });
+      return res.status(201).json({
+        data: jwt.sign({ ...newUser, type: "user" }, process.env.SECRET_TOKEN),
+      });
     }
   } else if (logincode) {
     throw new UnauthorizedError("کد وارد شده اشتباه است");
@@ -238,9 +244,7 @@ exports.LoginCode = async (req, res) => {
 };
 
 exports.LoginPass = async (req, res) => {
-  const email = req.body.email;
-  const phone = req.body.phone;
-  const password = req.body.password;
+  const { email, phone, password } = req.body;
 
   if (email && email !== "") {
     let user = await db.User.findFirst({
@@ -250,9 +254,9 @@ exports.LoginPass = async (req, res) => {
     });
 
     if (user && user.password === md5(password)) {
-      return res
-        .status(200)
-        .json({ data: jwt.sign(user, process.env.SECRET_TOKEN) });
+      return res.status(200).json({
+        data: jwt.sign({ ...user, type: "user" }, process.env.SECRET_TOKEN),
+      });
     } else if (user) {
       throw new UnauthorizedError("رمزعبور اشتباه است");
     } else {
@@ -266,9 +270,9 @@ exports.LoginPass = async (req, res) => {
     });
 
     if (user && user.password === md5(password)) {
-      return res
-        .status(200)
-        .json({ data: jwt.sign(user, process.env.SECRET_TOKEN) });
+      return res.status(200).json({
+        data: jwt.sign({ ...user, type: "user" }, process.env.SECRET_TOKEN),
+      });
     } else if (user) {
       throw new UnauthorizedError("رمزعبور اشتباه است");
     } else {
@@ -280,8 +284,8 @@ exports.LoginPass = async (req, res) => {
 };
 
 exports.PassReset = async (req, res) => {
-  const email = req.body.email;
-  const phone = req.body.phone;
+  const { email, phone } = req.body;
+
   if (email && email !== "") {
     let user = await db.User.findFirst({
       where: {
@@ -366,10 +370,7 @@ exports.PassReset = async (req, res) => {
 };
 
 exports.PassChange = async (req, res) => {
-  const email = req.body.email;
-  const phone = req.body.phone;
-  const password = req.body.password;
-  const code = req.body.code;
+  const { email, phone, password, code } = req.body;
 
   if (email && email !== "") {
     let user = await db.PassReset.findFirst({

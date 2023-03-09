@@ -8,6 +8,7 @@ const {
   ConflictError,
   NotFoundError,
   BadRequestError,
+  ForbiddenError,
 } = require("../utils/errors");
 const removeFiles = require("../utils/rmFiles").removeFiles;
 require("dotenv").config();
@@ -93,8 +94,10 @@ exports.ClothesCategories = async (req, res) => {
 // All controller for myclothes
 
 exports.ClothesCategoryCreate = async (req, res) => {
-  var id = await isAuthunticated(req, res);
-
+  var { id, type } = await isAuthunticated(req, res);
+  if (type != "user") {
+    throw new ForbiddenError("دسترسی این کار را ندارید");
+  }
   const name = req.body.name;
 
   try {
@@ -117,7 +120,10 @@ exports.ClothesCategoryCreate = async (req, res) => {
 };
 
 exports.ClothesCategoryGetAll = async (req, res) => {
-  var id = await isAuthunticated(req, res);
+  var { id, type } = await isAuthunticated(req, res);
+  if (type != "user") {
+    throw new ForbiddenError("دسترسی این کار را ندارید");
+  }
 
   try {
     let user = await db.User.findFirst({
@@ -140,7 +146,10 @@ exports.ClothesCategoryGetAll = async (req, res) => {
 };
 
 exports.ClothesCategoryDelete = async (req, res) => {
-  var id = await isAuthunticated(req, res);
+  var { id, type } = await isAuthunticated(req, res);
+  if (type != "user") {
+    throw new ForbiddenError("دسترسی این کار را ندارید");
+  }
 
   const categoryId = parseInt(req.params.categoryId);
 
@@ -170,7 +179,10 @@ exports.ClothesCategoryDelete = async (req, res) => {
 };
 
 exports.ClothesCategoryUpdate = async (req, res) => {
-  var id = await isAuthunticated(req, res);
+  var { id, type } = await isAuthunticated(req, res);
+  if (type != "user") {
+    throw new ForbiddenError("دسترسی این کار را ندارید");
+  }
 
   const categoryId = parseInt(req.params.categoryId);
   const name = req.body.name;
@@ -210,12 +222,13 @@ exports.ClothesClothingCreate = async (req, res) => {
     throw new BadRequestError("عکس اجباری است");
   }
 
-  var id = await isAuthunticated(req, res);
+  var { id, type } = await isAuthunticated(req, res);
+  if (type != "user") {
+    throw new ForbiddenError("دسترسی این کار را ندارید");
+  }
 
   const categoryId = parseInt(req.params.categoryId);
-  const material = req.body.material;
-  const season = req.body.season;
-  const size = req.body.size;
+  const { material, season, size } = req.body;
   var newClothing;
 
   try {
@@ -275,10 +288,13 @@ exports.ClothesClothingCreate = async (req, res) => {
 };
 
 exports.ClothesClothingGetAll = async (req, res) => {
-  var id = await isAuthunticated(req, res);
+  var { id, type } = await isAuthunticated(req, res);
+  if (type != "user") {
+    throw new ForbiddenError("دسترسی این کار را ندارید");
+  }
 
   const categoryId = parseInt(req.params.categoryId);
-  
+
   try {
     let category = await db.Category_Clothing.findFirst({
       where: {
@@ -304,14 +320,15 @@ exports.ClothesClothingGetAll = async (req, res) => {
 };
 
 exports.ClothesClothingUpdate = async (req, res) => {
-  var id = await isAuthunticated(req, res);
+  var { id, type } = await isAuthunticated(req, res);
+  if (type != "user") {
+    throw new ForbiddenError("دسترسی این کار را ندارید");
+  }
 
   const categoryId = parseInt(req.params.categoryId);
   const clothingId = parseInt(req.params.clothingId);
-  const material = req.body.material;
-  const season = req.body.season;
-  const size = req.body.size;
-  
+  const { material, season, size } = req.body;
+
   try {
     let clothing = await db.Clothing.findFirst({
       where: {
@@ -349,12 +366,15 @@ exports.ClothesClothingUpdate = async (req, res) => {
 };
 
 exports.ClothesClothingDelete = async (req, res) => {
-  var id = await isAuthunticated(req, res);
+  var { id, type } = await isAuthunticated(req, res);
+  if (type != "user") {
+    throw new ForbiddenError("دسترسی این کار را ندارید");
+  }
 
   const categoryId = parseInt(req.params.categoryId);
   const clothingId = parseInt(req.params.clothingId);
   var clothing = null;
-  
+
   try {
     clothing = await db.Clothing.findFirst({
       where: {
@@ -413,11 +433,14 @@ exports.ClothesClothingDelete = async (req, res) => {
 };
 
 exports.ClothesClothingGetOne = async (req, res) => {
-  var id = await isAuthunticated(req, res);
+  var { id, type } = await isAuthunticated(req, res);
+  if (type != "user") {
+    throw new ForbiddenError("دسترسی این کار را ندارید");
+  }
 
   const categoryId = parseInt(req.params.categoryId);
   const clothingId = parseInt(req.params.clothingId);
-  
+
   try {
     let clothing = await db.Clothing.findFirst({
       where: {
@@ -449,10 +472,13 @@ exports.ClothesClothingGetOne = async (req, res) => {
 // All controller for mysets
 
 exports.SetsCategoryCreate = async (req, res) => {
-  var id = await isAuthunticated(req, res);
+  var { id, type } = await isAuthunticated(req, res);
+  if (type != "user") {
+    throw new ForbiddenError("دسترسی این کار را ندارید");
+  }
 
   const name = req.body.name;
-  
+
   try {
     let newCategory = await db.Category_Set.create({
       data: {
@@ -474,7 +500,10 @@ exports.SetsCategoryCreate = async (req, res) => {
 };
 
 exports.SetsCategoryGetAll = async (req, res) => {
-  var id = await isAuthunticated(req, res);
+  var { id, type } = await isAuthunticated(req, res);
+  if (type != "user") {
+    throw new ForbiddenError("دسترسی این کار را ندارید");
+  }
 
   try {
     let user = await db.User.findFirst({
@@ -497,17 +526,20 @@ exports.SetsCategoryGetAll = async (req, res) => {
 };
 
 exports.SetsCategoryDelete = async (req, res) => {
-  var id = await isAuthunticated(req, res);
+  var { id, type } = await isAuthunticated(req, res);
+  if (type != "user") {
+    throw new ForbiddenError("دسترسی این کار را ندارید");
+  }
 
   const categoryId = parseInt(req.params.categoryId);
-  
+
   try {
     let category = await db.Category_Set.findFirst({
       where: {
         id: categoryId,
       },
     });
-    
+
     if (category && category.userId === id) {
       await db.Category_Set.delete({
         where: {
@@ -527,11 +559,14 @@ exports.SetsCategoryDelete = async (req, res) => {
 };
 
 exports.SetsCategoryUpdate = async (req, res) => {
-  var id = await isAuthunticated(req, res);
+  var { id, type } = await isAuthunticated(req, res);
+  if (type != "user") {
+    throw new ForbiddenError("دسترسی این کار را ندارید");
+  }
 
   const categoryId = parseInt(req.params.categoryId);
   const name = req.body.name;
-  
+
   try {
     let category = await db.Category_Set.findFirst({
       where: {
@@ -571,13 +606,16 @@ exports.SetsClothingCreate = async (req, res) => {
     await removeFiles(req.files);
     throw new BadRequestError("یک عکس مجاز است");
   }
-  
-  var id = await isAuthunticated(req, res);
+
+  var { id, type } = await isAuthunticated(req, res);
+  if (type != "user") {
+    throw new ForbiddenError("دسترسی این کار را ندارید");
+  }
 
   const categoryId = parseInt(req.params.categoryId);
   const products = req.body.products;
   var newClothing;
-  
+
   try {
     let category = await db.Category_Set.findFirst({
       where: {
@@ -632,10 +670,13 @@ exports.SetsClothingCreate = async (req, res) => {
 };
 
 exports.SetsClothingGetAll = async (req, res) => {
-  var id = await isAuthunticated(req, res);
+  var { id, type } = await isAuthunticated(req, res);
+  if (type != "user") {
+    throw new ForbiddenError("دسترسی این کار را ندارید");
+  }
 
   const categoryId = parseInt(req.params.categoryId);
-  
+
   try {
     let sets = await db.Set.findMany({
       where: {
@@ -697,12 +738,15 @@ exports.SetsClothingGetAll = async (req, res) => {
 // };
 
 exports.SetsClothingDelete = async (req, res) => {
-  var id = await isAuthunticated(req, res);
+  var { id, type } = await isAuthunticated(req, res);
+  if (type != "user") {
+    throw new ForbiddenError("دسترسی این کار را ندارید");
+  }
 
   const categoryId = parseInt(req.params.categoryId);
   const setId = parseInt(req.params.setId);
   var set = null;
-  
+
   try {
     set = await db.Set.findFirst({
       where: {
@@ -755,7 +799,10 @@ exports.SetsClothingDelete = async (req, res) => {
 };
 
 exports.SetsClothingGetOne = async (req, res) => {
-  var id = await isAuthunticated(req, res);
+  var { id, type } = await isAuthunticated(req, res);
+  if (type != "user") {
+    throw new ForbiddenError("دسترسی این کار را ندارید");
+  }
 
   const categoryId = parseInt(req.params.categoryId);
   const setId = parseInt(req.params.setId);

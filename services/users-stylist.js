@@ -11,7 +11,10 @@ const exclude = require("../utils/exclude").exclude;
 require("dotenv").config();
 
 exports.GetOne = async (req, res) => {
-  var id = await isAuthunticated(req, res);
+  var { id, type } = await isAuthunticated(req, res);
+  if (type != "stylist") {
+    throw new ForbiddenError("دسترسی این کار را ندارید");
+  }
 
   let user = await db.User_Stylist.findFirst({
     where: {
@@ -33,8 +36,7 @@ exports.GetOne = async (req, res) => {
 };
 
 exports.Login = async (req, res) => {
-  const phone = req.body.phone;
-  const password = req.body.password;
+  const { phone, password } = req.body;
 
   //check phone exist
   let user_phone = await db.User_Stylist.findFirst({
@@ -57,9 +59,12 @@ exports.Login = async (req, res) => {
   if (!user_password) {
     throw new UnauthorizedError("رمز عبور صحیح نمی‌باشد");
   } else {
-    return res
-      .status(200)
-      .json({ data: jwt.sign(user_password, process.env.SECRET_TOKEN) });
+    return res.status(200).json({
+      data: jwt.sign(
+        { ...user_password, type: "stylist" },
+        process.env.SECRET_TOKEN
+      ),
+    });
   }
 };
 
@@ -108,9 +113,7 @@ exports.PassReset = async (req, res) => {
 };
 
 exports.PassChange = async (req, res) => {
-  const phone = req.body.phone;
-  const password = req.body.password;
-  const code = req.body.code;
+  const { phone, password, code } = req.body;
 
   let user = await db.PassReset.findFirst({
     where: {

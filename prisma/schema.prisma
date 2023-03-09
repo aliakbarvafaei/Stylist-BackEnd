@@ -191,7 +191,7 @@ model Order {
   lastName     String?
   phone        String        @unique
   price        Float
-  content      String?
+  detail       String?
   createdAt    DateTime      @default(now())
   deliveryTime DateTime
   userId       Int
@@ -241,7 +241,7 @@ model Cart_Item {
 model Product {
   id               Int                @id @default(autoincrement())
   title            String             @unique
-  content          String?
+  detail           String?
   price            Float
   discount         Int?               @default(0)
   quantity         Int

@@ -2,6 +2,7 @@ const Schema = require("validate");
 require("dotenv").config();
 const Shop = require("../services/shop");
 const { BadRequestError } = require("../utils/errors");
+const { removeFiles } = require("../utils/rmFiles");
 
 exports.GetAll = async (req, res, next) => {
   try {
@@ -80,9 +81,45 @@ exports.CreateProduct = async (req, res, next) => {
           required: "عنوان آگهی اجباری است",
         },
       },
+      detail: {
+        type: String,
+        message: {
+          type: "جزئیات آگهی باید به صورت رشته باشد",
+        },
+      },
+      price: {
+        type: String,
+        required: true,
+        message: {
+          type: "قیمت آگهی باید به صورت عددی باشد",
+          required: "قیمت آگهی اجباری است",
+        },
+      },
+      quantity: {
+        type: String,
+        required: true,
+        message: {
+          type: "موجودی آگهی باید به صورت عددی باشد",
+          required: "موجودی آگهی اجباری است",
+        },
+      },
+      discount: {
+        type: String,
+        message: {
+          type: "درصد تخفیف آگهی باید به صورت عددی باشد",
+        },
+      },
     });
+    var res_data = [];
+    const errors = product.validate(req.body);
+    errors.forEach((element) => {
+      res_data.push(element.message);
+    });
+
+    if (res_data.length > 0) throw new BadRequestError(res_data);
     await Shop.CreateProduct(req, res);
   } catch (err) {
+    await removeFiles(req.files);
     return next(err);
   }
 };

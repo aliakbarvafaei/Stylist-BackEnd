@@ -53,7 +53,7 @@ router.put("/myclothes/:categoryId", Closet.ClothesCategoryUpdate);
 router.post(
   "/myclothes/:categoryId",
   imageUpload.array("images", 5),
-  (req, res) => Closet.ClothesClothingCreate(req, res)
+  (req, res, next) => Closet.ClothesClothingCreate(req, res, next)
 );
 
 //get all clothing in category router
@@ -86,8 +86,10 @@ router.delete("/mysets/:categoryId", Closet.SetsCategoryDelete);
 router.put("/mysets/:categoryId", Closet.SetsCategoryUpdate);
 
 //add set to category router
-router.post("/mysets/:categoryId", imageUpload.array("images", 5), (req, res) =>
-  Closet.SetsClothingCreate(req, res)
+router.post(
+  "/mysets/:categoryId",
+  imageUpload.array("images", 5),
+  (req, res, next) => Closet.SetsClothingCreate(req, res, next)
 );
 
 //get all set in category router

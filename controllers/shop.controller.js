@@ -71,7 +71,7 @@ exports.GetMyProduct = async (req, res, next) => {
 
 exports.Create = async (req, res, next) => {
   try {
-    await Shop.Create(req, res);
+    await Shop.CreateProduct(req, res);
   } catch (err) {
     return next(err);
   }
@@ -81,7 +81,7 @@ exports.Update = async (req, res, next) => {
   try {
     if (!(req.params.productId == parseInt(req.params.productId)))
       throw new BadRequestError("شناسه محصول باید عدد باشد");
-    await Shop.Update(req, res);
+    await Shop.UpdateProduct(req, res);
   } catch (err) {
     return next(err);
   }
@@ -91,7 +91,7 @@ exports.Delete = async (req, res, next) => {
   try {
     if (!(req.params.productId == parseInt(req.params.productId)))
       throw new BadRequestError("شناسه محصول باید عدد باشد");
-    await Shop.Delete(req, res);
+    await Shop.DeleteProduct(req, res);
   } catch (err) {
     return next(err);
   }

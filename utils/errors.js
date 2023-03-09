@@ -1,5 +1,7 @@
 // errors.js
 
+const multer = require("multer");
+
 class BadRequestError extends Error {
   constructor(message) {
     super(message);
@@ -82,15 +84,21 @@ const errorHandler = (err, req, res, next) => {
   } else if (err instanceof BadRequestError) {
     statusCode = 400;
     message = err.message || "Bad request";
+  } else if (err instanceof multer.MulterError) {
+    if (err.code === "LIMIT_UNEXPECTED_FILE") {
+      statusCode = 400;
+      message = "یک عکس مجاز است";
+    } else {
+      statusCode = 400;
+      message = err.message;
+    }
   } else {
     statusCode = 500;
     message = "Internal server error";
   }
-  return res
-    .status(statusCode)
-    .json({
-      error: message.split(",").length === 1 ? message : message.split(","),
-    });
+  return res.status(statusCode).json({
+    error: message.split(",").length === 1 ? message : message.split(","),
+  });
 };
 
 module.exports = {

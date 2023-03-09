@@ -147,15 +147,15 @@ exports.GetMyProduct = async (req, res) => {
   }
 };
 
-exports.Create = async (req, res) => {
+exports.CreateProduct = async (req, res) => {
   var id = await isAuthunticated(req, res);
 };
 
-exports.Update = async (req, res) => {
+exports.UpdateProduct = async (req, res) => {
   var id = await isAuthunticated(req, res);
 };
 
-exports.Delete = async (req, res) => {
+exports.DeleteProduct = async (req, res) => {
   var id = await isAuthunticated(req, res);
 
   const productId = parseInt(req.params.productId);

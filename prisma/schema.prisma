@@ -66,11 +66,13 @@ model User {
 
 //address model
 model Address {
-  id      Int     @id @default(autoincrement())
-  address String
-  userId  Int
-  User    User    @relation("USER_ADDRESS", fields: [userId], references: [id], onDelete: Cascade)
-  Order   Order[] @relation("ORDER_ADDRESS")
+  id       Int     @id @default(autoincrement())
+  province String
+  city     String
+  address  String
+  userId   Int
+  User     User    @relation("USER_ADDRESS", fields: [userId], references: [id], onDelete: Cascade)
+  Order    Order[] @relation("ORDER_ADDRESS")
 }
 
 //clothing model
@@ -243,6 +245,7 @@ model Product {
   price            Float
   discount         Int?               @default(0)
   quantity         Int
+  active           Boolean            @default(true)
   createdAt        DateTime           @default(now())
   updateAt         DateTime           @default(now())
   order_item       Order_Item[]       @relation("PRODUCT_ORDER_ITEM")
@@ -264,18 +267,29 @@ model Image_Product {
 
 //seller model
 model Seller {
-  id        Int       @id @default(autoincrement())
-  phone     String    @unique
-  email     String?   @unique
-  typeShop  Json
+  id        Int             @id @default(autoincrement())
+  phone     String          @unique
+  email     String?
+  typeShop  String
   logoUrl   String
+  active    Boolean         @default(false)
   shopName  String?
   firstName String?
   lastName  String?
-  address   String?
+  address   Address_Seller? @relation("SELLER_ADDRESS")
   password  String
-  createdAt DateTime  @default(now())
-  product   Product[] @relation("SELLER_PRODUCT")
+  createdAt DateTime        @default(now())
+  product   Product[]       @relation("SELLER_PRODUCT")
+}
+
+//address model
+model Address_Seller {
+  id       Int    @id @default(autoincrement())
+  province String
+  city     String
+  address  String
+  sellerId Int    @unique
+  Seller   Seller @relation("SELLER_ADDRESS", fields: [sellerId], references: [id], onDelete: Cascade)
 }
 
 //product_category model

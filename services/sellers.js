@@ -5,61 +5,54 @@ const mailResetPass = require("../utils/email").mailResetPass;
 const sendSmsForget = require("../utils/sms").sendSmsForget;
 const md5 = require("md5");
 const { isAuthunticated } = require("../utils/auth");
-const {
-  NotFoundError,
-} = require("../utils/errors");
+const { NotFoundError, ConflictError } = require("../utils/errors");
 const db = new PrismaClient();
 const exclude = require("../utils/exclude").exclude;
 require("dotenv").config();
 
-// exports.create = async (req, res) => {
-//   const firstname = req.body.firstname;
-//   const lastname = req.body.lastname;
-//   const address = req.body.address;
-//   const shopname = req.body.shopname;
-//   const email = req.body.email;
-//   const phone = req.body.phone;
-//   const password = req.body.password;
-
-//   //chech uniqe email
-//   let email_check = await db.Seller.findFirst({
-//     where: {
-//       email: email,
-//     },
-//   });
-
-//   //chech uniqe phone number
-//   let phone_check;
-//   if (!phone) {
-//     phone_check = null;
-//   } else {
-//     phone_check = await db.Seller.findFirst({
-//       where: {
-//         phone: phone,
-//       },
-//     });
-//   }
-
-//   if (!email_check && !phone_check) {
-//     let newUser = await db.Seller.create({
-//       data: {
-//         firstName: firstname,
-//         lastName: lastname,
-//         address: address,
-//         shopName: shopname,
-//         email: email,
-//         phone: phone,
-//         password: md5(password),
-//       },
-//     });
-//     mailSignup(email, firstname,req.get("host")+"/logo.png");
-//     return res.status(201).json( { message: ("ثبت نام با موفقیت انجام شد") } );
-//   } else if (email_check) {
-// throw new ConflictError("ایمیل تکراری می‌باشد");
-//   } else if (phone_check) {
-// throw new ConflictError("شماره تلفن تکراری می‌باشد");
-//   }
-// };
+exports.Create = async (req, res) => {
+  const firstname = req.body.firstname;
+  const lastname = req.body.lastname;
+  const typeShop = req.body.typeShop;
+  const shopname = req.body.shopname;
+  const province = req.body.province;
+  const city = req.body.city;
+  const address = req.body.address;
+  const email = req.body.email;
+  const phone = req.body.phone;
+  const password = req.body.password;
+  try {
+    const seller = await db.Seller.create({
+      data: {
+        firstName: firstname,
+        lastName: lastname,
+        typeShop: typeShop,
+        shopName: shopname,
+        logoUrl: req.get("host") + `/images/${req.files[0].filename}`,
+        email: email,
+        phone: phone,
+        password: md5(password),
+        address: {
+          create: {
+            province: province,
+            city: city,
+            address: address,
+          },
+        },
+      },
+    });
+    return res
+      .status(201)
+      .json({ data: jwt.sign(seller, process.env.SECRET_TOKEN) });
+  } catch (err) {
+    if (err.code && err.code === "P2002") {
+      throw new ConflictError("فروشنده‌ای با این شماره تلفن وجود دارد");
+    } else if (err.code && err.code === "P2003") {
+      throw new NotFoundError("محصولی با این شناسه وجود ندارد");
+    }
+    throw new InternalServerError("عملیات با خطا مواجه شد");
+  }
+};
 
 // exports.update = async (req, res) => {
 //   var id = await isAuthunticated(req, res);

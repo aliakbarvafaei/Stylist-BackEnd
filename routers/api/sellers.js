@@ -34,7 +34,12 @@ const Seller = require("../../controllers/sellers.controller.js");
 
 //create sellers router
 router.post("", imageUpload.array("images", 1), (req, res, next) => {
-  Seller.Create(req, res, next);
+  Seller.CreateSeller(req, res, next);
+});
+
+//update sellers router
+router.put("", imageUpload.array("images", 1), (req, res, next) => {
+  Seller.UpdateSeller(req, res, next);
 });
 
 // //get all sellers router

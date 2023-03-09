@@ -4,7 +4,7 @@ const Seller = require("../services/sellers");
 const { BadRequestError } = require("../utils/errors");
 const { removeFiles } = require("../utils/rmFiles");
 
-exports.Create = async (req, res, next) => {
+exports.CreateSeller = async (req, res, next) => {
   try {
     if (req.files.length == 0) {
       throw new BadRequestError("عکس اجباری است");
@@ -95,7 +95,88 @@ exports.Create = async (req, res, next) => {
       res_data.push(element.message);
     });
     if (res_data.length > 0) throw new BadRequestError(res_data);
-    await Seller.Create(req, res);
+    await Seller.CreateSeller(req, res);
+  } catch (err) {
+    await removeFiles(req.files);
+    return next(err);
+  }
+};
+
+exports.UpdateSeller = async (req, res, next) => {
+  try {
+    const user = new Schema({
+      phone: {
+        type: String,
+        message: {
+          type: "شماره باید به صورت رشته باشد",
+        },
+      },
+      firstname: {
+        type: String,
+        message: {
+          type: "نام باید به صورت رشته باشد",
+        },
+      },
+      lastname: {
+        type: String,
+        message: {
+          type: "نام‌خانوادگی باید به صورت رشته باشد",
+        },
+      },
+      typeShop: {
+        type: String,
+        message: {
+          type: "نوع فروشگاه باید به صورت رشته باشد",
+        },
+      },
+      shopname: {
+        type: String,
+        message: {
+          type: "نام فروشگاه باید به صورت رشته باشد",
+        },
+      },
+      province: {
+        type: String,
+        message: {
+          type: "استان باید به صورت رشته باشد",
+        },
+      },
+      city: {
+        type: String,
+        message: {
+          type: "شهر باید به صورت رشته باشد",
+        },
+      },
+      address: {
+        type: String,
+        message: {
+          type: "آدرس باید به صورت رشته باشد",
+        },
+      },
+      email: {
+        type: String,
+        match: /^$|^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+        message: {
+          type: "ایمیل باید به صورت رشته باشد",
+          match: "ساختار ایمیل نادرست است",
+        },
+      },
+      password: {
+        type: String,
+        length: { min: 8 },
+        message: {
+          type: "رمزعبور باید به صورت رشته باشد",
+          length: "رمزعبور باید حداقل 8 حرف باشد",
+        },
+      },
+    });
+    var res_data = [];
+    const errors = user.validate(req.body);
+    errors.forEach((element) => {
+      res_data.push(element.message);
+    });
+    if (res_data.length > 0) throw new BadRequestError(res_data);
+    await Seller.UpdateSeller(req, res);
   } catch (err) {
     await removeFiles(req.files);
     return next(err);

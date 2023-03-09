@@ -4,13 +4,19 @@ const mailSignup = require("../utils/email").mailSignup;
 const mailResetPass = require("../utils/email").mailResetPass;
 const sendSmsForget = require("../utils/sms").sendSmsForget;
 const md5 = require("md5");
+const fs = require("fs");
 const { isAuthunticated } = require("../utils/auth");
-const { NotFoundError, ConflictError } = require("../utils/errors");
+const {
+  NotFoundError,
+  ConflictError,
+  UnauthorizedError,
+  BadRequestError,
+} = require("../utils/errors");
 const db = new PrismaClient();
 const exclude = require("../utils/exclude").exclude;
 require("dotenv").config();
 
-exports.Create = async (req, res) => {
+exports.CreateSeller = async (req, res) => {
   const firstname = req.body.firstname;
   const lastname = req.body.lastname;
   const typeShop = req.body.typeShop;
@@ -41,15 +47,113 @@ exports.Create = async (req, res) => {
         },
       },
     });
-    return res
-      .status(201)
-      .json({ data: jwt.sign(seller, process.env.SECRET_TOKEN) });
+    return res.status(201).json({ message: "فروشنده با موفقیت ایجاد شد" });
   } catch (err) {
     if (err.code && err.code === "P2002") {
       throw new ConflictError("فروشنده‌ای با این شماره تلفن وجود دارد");
     } else if (err.code && err.code === "P2003") {
       throw new NotFoundError("محصولی با این شناسه وجود ندارد");
     }
+    throw new InternalServerError("عملیات با خطا مواجه شد");
+  }
+};
+
+exports.UpdateSeller = async (req, res) => {
+  var id = await isAuthunticated(req, res);
+
+  const firstname = req.body.firstname === "" ? undefined : req.body.firstname;
+  const lastname = req.body.lastname === "" ? undefined : req.body.lastname;
+  const typeShop = req.body.typeShop === "" ? undefined : req.body.typeShop;
+  const shopname = req.body.shopname === "" ? undefined : req.body.shopname;
+  const province = req.body.province === "" ? undefined : req.body.province;
+  const city = req.body.city === "" ? undefined : req.body.city;
+  const address = req.body.address === "" ? undefined : req.body.address;
+  const email = req.body.email === "" ? undefined : req.body.email;
+  const phone = req.body.phone === "" ? undefined : req.body.phone;
+  const old_password = req.body.oldPassword;
+  var new_password = req.body.password;
+
+  var oldLogo = undefined;
+
+  if (new_password && new_password !== "") {
+    let user = await db.Seller.findFirst({
+      where: {
+        id: id,
+      },
+    });
+    oldLogo = user.logoUrl;
+    if (user) {
+      if (user.password && user.password !== "") {
+        if (old_password) {
+          if (user.password !== md5(old_password)) {
+            throw new UnauthorizedError("رمز قبلی اشتباه است");
+          }
+        } else {
+          throw new BadRequestError("رمز قبلی باید ارسال شود");
+        }
+      }
+    } else {
+      throw new NotFoundError("کاربر با این شناسه وجود ندارد");
+    }
+  } else {
+    let user = await db.Seller.findFirst({
+      where: {
+        id: id,
+      },
+    });
+    oldLogo = user.logoUrl;
+  }
+
+  try {
+    const seller = await db.Seller.update({
+      where: {
+        id: id,
+      },
+      data: {
+        firstName: firstname,
+        lastName: lastname,
+        typeShop: typeShop,
+        shopName: shopname,
+        logoUrl:
+          req.files.length === 1
+            ? req.get("host") + `/images/${req.files[0].filename}`
+            : undefined,
+        email: email,
+        phone: phone,
+        password: new_password === undefined ? undefined : md5(new_password),
+      },
+    });
+    if (province || city || address) {
+      const addresss = await db.Address_Seller.update({
+        where: {
+          sellerId: seller.id,
+        },
+        data: {
+          province: province,
+          city: city,
+          address: address,
+        },
+      });
+    }
+    if (req.files.length === 1) {
+      fs.unlink(
+        `public/images/${oldLogo.split("/")[oldLogo.split("/").length - 1]}`,
+        (err) => {
+          if (err) {
+            console.log(err);
+          }
+        }
+      );
+    }
+
+    return res.status(200).json({ message: "ویرایش با موفقیت انجام شد" });
+  } catch (err) {
+    if (err.code && err.code === "P2002") {
+      throw new ConflictError("فروشنده‌ای با این شماره تلفن وجود دارد");
+    } else if (err.code && err.code === "P2003") {
+      throw new NotFoundError("محصولی با این شناسه وجود ندارد");
+    }
+    console.log(err);
     throw new InternalServerError("عملیات با خطا مواجه شد");
   }
 };
@@ -137,10 +241,7 @@ exports.GetOne = async (req, res) => {
 
   if (user) {
     return res.status(200).json({
-      data: {
-        ...exclude(user, ["password"]),
-        hasPassword: user.password && user.password != "" ? true : false,
-      },
+      data: exclude(user, ["password"]),
     });
   } else {
     throw new NotFoundError("فروشنده‌ای با این شناسه وجود ندارد");
@@ -171,9 +272,11 @@ exports.Login = async (req, res) => {
   if (!user_password) {
     throw new UnauthorizedError("رمز عبور صحیح نمی‌باشد");
   } else {
-    return res
-      .status(200)
-      .json({ data: jwt.sign(user_password, process.env.SECRET_TOKEN) });
+    if (user_password.active)
+      return res
+        .status(200)
+        .json({ data: jwt.sign(user_password, process.env.SECRET_TOKEN) });
+    else throw new UnauthorizedError("حساب شما تایید نشده است");
   }
 };
 

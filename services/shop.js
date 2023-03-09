@@ -163,8 +163,7 @@ exports.delete = async (req, res) => {
   try {
     let product = await db.Product.delete({
       where: {
-        id: productId,
-        sellerId: id,
+        id_sellerId: { id: productId, sellerId: id },
       },
     });
 

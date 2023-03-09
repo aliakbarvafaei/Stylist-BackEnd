@@ -86,8 +86,11 @@ const errorHandler = (err, req, res, next) => {
     statusCode = 500;
     message = "Internal server error";
   }
-
-  return res.status(statusCode).json({ error: message });
+  return res
+    .status(statusCode)
+    .json({
+      error: message.split(",").length === 1 ? message : message.split(","),
+    });
 };
 
 module.exports = {

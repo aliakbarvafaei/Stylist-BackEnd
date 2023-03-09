@@ -69,15 +69,25 @@ exports.GetMyProduct = async (req, res, next) => {
   }
 };
 
-exports.Create = async (req, res, next) => {
+exports.CreateProduct = async (req, res, next) => {
   try {
+    const product = new Schema({
+      title: {
+        type: String,
+        required: true,
+        message: {
+          type: "عنوان آگهی باید به صورت رشته باشد",
+          required: "عنوان آگهی اجباری است",
+        },
+      },
+    });
     await Shop.CreateProduct(req, res);
   } catch (err) {
     return next(err);
   }
 };
 
-exports.Update = async (req, res, next) => {
+exports.UpdateProduct = async (req, res, next) => {
   try {
     if (!(req.params.productId == parseInt(req.params.productId)))
       throw new BadRequestError("شناسه محصول باید عدد باشد");
@@ -87,7 +97,7 @@ exports.Update = async (req, res, next) => {
   }
 };
 
-exports.Delete = async (req, res, next) => {
+exports.DeleteProduct = async (req, res, next) => {
   try {
     if (!(req.params.productId == parseInt(req.params.productId)))
       throw new BadRequestError("شناسه محصول باید عدد باشد");

@@ -24,12 +24,12 @@ router.get("/cart", Shop.GetCart);
 router.get("/myproducts", Shop.GetMyProduct);
 
 // add new product
-router.post("/products", Shop.Create);
+router.post("/products", Shop.CreateProduct);
 
 // update one product
-router.put("/products/:productId", Shop.Update);
+router.put("/products/:productId", Shop.UpdateProduct);
 
 // delete one product
-router.delete("/products/:productId", Shop.Delete);
+router.delete("/products/:productId", Shop.DeleteProduct);
 
 module.exports = router;

@@ -75,7 +75,7 @@ exports.Update = async (req, res, next) => {
       res_data.push(element.message);
     });
     if (res_data.length > 0) throw new BadRequestError(res_data);
-    await User.update(req, res);
+    await User.Update(req, res);
   } catch (err) {
     return next(err);
   }
@@ -83,7 +83,7 @@ exports.Update = async (req, res, next) => {
 
 exports.GetOne = async (req, res, next) => {
   try {
-    await User.getOne(req, res);
+    await User.GetOne(req, res);
   } catch (err) {
     return next(err);
   }
@@ -113,7 +113,7 @@ exports.Login = async (req, res, next) => {
       res_data.push(element.message);
     });
     if (res_data.length > 0) throw new BadRequestError(res_data);
-    await User.login(req, res);
+    await User.Login(req, res);
   } catch (err) {
     return next(err);
   }
@@ -147,7 +147,7 @@ exports.LoginCode = async (req, res, next) => {
       res_data.push(element.message);
     });
     if (res_data.length > 0) throw new BadRequestError(res_data);
-    await User.loginCode(req, res);
+    await User.LoginCode(req, res);
   } catch (err) {
     return next(err);
   }
@@ -187,7 +187,7 @@ exports.LoginPass = async (req, res, next) => {
       res_data.push(element.message);
     });
     if (res_data.length > 0) throw new BadRequestError(res_data);
-    await User.loginPass(req, res);
+    await User.LoginPass(req, res);
   } catch (err) {
     return next(err);
   }

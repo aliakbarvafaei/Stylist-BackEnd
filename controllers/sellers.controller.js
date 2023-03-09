@@ -5,7 +5,7 @@ const { BadRequestError } = require("../utils/errors");
 
 exports.GetOne = async (req, res, next) => {
   try {
-    await Seller.getOne(req, res);
+    await Seller.GetOne(req, res);
   } catch (err) {
     return next(err);
   }
@@ -39,7 +39,7 @@ exports.Login = async (req, res, next) => {
       res_data.push(element.message);
     });
     if (res_data.length > 0) throw new BadRequestError(res_data);
-    await Seller.login(req, res);
+    await Seller.Login(req, res);
   } catch (err) {
     return next(err);
   }

@@ -130,7 +130,7 @@ require("dotenv").config();
 //   });
 // };
 
-exports.getOne = async (req, res) => {
+exports.GetOne = async (req, res) => {
   var id = await isAuthunticated(req, res);
 
   let user = await db.Seller.findFirst({
@@ -154,7 +154,7 @@ exports.getOne = async (req, res) => {
   }
 };
 
-exports.login = async (req, res) => {
+exports.Login = async (req, res) => {
   const phone = req.body.phone;
   const password = req.body.password;
 

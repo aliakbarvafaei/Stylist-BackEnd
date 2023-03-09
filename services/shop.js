@@ -6,7 +6,7 @@ require("dotenv").config();
 
 // for users
 
-exports.getAll = async (req, res) => {
+exports.GetAll = async (req, res) => {
   try {
     let products = await db.Product.findMany({
       orderBy: [
@@ -25,7 +25,7 @@ exports.getAll = async (req, res) => {
   }
 };
 
-exports.getOne = async (req, res) => {
+exports.GetOne = async (req, res) => {
   const productId = parseInt(req.params.productId);
 
   try {
@@ -45,7 +45,7 @@ exports.getOne = async (req, res) => {
   }
 };
 
-exports.addToCart = async (req, res) => {
+exports.AddToCart = async (req, res) => {
   var id = await isAuthunticated(req, res);
 
   const quantity = req.body.quantity;
@@ -94,7 +94,7 @@ exports.addToCart = async (req, res) => {
   }
 };
 
-exports.getCart = async (req, res) => {
+exports.GetCart = async (req, res) => {
   var id = await isAuthunticated(req, res);
 
   try {
@@ -123,7 +123,7 @@ exports.getCart = async (req, res) => {
 
 // for sellers
 
-exports.getMyProduct = async (req, res) => {
+exports.GetMyProduct = async (req, res) => {
   var id = await isAuthunticated(req, res);
 
   try {
@@ -147,15 +147,15 @@ exports.getMyProduct = async (req, res) => {
   }
 };
 
-exports.create = async (req, res) => {
+exports.Create = async (req, res) => {
   var id = await isAuthunticated(req, res);
 };
 
-exports.update = async (req, res) => {
+exports.Update = async (req, res) => {
   var id = await isAuthunticated(req, res);
 };
 
-exports.delete = async (req, res) => {
+exports.Delete = async (req, res) => {
   var id = await isAuthunticated(req, res);
 
   const productId = parseInt(req.params.productId);

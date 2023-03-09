@@ -17,7 +17,7 @@ const exclude = require("../utils/exclude").exclude;
 
 require("dotenv").config();
 
-exports.update = async (req, res) => {
+exports.Update = async (req, res) => {
   var id = await isAuthunticated(req, res);
 
   const new_firstName = req.body.firstname;
@@ -105,7 +105,7 @@ exports.update = async (req, res) => {
   }
 };
 
-exports.getOne = async (req, res) => {
+exports.GetOne = async (req, res) => {
   var id = await isAuthunticated(req, res);
 
   let user = await db.User.findFirst({
@@ -137,7 +137,7 @@ exports.getOne = async (req, res) => {
   }
 };
 
-exports.login = async (req, res) => {
+exports.Login = async (req, res) => {
   const email = req.body.email;
   const phone = req.body.phone;
 
@@ -198,7 +198,7 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.loginCode = async (req, res) => {
+exports.LoginCode = async (req, res) => {
   const code = req.body.code;
   const phone = req.body.phone;
 
@@ -237,7 +237,7 @@ exports.loginCode = async (req, res) => {
   }
 };
 
-exports.loginPass = async (req, res) => {
+exports.LoginPass = async (req, res) => {
   const email = req.body.email;
   const phone = req.body.phone;
   const password = req.body.password;

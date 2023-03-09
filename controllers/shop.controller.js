@@ -5,7 +5,7 @@ const { BadRequestError } = require("../utils/errors");
 
 exports.GetAll = async (req, res, next) => {
   try {
-    await Shop.getAll(req, res);
+    await Shop.GetAll(req, res);
   } catch (err) {
     return next(err);
   }
@@ -15,7 +15,7 @@ exports.GetOne = async (req, res, next) => {
   try {
     if (!(req.params.productId == parseInt(req.params.productId)))
       throw new BadRequestError("شناسه محصول باید عدد باشد");
-    await Shop.getOne(req, res);
+    await Shop.GetOne(req, res);
   } catch (err) {
     return next(err);
   }
@@ -47,7 +47,7 @@ exports.AddToCart = async (req, res, next) => {
       res_data.push(element.message);
     });
     if (res_data.length > 0) throw new BadRequestError(res_data);
-    await Shop.addToCart(req, res);
+    await Shop.AddToCart(req, res);
   } catch (err) {
     return next(err);
   }
@@ -55,7 +55,7 @@ exports.AddToCart = async (req, res, next) => {
 
 exports.GetCart = async (req, res, next) => {
   try {
-    await Shop.getCart(req, res);
+    await Shop.GetCart(req, res);
   } catch (err) {
     return next(err);
   }
@@ -63,7 +63,7 @@ exports.GetCart = async (req, res, next) => {
 
 exports.GetMyProduct = async (req, res, next) => {
   try {
-    await Shop.getMyProduct(req, res);
+    await Shop.GetMyProduct(req, res);
   } catch (err) {
     return next(err);
   }
@@ -71,7 +71,7 @@ exports.GetMyProduct = async (req, res, next) => {
 
 exports.Create = async (req, res, next) => {
   try {
-    await Shop.create(req, res);
+    await Shop.Create(req, res);
   } catch (err) {
     return next(err);
   }
@@ -81,7 +81,7 @@ exports.Update = async (req, res, next) => {
   try {
     if (!(req.params.productId == parseInt(req.params.productId)))
       throw new BadRequestError("شناسه محصول باید عدد باشد");
-    await Shop.update(req, res);
+    await Shop.Update(req, res);
   } catch (err) {
     return next(err);
   }
@@ -91,7 +91,7 @@ exports.Delete = async (req, res, next) => {
   try {
     if (!(req.params.productId == parseInt(req.params.productId)))
       throw new BadRequestError("شناسه محصول باید عدد باشد");
-    await Shop.delete(req, res);
+    await Shop.Delete(req, res);
   } catch (err) {
     return next(err);
   }

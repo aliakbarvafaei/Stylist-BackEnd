@@ -30,7 +30,13 @@ router.post("/products", imageUpload.array("images", 5), (req, res, next) => {
 });
 
 // update one product
-router.put("/products/:productId", Shop.UpdateProduct);
+router.put(
+  "/products/:productId",
+  imageUpload.array("images", 5),
+  (req, res, next) => {
+    Shop.UpdateProduct(req, res, next);
+  }
+);
 
 // delete one product
 router.delete("/products/:productId", Shop.DeleteProduct);

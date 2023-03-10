@@ -55,7 +55,7 @@ exports.CreateSeller = async (req, res) => {
     if (err.code && err.code === "P2002") {
       throw new ConflictError("فروشنده‌ای با این شماره تلفن وجود دارد");
     }
-    
+
     throw new InternalServerError("عملیات با خطا مواجه شد");
   }
 };
@@ -157,6 +157,8 @@ exports.UpdateSeller = async (req, res) => {
       throw new ConflictError("فروشنده‌ای با این شماره تلفن وجود دارد");
     } else if (err.code && err.code === "P2003") {
       throw new NotFoundError("محصولی با این شناسه وجود ندارد");
+    } else if (err && err.code === "P2025") {
+      throw new NotFoundError("فروشنده‌ای با این شناسه وجود ندارد");
     }
     console.log(err);
     throw new InternalServerError("عملیات با خطا مواجه شد");

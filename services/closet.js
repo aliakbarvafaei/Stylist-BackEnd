@@ -212,6 +212,8 @@ exports.ClothesCategoryUpdate = async (req, res) => {
   } catch (err) {
     if (err.code && err.code === "P2002") {
       throw new ConflictError("دسته‌بندی با این نام وجود دارد");
+    } else if (err && err.code === "P2025") {
+      throw new NotFoundError("دسته بندی با این شناسه وجود ندارد");
     }
     throw new InternalServerError("عملیات با خطا مواجه شد");
   }
@@ -359,6 +361,8 @@ exports.ClothesClothingUpdate = async (req, res) => {
   } catch (err) {
     if (err.code && err.code === "P2003") {
       throw new NotFoundError("کاربر یا دسته‌بندی با این شناسه وجود ندارد");
+    } else if (err && err.code === "P2025") {
+      throw new NotFoundError("لباسی با این شناسه وجود ندارد");
     }
 
     throw new InternalServerError("عملیات با خطا مواجه شد");
@@ -593,6 +597,8 @@ exports.SetsCategoryUpdate = async (req, res) => {
   } catch (err) {
     if (err.code && err.code === "P2002") {
       throw new ConflictError("دسته‌بندی با این نام وجود دارد");
+    } else if (err && err.code === "P2025") {
+      throw new NotFoundError("دسته بندی با این شناسه وجود ندارد");
     }
 
     throw new InternalServerError("عملیات با خطا مواجه شد");

@@ -128,8 +128,50 @@ exports.UpdateProduct = async (req, res, next) => {
   try {
     if (!(req.params.productId == parseInt(req.params.productId)))
       throw new BadRequestError("شناسه محصول باید عدد باشد");
+
+    const product = new Schema({
+      title: {
+        type: String,
+        message: {
+          type: "عنوان آگهی باید به صورت رشته باشد",
+        },
+      },
+      detail: {
+        type: String,
+        message: {
+          type: "جزئیات آگهی باید به صورت رشته باشد",
+        },
+      },
+      price: {
+        type: String,
+        message: {
+          type: "قیمت آگهی باید به صورت عددی باشد",
+        },
+      },
+      quantity: {
+        type: String,
+        message: {
+          type: "موجودی آگهی باید به صورت عددی باشد",
+        },
+      },
+      discount: {
+        type: String,
+        message: {
+          type: "درصد تخفیف آگهی باید به صورت عددی باشد",
+        },
+      },
+    });
+    var res_data = [];
+    const errors = product.validate(req.body);
+    errors.forEach((element) => {
+      res_data.push(element.message);
+    });
+
+    if (res_data.length > 0) throw new BadRequestError(res_data);
+
     await Shop.UpdateProduct(req, res);
   } catch (err) {
+    await removeFiles(req.files);
     return next(err);
   }
 };

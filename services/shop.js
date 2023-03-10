@@ -1,6 +1,11 @@
 const { PrismaClient } = require("@prisma/client");
 const { isAuthunticated } = require("../utils/auth");
-const { InternalServerError, NotFoundError } = require("../utils/errors");
+const fs = require("fs");
+const {
+  InternalServerError,
+  NotFoundError,
+  BadRequestError,
+} = require("../utils/errors");
 const db = new PrismaClient();
 require("dotenv").config();
 
@@ -204,6 +209,81 @@ exports.UpdateProduct = async (req, res) => {
   if (type != "seller") {
     throw new ForbiddenError("دسترسی این کار را ندارید");
   }
+
+  const { title, detail, quantity, discount, price } = req.body;
+
+  try {
+    const urls = await db.Image_Product.findMany({
+      where: {
+        productId: parseInt(req.params.productId),
+      },
+    });
+
+    urls.length > 0 &&
+      (await db.Image_Product.deleteMany({
+        where: {
+          productId: parseInt(req.params.productId),
+        },
+      }));
+
+    urls &&
+      urls.forEach(async (item) => {
+        item &&
+          fs.unlink(
+            `public/images/${
+              item.url.split("/")[item.url.split("/").length - 1]
+            }`,
+            (err) => {
+              if (err) {
+                console.log(err);
+              }
+            }
+          );
+      });
+
+    const product = await db.Product.update({
+      where: {
+        id: parseInt(req.params.productId),
+      },
+      data: {
+        title: title,
+        detail: detail,
+        discount:
+          discount === undefined || discount === ""
+            ? undefined
+            : Number(discount),
+        price: price === undefined || price === "" ? undefined : Number(price),
+        quantity:
+          quantity === undefined || quantity === ""
+            ? undefined
+            : Number(quantity),
+        image_product: {
+          create: req.files.map((element) => {
+            return {
+              url: req.get("host") + `/images/${element.filename}`,
+            };
+          }),
+        },
+      },
+      include: {
+        image_product: true,
+      },
+    });
+
+    return res
+      .status(200)
+      .json({ data: product, message: "محصول با موفقیت ویرایش شد" });
+  } catch (err) {
+    if (err.code && err.code === "P2002") {
+      throw new ConflictError("محصولی با این عنوان وجود دارد");
+    } else if (err.code && err.code === "P2003") {
+      throw new NotFoundError("فروشنده‌ای با این شناسه وجود ندارد");
+    } else if (err && err.code === "P2025") {
+      throw new NotFoundError("محصولی با این شناسه وجود ندارد");
+    }
+
+    throw new InternalServerError("عملیات با خطا مواجه شد");
+  }
 };
 
 exports.DeleteProduct = async (req, res) => {
@@ -217,14 +297,15 @@ exports.DeleteProduct = async (req, res) => {
   try {
     let product = await db.Product.delete({
       where: {
-        id_sellerId: { id: productId, sellerId: id },
+        id: productId,
       },
     });
 
-    if (product)
-      return res.status(200).json({ message: "محصول با موفقیت حذف شد" });
-    else throw new NotFoundError("محصولی با این شناسه یافت نشد");
+    return res.status(200).json({ message: "محصول با موفقیت حذف شد" });
   } catch (err) {
+    if (err && err.code === "P2025") {
+      throw new NotFoundError("محصولی با این شناسه وجود ندارد");
+    }
     throw new InternalServerError("عملیات با خطا مواجه شد");
   }
 };

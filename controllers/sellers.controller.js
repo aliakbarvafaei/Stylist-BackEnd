@@ -70,6 +70,14 @@ exports.CreateSeller = async (req, res, next) => {
           required: "آدرس اجباری است",
         },
       },
+      shaba: {
+        type: String,
+        required: true,
+        message: {
+          type: "شبا باید به صورت رشته باشد",
+          required: "شبا اجباری است",
+        },
+      },
       email: {
         type: String,
         match: /^$|^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
@@ -151,6 +159,18 @@ exports.UpdateSeller = async (req, res, next) => {
         type: String,
         message: {
           type: "آدرس باید به صورت رشته باشد",
+        },
+      },
+      shaba: {
+        type: String,
+        message: {
+          type: "شبا باید به صورت رشته باشد",
+        },
+      },
+      balance: {
+        type: String,
+        message: {
+          type: "موجودی حساب باید به صورت رشته باشد",
         },
       },
       email: {

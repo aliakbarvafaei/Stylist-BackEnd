@@ -25,6 +25,7 @@ exports.CreateSeller = async (req, res) => {
     province,
     city,
     address,
+    shaba,
     email,
     phone,
     password,
@@ -46,6 +47,12 @@ exports.CreateSeller = async (req, res) => {
             province: province,
             city: city,
             address: address,
+          },
+        },
+        wallet: {
+          create: {
+            balance: 0,
+            shaba: shaba,
           },
         },
       },
@@ -73,6 +80,8 @@ exports.UpdateSeller = async (req, res) => {
   const province = req.body.province === "" ? undefined : req.body.province;
   const city = req.body.city === "" ? undefined : req.body.city;
   const address = req.body.address === "" ? undefined : req.body.address;
+  const shaba = req.body.shaba === "" ? undefined : req.body.shaba;
+  const balance = req.body.balance === "" ? undefined : req.body.balance;
   const email = req.body.email === "" ? undefined : req.body.email;
   const phone = req.body.phone === "" ? undefined : req.body.phone;
   const old_password = req.body.oldPassword;
@@ -137,6 +146,17 @@ exports.UpdateSeller = async (req, res) => {
           province: province,
           city: city,
           address: address,
+        },
+      });
+    }
+    if ((shaba && shaba != "") || (balance && balance != "")) {
+      const wallet = await db.Wallet.update({
+        where: {
+          sellerId: seller.id,
+        },
+        data: {
+          shaba: shaba,
+          balance: Number(balance),
         },
       });
     }

@@ -277,6 +277,7 @@ model Seller {
   firstName String?
   lastName  String?
   address   Address_Seller? @relation("SELLER_ADDRESS")
+  wallet    Wallet?         @relation("SELLER_WALLET")
   password  String
   createdAt DateTime        @default(now())
   product   Product[]       @relation("SELLER_PRODUCT")
@@ -290,6 +291,15 @@ model Address_Seller {
   address  String
   sellerId Int    @unique
   Seller   Seller @relation("SELLER_ADDRESS", fields: [sellerId], references: [id], onDelete: Cascade)
+}
+
+//wallet model
+model Wallet {
+  id       Int    @id @default(autoincrement())
+  balance  Int
+  shaba    String
+  sellerId Int    @unique
+  Seller   Seller @relation("SELLER_WALLET", fields: [sellerId], references: [id], onDelete: Cascade)
 }
 
 //product_category model

@@ -52,6 +52,7 @@ model User {
   password          String?
   gender            GENDERS?
   createdAt         DateTime            @default(now())
+  fixed_information Fixed_Information?  @relation("USER_FIXED_INFORMATION")
   clothing          Clothing[]          @relation("USER_CLOTHING")
   category_clothing Category_Clothing[] @relation("USER_CATEGORY_CLOTHING")
   set               Set[]               @relation("USER_SET")
@@ -62,6 +63,13 @@ model User {
   order             Order[]             @relation("USER_ORDER")
   cart_items        Cart_Item[]         @relation("USER_CART_ITEM")
   address           Address[]           @relation("USER_ADDRESS")
+}
+
+//fixed information
+model Fixed_Information {
+  userId Int  @unique
+  user   User @relation("USER_FIXED_INFORMATION", fields: [userId], references: [id], onDelete: Cascade)
+  @@id([userId])
 }
 
 //address model
@@ -216,14 +224,6 @@ model Order_Item {
   product   Product? @relation("PRODUCT_ORDER_ITEM", fields: [productId], references: [id], onDelete: SetNull)
 }
 
-//cart model
-// model Cart {
-//   id        Int         @id @default(autoincrement())
-//   status    STATUS_CART @default(OPEN)
-//   price     Float
-//   cart_item Cart_Item[] @relation("CART_CART_ITEM")
-// }
-
 //cart_item model
 model Cart_Item {
   quantity  Int
@@ -285,21 +285,21 @@ model Seller {
 
 //address model
 model Address_Seller {
-  id       Int    @id @default(autoincrement())
   province String
   city     String
   address  String
   sellerId Int    @unique
   Seller   Seller @relation("SELLER_ADDRESS", fields: [sellerId], references: [id], onDelete: Cascade)
+  @@id([sellerId])
 }
 
 //wallet model
 model Wallet {
-  id       Int    @id @default(autoincrement())
   balance  Int
   shaba    String
   sellerId Int    @unique
   Seller   Seller @relation("SELLER_WALLET", fields: [sellerId], references: [id], onDelete: Cascade)
+  @@id([sellerId])
 }
 
 //product_category model
